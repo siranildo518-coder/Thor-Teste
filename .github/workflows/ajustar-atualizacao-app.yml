@@ -1,0 +1,13 @@
+name: Ajuste manual do aplicativo
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  manual:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Workflow manual."
