@@ -1,0 +1,14 @@
+// THOR 7 V113 - Somente Dupla Sena: 1o sorteio em cima e 2o sorteio embaixo. Login/trava intocados.
+(function(){'use strict';
+const CLS='thor-dupla-sena-linhas';
+function txt(e){return (e&&e.textContent||'').replace(/\s+/g,' ').trim()}
+function vis(e){if(!e)return false;const r=e.getBoundingClientRect(),s=getComputedStyle(e);return r.width>0&&r.height>0&&s.display!=='none'&&s.visibility!=='hidden'}
+function duplaAtiva(){const candidatos=[...document.querySelectorAll('button,[role="button"],a')].filter(e=>vis(e)&&/dupla\s*sena/i.test(txt(e)));if(!candidatos.length)return false;return candidatos.some(e=>e.matches('.active,.ativo,.selected,[aria-selected="true"],[aria-pressed="true"]')||/active|ativo|selected|selecion/i.test(e.className||''))}
+function acharCard(){const todos=[...document.querySelectorAll('div,section,article')].filter(vis);const cards=todos.filter(e=>/último resultado|ultimo resultado/i.test(txt(e)));return cards.sort((a,b)=>a.getBoundingClientRect().height-b.getBoundingClientRect().height).find(c=>{const ns=[...c.querySelectorAll('span,button,div')].filter(e=>vis(e)&&/^\d{1,2}$/.test(txt(e)));return ns.length>=12})||null}
+function restaurar(){document.querySelectorAll('.'+CLS).forEach(w=>{const p=w.parentElement;if(!p)return;[...w.querySelectorAll(':scope > *')].forEach(x=>p.insertBefore(x,w));w.remove()})}
+function aplicar(){if(!duplaAtiva()){restaurar();return}const card=acharCard();if(!card)return;const nums=[...card.querySelectorAll('span,button,div')].filter(e=>vis(e)&&/^\d{1,2}$/.test(txt(e))).filter(e=>!e.querySelector('span,button,div'));
+const bolas=nums.filter(e=>{const r=e.getBoundingClientRect();return r.width>=20&&r.width<=65&&r.height>=20&&r.height<=65}).slice(-12);if(bolas.length!==12)return;if(bolas[0].closest('.'+CLS))return;const pai=bolas[0].parentElement;if(!pai||!bolas.every(b=>b.parentElement===pai))return;
+const bloco=document.createElement('div');bloco.className=CLS;bloco.style.cssText='width:100%;display:flex;flex-direction:column;gap:5px;align-items:center;margin:2px 0;';const r1=document.createElement('div'),r2=document.createElement('div');[r1,r2].forEach(r=>r.style.cssText='display:flex;justify-content:center;align-items:center;gap:5px;flex-wrap:nowrap;');pai.insertBefore(bloco,bolas[0]);bloco.append(r1,r2);bolas.slice(0,6).forEach(b=>r1.appendChild(b));bolas.slice(6,12).forEach(b=>r2.appendChild(b))}
+let timer;function agenda(){clearTimeout(timer);timer=setTimeout(aplicar,120)}
+document.addEventListener('click',e=>{if(e.target.closest('button,[role="button"],a'))agenda()},true);new MutationObserver(agenda).observe(document.documentElement,{childList:true,subtree:true});if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',agenda,{once:true});else agenda();
+})();
