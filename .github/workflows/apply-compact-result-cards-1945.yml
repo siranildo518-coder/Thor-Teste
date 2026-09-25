@@ -1,0 +1,52 @@
+name: Aplicar cards finos 1945
+
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-compact-result-cards-1945.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  aplicar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Atualizar index e sw
+        shell: python
+        run: |
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          bloco='''<style id="gerador-cards-resultado-finos">
+          /* Gerador de jogos: resultado e repetidas mais finos/compactos */
+          #geradorFiltroUltimoResultado{padding:6px 10px !important;margin-bottom:7px !important;}
+          #geradorFiltroUltimoResultado .res-card-title{margin-bottom:2px !important;line-height:14px !important;font-size:11.5px !important;}
+          #geradorFiltroUltimoResultado .res-nav-row{margin-bottom:2px !important;min-height:24px !important;}
+          #geradorFiltroUltimoResultado .res-nav-btn{padding:2px 7px !important;min-height:22px !important;line-height:15px !important;}
+          #geradorFiltroUltimoResultado .res-concurso-num{font-size:14px !important;line-height:18px !important;}
+          #geradorFiltroUltimoResultado .result-balls{margin-top:2px !important;margin-bottom:1px !important;}
+          #geradorFiltroUltimoResultado .result-ball-sm{width:27px !important;height:27px !important;min-width:27px !important;font-size:10.5px !important;}
+          #geradorFiltroUltimoResultado .res-local{font-size:9.5px !important;line-height:11px !important;margin-top:1px !important;}
+          #geradorFiltroAnalise{padding:6px 10px !important;margin-bottom:7px !important;}
+          #geradorFiltroAnalise .stat-sub-title{margin:0 !important;font-size:11.5px !important;line-height:14px !important;}
+          #geradorFiltroAnalise .gfc-ball{width:27px !important;height:27px !important;min-width:27px !important;font-size:10.5px !important;margin:1px 2px !important;}
+          </style>'''
+          if 'id="gerador-cards-resultado-finos"' not in s:
+              s=s.replace('</head>',bloco+'\n</head>',1)
+          s=s.replace("const APP_VERSAO_ATUAL = '2026-09-11-1940';", "const APP_VERSAO_ATUAL = '2026-09-11-1945';",1)
+          p.write_text(s,encoding='utf-8')
+
+          sw=Path('sw.js')
+          t=sw.read_text(encoding='utf-8')
+          t=t.replace("const CACHE_NAME = 'thor-loterias-2026-09-11-1940';", "const CACHE_NAME = 'thor-loterias-2026-09-11-1945';",1)
+          sw.write_text(t,encoding='utf-8')
+      - name: Publicar alterações
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html sw.js
+          git diff --cached --quiet && exit 0
+          git commit -m "Deixar cards de resultado mais finos e atualizar app 1945"
+          git push
