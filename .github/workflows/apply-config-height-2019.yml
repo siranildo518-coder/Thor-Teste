@@ -1,0 +1,36 @@
+name: Publicar novo design inicial 0540
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-config-height-2019.yml'
+permissions:
+  contents: write
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Aplicar atualização
+        run: python3 .github/scripts/fix-lotofacil-sorteio-2144.py
+      - name: Validar JavaScript
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path('index.html').read_text(encoding='utf-8')
+          scripts=re.findall(r'<script(?:[^>]*)>(.*?)</script>', s, re.S)
+          Path('/tmp/thor-scripts.js').write_text('\n'.join(scripts), encoding='utf-8')
+          PY
+          node --check /tmp/thor-scripts.js
+      - name: Publicar index e sw
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add index.html sw.js
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Aplicar novo design inicial neon 0540'
+          git push
+      - name: Confirmar publicação 0540
+        run: echo '0540 publicada com novo design da tela inicial'
