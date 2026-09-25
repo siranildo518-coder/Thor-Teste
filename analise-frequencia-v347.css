@@ -1,0 +1,41 @@
+@import url('./analise-frequencia-v346.css');
+
+/* V3.47 — tabela de Frequência mais compacta */
+html body #overlayTendencia #frequenciaConteudo .freq-dez-row,
+html body #overlayTendencia #frequenciaConteudo .freq-dez-row:nth-child(odd),
+html body #overlayTendencia #frequenciaConteudo .freq-dez-row:nth-child(even){
+  min-height:39px!important;
+}
+
+html body #overlayTendencia #frequenciaConteudo .freq-dez-row>div{
+  padding-top:3px!important;
+  padding-bottom:3px!important;
+}
+
+html body #overlayTendencia #frequenciaConteudo .freq-bola-v345{
+  width:29px!important;
+  height:29px!important;
+  min-width:29px!important;
+  font-size:12px!important;
+  border-width:1px!important;
+}
+
+html body #overlayTendencia #frequenciaConteudo .freq-dez-vezes{
+  font-size:16px!important;
+}
+
+html body #overlayTendencia #frequenciaConteudo .freq-dez-bar-wrap{
+  height:18px!important;
+}
+
+html body #overlayTendencia #frequenciaConteudo .freq-dez-pct-txt{
+  padding-top:3px!important;
+  padding-bottom:3px!important;
+  font-size:12px!important;
+}
+
+@media(max-width:380px){
+  html body #overlayTendencia #frequenciaConteudo .freq-bola-v345{
+    width:27px!important;height:27px!important;min-width:27px!important;font-size:11px!important;
+  }
+}
