@@ -1,7 +1,7 @@
 {
-  "name": "THOR LOTERIAS",
-  "short_name": "THOR",
-  "description": "THOR LOTERIAS",
+  "name": "THOR TESTE",
+  "short_name": "THOR TESTE",
+  "description": "THOR TESTE - ambiente separado da versão principal",
   "start_url": "./index.html?v=2",
   "scope": "./",
   "display": "standalone",
@@ -21,5 +21,6 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
-  ]
+  ],
+  "id": "/Thor-Teste/"
 }
