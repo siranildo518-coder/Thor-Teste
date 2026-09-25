@@ -1,0 +1,49 @@
+name: Aplicar altura compacta 2019 v2
+
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-config-height-2019-v2.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  atualizar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Aplicar ajuste
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re, base64
+
+          versao = '2026-09-11-2019'
+          css_b64 = 'PHN0eWxlIGlkPSJnZmMtY29uZmlnLWNvbXBhY3QtaGVpZ2h0Ij4KLyogQ29uZmlndXJhw6fDtWVzIGF2YW7Dp2FkYXM6IHJlZHV6aXIgYWx0dXJhIHZlcnRpY2FsICovCi5nZmMtZGFyay1jYXJke3BhZGRpbmc6MTFweCAxNHB4ICFpbXBvcnRhbnQ7bWFyZ2luLWJvdHRvbTo4cHggIWltcG9ydGFudDt9Ci5nZmMtZGFyay10aXRsZXttYXJnaW4tYm90dG9tOjlweCAhaW1wb3J0YW50O30KLmdmYy1kYXJrLWxhYmVse21hcmdpbi1ib3R0b206NHB4ICFpbXBvcnRhbnQ7fQouZ2ZjLWRhcmstc3RlcHBlci1yb3d7bWFyZ2luLWJvdHRvbToxMHB4ICFpbXBvcnRhbnQ7Z2FwOjhweCAhaW1wb3J0YW50O30KLmdmYy1kYXJrLXN0ZXBwZXItYnRue2hlaWdodDozNHB4ICFpbXBvcnRhbnQ7fQouZ2ZjLWRhcmstdmFsdWUtaW5wdXR7cGFkZGluZzozcHggNHB4ICFpbXBvcnRhbnQ7bWluLWhlaWdodDozNHB4ICFpbXBvcnRhbnQ7fQouZ2ZjLWRhcmstZmlsdHJvLWxhYmVse21hcmdpbi1ib3R0b206NXB4ICFpbXBvcnRhbnQ7fQouZ2ZjLWRhcmstZmlsdHJvc3tnYXA6NnB4ICFpbXBvcnRhbnQ7bWFyZ2luLWJvdHRvbToxMHB4ICFpbXBvcnRhbnQ7fQouZ2ZjLWRhcmstaW5wdXQtd3JhcCBpbnB1dHtwYWRkaW5nOjVweCA0cHggIWltcG9ydGFudDt9Cjwvc3R5bGU+'
+          bloco = base64.b64decode(css_b64).decode('utf-8')
+
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          if 'id="gfc-config-compact-height"' in s:
+              s = re.sub(r'<style id="gfc-config-compact-height">.*?</style>', bloco, s, count=1, flags=re.S)
+          else:
+              s = s.replace('</head>', '\n' + bloco + '\n</head>', 1)
+          s = re.sub(r"const APP_VERSAO_ATUAL = '[^']+';", f"const APP_VERSAO_ATUAL = '{versao}';", s, count=1)
+          p.write_text(s, encoding='utf-8')
+
+          swp = Path('sw.js')
+          sw = swp.read_text(encoding='utf-8')
+          sw = re.sub(r"const CACHE_NAME = 'thor-loterias-[^']+';", f"const CACHE_NAME = 'thor-loterias-{versao}';", sw, count=1)
+          swp.write_text(sw, encoding='utf-8')
+          PY
+      - name: Publicar
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html sw.js
+          git diff --cached --quiet && exit 0
+          git commit -m "Diminuir altura configuracoes e atualizar app 2019"
+          git push
