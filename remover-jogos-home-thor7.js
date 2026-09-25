@@ -1,0 +1,1 @@
+(function(){'use strict';function remover(){var b=document.querySelector('#homeFeatureGrid .home-feature-card[data-home-target="btnJogosSalvosAtalho2"]');if(b)b.remove();}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',remover,{once:true});else remover();var n=0,t=setInterval(function(){remover();if(++n>=30)clearInterval(t);},200);})();
