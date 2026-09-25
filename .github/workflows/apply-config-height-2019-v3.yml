@@ -1,0 +1,22 @@
+name: Apply config height 2019 v3
+on:
+  push:
+    paths:
+      - .github/workflows/apply-config-height-2019-v3.yml
+permissions:
+  contents: write
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch files
+        run: python3 -c "from pathlib import Path; import re,base64; v='2026-09-11-2019'; b=base64.b64decode('PHN0eWxlIGlkPSJnZmMtY29uZmlnLWNvbXBhY3QtaGVpZ2h0Ij4KLyogQ29uZmlndXJhw6fDtWVzIGF2YW7Dp2FkYXM6IHJlZHV6aXIgYWx0dXJhIHZlcnRpY2FsICovCi5nZmMtZGFyay1jYXJke3BhZGRpbmc6MTFweCAxNHB4ICFpbXBvcnRhbnQ7bWFyZ2luLWJvdHRvbTo4cHggIWltcG9ydGFudDt9Ci5nZmMtZGFyay10aXRsZXttYXJnaW4tYm90dG9tOjlweCAhaW1wb3J0YW50O30KLmdmYy1kYXJrLWxhYmVse21hcmdpbi1ib3R0b206NHB4ICFpbXBvcnRhbnQ7fQouZ2ZjLWRhcmstc3RlcHBlci1yb3d7bWFyZ2luLWJvdHRvbToxMHB4ICFpbXBvcnRhbnQ7Z2FwOjhweCAhaW1wb3J0YW50O30KLmdmYy1kYXJrLXN0ZXBwZXItYnRue2hlaWdodDozNHB4ICFpbXBvcnRhbnQ7fQouZ2ZjLWRhcmstdmFsdWUtaW5wdXR7cGFkZGluZzozcHggNHB4ICFpbXBvcnRhbnQ7bWluLWhlaWdodDozNHB4ICFpbXBvcnRhbnQ7fQouZ2ZjLWRhcmstZmlsdHJvLWxhYmVse21hcmdpbi1ib3R0b206NXB4ICFpbXBvcnRhbnQ7fQouZ2ZjLWRhcmstZmlsdHJvc3tnYXA6NnB4ICFpbXBvcnRhbnQ7bWFyZ2luLWJvdHRvbToxMHB4ICFpbXBvcnRhbnQ7fQouZ2ZjLWRhcmstaW5wdXQtd3JhcCBpbnB1dHtwYWRkaW5nOjVweCA0cHggIWltcG9ydGFudDt9Cjwvc3R5bGU+').decode(); p=Path('index.html'); s=p.read_text(); s=re.sub(r'<style id=\"gfc-config-compact-height\">.*?</style>',b,s,count=1,flags=re.S) if 'gfc-config-compact-height' in s else s.replace('</head>','\n'+b+'\n</head>',1); s=re.sub(r\"const APP_VERSAO_ATUAL = '[^']+';\",f\"const APP_VERSAO_ATUAL = '{v}';\",s,count=1); p.write_text(s); q=Path('sw.js'); w=q.read_text(); w=re.sub(r\"const CACHE_NAME = 'thor-loterias-[^']+';\",f\"const CACHE_NAME = 'thor-loterias-{v}';\",w,count=1); q.write_text(w)"
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html sw.js
+          git diff --cached --quiet && exit 0
+          git commit -m "Compactar configuracoes e atualizar app 2019"
+          git push
