@@ -1,0 +1,46 @@
+@import url('./analise-visual-v340.css');
+
+/* V3.41 — contraste dos textos, painel Estatísticas e bolinhas menos brilhantes */
+#overlayTendencia #tendPanel.stat-dark-wrap{
+  background:linear-gradient(180deg,#00463c,#002a35)!important;
+  border:1.5px solid #27e5a5!important;
+  border-radius:16px!important;
+  margin:0!important;
+  padding:12px!important;
+  box-shadow:inset 0 0 16px rgba(0,255,155,.12),0 0 9px rgba(0,255,155,.28)!important;
+}
+#overlayTendencia #tendPanel .stat-card{
+  background:linear-gradient(155deg,#00463b,#002a37)!important;
+  border:1.5px solid #26dda3!important;
+  box-shadow:inset 0 0 12px rgba(0,255,150,.08)!important;
+}
+#overlayTendencia #tendPanel .stat-card-title,
+#overlayTendencia #tendPanel .stat-line,
+#overlayTendencia #tendPanel .stat-line-highlight,
+#overlayTendencia #tendPanel .stat-sub-title,
+#overlayTendencia #tendPanel .gfc-dark-title,
+#overlayTendencia #tendPanel .gfc-dark-label,
+#overlayTendencia #tendPanel .gfc-dark-filtro-label,
+#overlayTendencia [id$='Conteudo'] .ciclo-hist-wrap,
+#overlayTendencia [id$='Conteudo'] .ciclo-hist-wrap *,
+#overlayTendencia [id$='Conteudo'] .ciclo-legenda,
+#overlayTendencia [id$='Conteudo']>div:not(.centro-grid):not(.tend-row),
+#overlayTendencia [id$='Conteudo']>div:not(.centro-grid):not(.tend-row) *{
+  color:#fff!important;
+  opacity:1!important;
+  text-shadow:0 1px 2px #001b16!important;
+}
+#overlayTendencia .stat-bar-bg{background:#27615d!important}
+#overlayTendencia .stat-bar-fill{background:#25d879!important;box-shadow:none!important}
+#overlayTendencia .stat-bar-fill-highlight{background:#f1c72d!important;box-shadow:none!important}
+#overlayTendencia .centro-cel,
+#overlayTendencia .result-ball-sm,
+#overlayTendencia .tend-ball,
+#overlayTendencia .gfc-ball{
+  filter:brightness(.84) saturate(.82)!important;
+  box-shadow:0 1px 3px rgba(0,0,0,.35)!important;
+  text-shadow:none!important;
+}
+#overlayTendencia .centro-cel .centro-num,
+#overlayTendencia .result-ball-sm,
+#overlayTendencia .tend-ball{color:#fff!important;font-weight:900!important}
