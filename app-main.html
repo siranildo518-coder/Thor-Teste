@@ -4806,6 +4806,7 @@ document.addEventListener('selectstart', e=>{
     <div id="geradorFiltroTabPanelJogos" style="display:none;">
       <div style="font-size:13px;font-weight:700;margin-bottom:9px;">Jogos gerados</div>
       <div class="spinner" id="geradorFiltroSpinner" style="display:none;">Calculando…</div>
+      <button type="button" id="geradorCopiarTodosBtn" style="display:none;width:62%;margin:10px auto;padding:9px 12px;border:1.5px solid #16834d;border-radius:8px;background:linear-gradient(#35c679,#087c45);color:#fff;font-family:Arial,sans-serif;font-weight:700;font-size:12px;cursor:pointer;">📋 Copiar jogos</button>
       <div id="geradorFiltroResultado"></div>
     </div>
   </div>
@@ -7941,6 +7942,9 @@ function renderGeradorResultado(g, jogos, maisAtrasadas, maisSairam, totalConcur
       ${resumoPremiacaoGerador(g.code)}
       <div id="geradorOportunidades" style="margin-top:7px;border:1px solid #EFE7F7;border-radius:10px;overflow:hidden;background:#FCFAFF;${conferindo ? '' : 'display:none;'}"><div style="padding:5px 7px;background:#F6F0FC;font-family:'Baloo 2',sans-serif;font-size:11px;font-weight:800;color:#7E22CE;">🏆 Oportunidades de premiação</div>${oportunidadesHtml}</div>
     </div>
+    <div style="display:flex;gap:8px;margin-bottom:8px;">
+      <button id="geradorCopiarTodosBtn" class="download-btn" style="display:block;width:100%;margin-top:0;padding:8px;font-size:12px;font-weight:800;background:linear-gradient(#35c679,#087c45);color:#fff;border:1.5px solid #16834d;">📋 Copiar jogos</button>
+    </div>
     <div style="display:flex;gap:8px;margin-bottom:12px;">
       <button id="geradorLimparBtn" class="download-btn" style="display:block;flex:1;margin-top:0;padding:7px;font-size:12px;background:#fff;color:#B91C1C;border:1.5px solid #B91C1C;"><span id="geradorLimparSpinner" style="display:none;width:11px;height:11px;border:2px solid rgba(185,28,28,.35);border-top-color:#B91C1C;border-radius:50%;margin-right:6px;vertical-align:middle;animation:girarBtn .6s linear infinite;"></span><span id="geradorLimparLabel">Limpar jogos</span></button>
       <a id="geradorJogarOnlineBtn" class="download-btn" href="https://loterias.caixa.gov.br/Paginas/${g.officialSlug}.aspx" target="_blank" rel="noopener" style="display:block;flex:1;margin-top:0;padding:7px;font-size:12px;text-align:center;text-decoration:none;box-sizing:border-box;">Jogar online</a>
@@ -7952,6 +7956,17 @@ function renderGeradorResultado(g, jogos, maisAtrasadas, maisSairam, totalConcur
   const tabJogosBtn = document.getElementById('geradorFiltroTabJogos');
   // Jogos gerados aparecem no painel; a aba Meus jogos salvos lista apenas os salvos com nome.
   gfcMostrarTab('jogos');
+
+  document.getElementById('geradorCopiarTodosBtn').addEventListener('click', async function(){
+    const texto = jogos.map(jogo=>jogo.map(n=>String(n).padStart(2,'0')).join(' ')).join('\n');
+    try{
+      if(navigator.clipboard && window.isSecureContext) await navigator.clipboard.writeText(texto);
+      else{
+        const ta=document.createElement('textarea');ta.value=texto;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();
+      }
+      const original=this.innerHTML;this.innerHTML='✓ Jogos copiados';setTimeout(()=>{this.innerHTML=original},1400);
+    }catch(e){ alert('Não foi possível copiar os jogos.'); }
+  });
 
   document.getElementById('geradorLimparBtn').addEventListener('click', function(){
     const limparBtn = this;
@@ -7967,6 +7982,28 @@ function renderGeradorResultado(g, jogos, maisAtrasadas, maisSairam, totalConcur
     }, 350);
   });
 }
+
+
+// Copiar todos os jogos gerados de uma vez
+(function(){
+  function atualizarBotaoCopiar(){
+    var b=document.getElementById('geradorCopiarTodosBtn');
+    var ctx=geradorUltimoJogosCtx;
+    if(b) b.style.display=(ctx&&Array.isArray(ctx.jogos)&&ctx.jogos.length)?'block':'none';
+  }
+  document.addEventListener('click',function(e){
+    var b=e.target.closest&&e.target.closest('#geradorCopiarTodosBtn');
+    if(!b)return;
+    var ctx=geradorUltimoJogosCtx;
+    if(!ctx||!Array.isArray(ctx.jogos)||!ctx.jogos.length)return;
+    var texto=ctx.jogos.map(function(j){return j.map(function(n){return String(n).padStart(2,'0')}).join(' ')}).join('\n');
+    var pronto=function(){var antigo=b.textContent;b.textContent='✓ Jogos copiados';setTimeout(function(){b.textContent='📋 Copiar jogos'},1400)};
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(texto).then(pronto).catch(function(){fallback()})}else fallback();
+    function fallback(){var t=document.createElement('textarea');t.value=texto;t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);t.select();try{document.execCommand('copy');pronto()}catch(_){ }t.remove()}
+  });
+  new MutationObserver(atualizarBotaoCopiar).observe(document.documentElement,{childList:true,subtree:true});
+  setInterval(atualizarBotaoCopiar,700);
+})();
 
 // Jogos salvos com nome no aparelho; mesma chave usada na outra entrada do app.
 const GFC_SALVOS_NOME_KEY='tl_gerador_salvos_nome_v1';
