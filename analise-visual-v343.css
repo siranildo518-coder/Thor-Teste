@@ -1,0 +1,17 @@
+@import url('./analise-visual-v342.css');
+
+/* V3.43 — botões de análise mais baixos */
+#overlayTendencia #tendSubtabRow .subtab-btn{
+  height:34px!important;
+  min-height:34px!important;
+  padding:2px 3px!important;
+  border-radius:9px!important;
+  font-size:clamp(8px,2.3vw,12px)!important;
+  line-height:1!important;
+}
+#overlayTendencia #tendSubtabRow .subtab-btn::before{
+  min-width:16px!important;
+  font-size:17px!important;
+}
+#overlayTendencia .thor-rep-linha{min-height:42px!important}
+@media(max-width:430px){#overlayTendencia #tendSubtabRow .subtab-btn{height:31px!important;min-height:31px!important;font-size:8px!important}#overlayTendencia #tendSubtabRow .subtab-btn::before{font-size:14px!important;min-width:13px!important}}
