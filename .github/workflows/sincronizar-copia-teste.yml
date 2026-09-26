@@ -23,7 +23,7 @@ jobs:
         shell: bash
         run: |
           git clone --depth 1 https://github.com/siranildo518-coder/THOR-LOTERIAS.git /tmp/thor-oficial
-          rsync -a --delete --exclude='.git' --exclude='.github/workflows/' /tmp/thor-oficial/ ./
+          rsync -a --delete --exclude='.git' --exclude='.github/workflows/sincronizar-copia-teste.yml' /tmp/thor-oficial/ ./
           python3 - <<'PY'
           from pathlib import Path
 
@@ -41,10 +41,10 @@ jobs:
               ("collection('contas_ativadas')", "collection('teste_contas_ativadas')"),
               ("collection('usuarios_login')", "collection('teste_usuarios_login')"),
               ("collection('acesso_navegador')", "collection('teste_acesso_navegador')"),
-              ("'tl_", "'thor_teste_"),
-              ('"tl_', '"thor_teste_'),
               ("'thor_", "'thor_teste_"),
               ('"thor_', '"thor_teste_'),
+              ("'tl_", "'thor_teste_"),
+              ('"tl_', '"thor_teste_'),
               ("'lotofacil_", "'thor_teste_lotofacil_"),
               ('"lotofacil_', '"thor_teste_lotofacil_'),
           ]
