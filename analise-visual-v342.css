@@ -1,0 +1,19 @@
+@import url('./analise-visual-v341.css');
+
+/* V3.42 — cartão Análise de Repetição conforme o modelo */
+#overlayTendencia .stat-card.thor-repeticao{padding:0!important;overflow:hidden!important;border:2px solid #24ef91!important;border-radius:18px!important;background:linear-gradient(155deg,#003f38,#001f32)!important}
+#overlayTendencia .thor-rep-titulo{padding:13px 17px;border-bottom:1px solid #28d89b;font-size:clamp(17px,4.6vw,25px);font-weight:1000;color:#fff;letter-spacing:.01em}
+#overlayTendencia .thor-rep-resumo{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px}
+#overlayTendencia .thor-rep-box{display:grid;grid-template-columns:72px 1fr;min-height:92px;border:1.5px solid #27e3d0;border-radius:16px;overflow:hidden;background:linear-gradient(100deg,#075b67,#003143 48%,#003844);box-shadow:inset 0 0 15px #00e7d133}
+#overlayTendencia .thor-rep-icone{display:flex;align-items:center;justify-content:center;border-right:1px solid #176073;font-size:44px;color:#fff;text-shadow:0 2px 4px #000}
+#overlayTendencia .thor-rep-dado{display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-size:clamp(11px,3vw,16px)}
+#overlayTendencia .thor-rep-dado strong{display:block;margin-top:4px;color:#ffd719!important;font-size:clamp(34px,8vw,54px);line-height:1;font-weight:1000;text-shadow:0 2px 3px #4a3300!important}
+#overlayTendencia .thor-rep-dist-titulo{padding:8px 15px;border:1px solid #195568;border-left:0;border-right:0;font-size:19px;font-weight:1000;color:#fff}
+#overlayTendencia .thor-rep-linhas{padding:4px 12px 10px}
+#overlayTendencia .thor-rep-linha{display:grid;grid-template-columns:minmax(95px,1.2fr) minmax(70px,.8fr) minmax(90px,2fr) 66px;gap:8px;align-items:center;min-height:46px;border-bottom:1px solid #17485c;color:#fff;font-weight:800;font-size:clamp(10px,2.8vw,15px)}
+#overlayTendencia .thor-rep-barra{height:8px;border-radius:9px;background:#b9ddf3;overflow:hidden}.thor-rep-barra i{display:block;height:100%;background:#32de85;border-radius:9px}
+#overlayTendencia .thor-rep-pct{padding:7px 3px;border-radius:9px;text-align:center;color:#fff;font-weight:1000;background:linear-gradient(#6284a6,#294967);box-shadow:inset 0 2px 3px #ffffff55,0 0 5px #89b9e3}
+#overlayTendencia .thor-rep-linha:nth-child(2) .thor-rep-pct{background:linear-gradient(#20dc66,#008e32);box-shadow:0 0 7px #23ff6c}
+#overlayTendencia .thor-rep-linha:nth-child(3) .thor-rep-pct{background:linear-gradient(#ffd625,#b98a00);box-shadow:0 0 7px #ffd82c}
+#overlayTendencia .thor-rep-linha:nth-child(4) .thor-rep-pct{background:linear-gradient(#ff4853,#ac0012);box-shadow:0 0 7px #ff4155}
+@media(max-width:430px){#overlayTendencia .thor-rep-resumo{gap:6px;padding:8px}#overlayTendencia .thor-rep-box{grid-template-columns:48px 1fr;min-height:72px}#overlayTendencia .thor-rep-icone{font-size:30px}#overlayTendencia .thor-rep-linha{grid-template-columns:88px 64px minmax(60px,1fr) 54px;gap:4px;font-size:10px}.thor-rep-pct{padding:6px 1px!important}}
