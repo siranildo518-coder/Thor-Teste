@@ -1,0 +1,34 @@
+name: Corrigir THOR 7 C2
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/corrigir-thor7-c2.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  corrigir:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Corrigir posicao do botao
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('gerador.html')
+          s=p.read_text(encoding='utf-8')
+          s=s.replace('copiar-todos-jogos-c2.js?v=thor7-c2','copiar-todos-jogos-c2-fix1.js?v=thor7-c2-fix1')
+          p.write_text(s,encoding='utf-8')
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add gerador.html
+          git commit -m "Corrige botao Copiar Todos no THOR 7 C2"
+          git push origin main
