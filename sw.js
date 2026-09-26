@@ -1,2 +1,2 @@
 // THOR LOTERIAS THOR 7 C2 - cache sincronizado; login, senha e trava preservados.
-importScripts('./sw-core-thor7.js?v=thor7-c3');
+importScripts('./sw-core-thor7.js?v=thor7-c4');
