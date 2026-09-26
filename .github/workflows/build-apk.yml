@@ -154,8 +154,8 @@ jobs:
                   getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(0xFF07101F));
                   getWindow().setStatusBarColor(0xFF07101F);
                   getWindow().setNavigationBarColor(0xFF07101F);
-                  setContentView(com.thorloterias.app.R.layout.activity_main);
-                  webView = findViewById(com.thorloterias.app.R.id.webview);
+                  setContentView(com.thorloterias.teste.R.layout.activity_main);
+                  webView = findViewById(com.thorloterias.teste.R.id.webview);
                   webView.setBackgroundColor(android.graphics.Color.TRANSPARENT);
                   WebSettings s = webView.getSettings();
                   s.setJavaScriptEnabled(true);
