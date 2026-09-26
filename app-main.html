@@ -624,7 +624,8 @@ function montarTelaLogin(){
       erroEl.style.color = '#8B80A3';
       erroEl.textContent = 'Verificando...';
       btn.disabled = true;
-      const resultado = await verificarTravaAparelho(hash);
+      // Conta exclusiva do THOR TESTE: não depende da trava do app oficial.
+      const resultado = hash === 'oxvhil' ? {ok:true} : await verificarTravaAparelho(hash);
       btn.disabled = false;
       if(resultado.ok){
         try{
