@@ -3316,17 +3316,6 @@ document.addEventListener('selectstart', e=>{
   #overlayListaResultados .home-feature-card small{font-size:6.8px!important;line-height:1.05!important;margin-top:2px!important}
   #overlayListaResultados .home-premium-card{margin:6px 7px 10px!important;width:calc(100% - 14px)!important}
 }
-</style><style id="thor-teste-foto-correta-151">
-@media(max-width:600px){
-#overlayListaResultados{padding-left:58px!important;background:#06101f!important}
-#homeSideNav{width:58px!important}
-#homeSideNav .hs-menu,#homeSideNav .hs-item{border:2px solid #ff9418!important;box-shadow:0 0 8px #ff9418!important}
-#overlayListaResultados .home-header{display:block!important;height:145px!important;padding:0!important;background:url('https://raw.githubusercontent.com/siranildo518-coder/THOR-LOTERIAS/f8cb7c4d6320470e7bba867d48cb2eabc438076b/thor-home-reference.jpg') center/cover no-repeat!important;border:0!important}
-#overlayListaResultados .home-header .home-topbar{display:none!important}
-#overlayListaResultados .home-tabs-wrap{margin:0!important;padding:7px!important;background:#07101f!important}
-#overlayListaResultados .home-free-banner{margin:8px 8px 14px!important;background:linear-gradient(180deg,#39d7ff,#058edb)!important;border:3px solid #ff9418!important;box-shadow:0 0 10px #ff9418!important;border-radius:14px!important}
-#overlayListaResultados .home-feature-card{border:3px solid #ff9418!important;box-shadow:none!important}
-}
 </style></head>
 <body>
 <div class="app">
@@ -3773,9 +3762,9 @@ document.addEventListener('selectstart', e=>{
 <div class="home-feature-grid" id="homeFeatureGrid">
 <button class="home-feature-card" style="--fc:#7b20d8" data-home-target="btnTendenciaAtalho"><span class="hfc-icon">▥</span><span><strong>Análise</strong><small>Estatísticas e frequências</small></span></button>
 <button class="home-feature-card" style="--fc:#087cff" data-home-target="btnFechamentoAtalho"><span class="hfc-icon">⚙</span><span><strong>Combinações</strong><small>Gere jogos com filtros avançados</small></span></button>
-<button class="home-feature-card" style="--fc:#00a66a" data-home-target="btnJogosSalvosAtalho2"><span class="hfc-icon">▶</span><span><strong>Jogos Oficiais</strong><small>Consulte jogos oficiais</small></span></button>
+<button class="home-feature-card" style="--fc:#00a66a" data-home-target="btnJogosSalvosAtalho2"><span class="hfc-icon">▶</span><span><strong>Jogos</strong><small>Gerencie seus jogos e resultados</small></span></button>
 <button class="home-feature-card" style="--fc:#e98a00" data-home-target="btnSimularAtalho"><span class="hfc-icon">▤</span><span><strong>Calculadora</strong><small>Probabilidades e estimativas</small></span></button>
-<button class="home-feature-card" style="--fc:#d41948" data-home-target="btnTendenciaAtalho"><span class="hfc-icon">◎</span><span><strong>Escolha pra mim</strong><small>Sugestão automática</small></span></button>
+<button class="home-feature-card" style="--fc:#d41948" data-home-target="btnTendenciaAtalho"><span class="hfc-icon">◎</span><span><strong>Palpites</strong><small>Sugestões inteligentes</small></span></button>
 <button class="home-feature-card" style="--fc:#08b7cf" data-home-target="btnTendenciaAtalho"><span class="hfc-icon">♛</span><span><strong>Resultados</strong><small>Consulte os últimos concursos</small></span></button>
 <button class="home-feature-card" id="btnFalhasConcursosHome" style="--fc:#c23b67"><span class="hfc-icon">↯</span><span><strong>Falhas e concursos</strong><small>Estudos de falhas por concurso</small></span></button>
 </div>
@@ -3837,7 +3826,7 @@ document.addEventListener('selectstart', e=>{
     <button id="falhasConcursosVoltar" style="background:none;border:none;color:#fff;font-size:20px;cursor:pointer;padding:0;">←</button>
     <h1 style="font-size:19px;">Falhas e concursos</h1>
   </header>
-  <iframe loading="lazy" id="falhasConcursosFrame" src="falhas-concursos.html?v=thor7-v130-sequencial-2" title="Falhas e concursos" style="display:block;width:100%;height:calc(100vh - 58px);border:0;background:#eef2f6;"></iframe>
+  <iframe loading="lazy" id="falhasConcursosFrame" src="falhas-concursos.html?v=thor7-v157-fonte-unica" title="Falhas e concursos" style="display:block;width:100%;height:calc(100vh - 58px);border:0;background:#eef2f6;"></iframe>
 </div>
 
 <nav class="home-bottom-nav" id="bottomNav">
@@ -6077,7 +6066,7 @@ function obterConcursoCache(game, concurso){
   return CONCURSO_CACHE_LOTERIA.get(chaveCacheConcurso(game, concurso)) || null;
 }
 
-const RESULTADO_LOTOFACIL_3788={concurso:3788,data:'24/09/2026',dezenas:[1,4,5,7,8,9,12,16,17,18,20,21,22,23,24]};
+const RESULTADO_LOTOFACIL_3789={concurso:3789,data:'25/09/2026',dezenas:[6,7,8,9,11,12,13,14,15,16,17,18,19,23,25]};
 async function fetchConcursoLoteria(game, concurso){
   const emCache = obterConcursoCache(game, concurso);
   if(emCache) return emCache;
@@ -6089,6 +6078,16 @@ async function fetchConcursoLoteria(game, concurso){
   // disponíveis e escolhemos sempre o MAIOR número de concurso.
   const fontes = [];
   const caixaSlug={MS:'megasena',LF:'lotofacil',QN:'quina',DIA:'diadesorte',LM:'lotomania',S7:'supersete',TM:'timemania',DS:'duplasena'}[game.code];
+
+  // Base do próprio THOR: atualizada automaticamente no GitHub e servida
+  // no mesmo domínio do app, evitando bloqueio/CORS da CAIXA no APK.
+  if(!concurso && caixaSlug){
+    fontes.push({
+      url: './resultados-atualizados.json?_thor='+Date.now(),
+      tipo: 'thor-local',
+      slug: caixaSlug
+    });
+  }
   if(caixaSlug){
     fontes.push({
       url: 'https://servicebus2.caixa.gov.br/portaldeloterias/api/'+caixaSlug+(concurso ? `/${concurso}` : ''),
@@ -6115,7 +6114,13 @@ async function fetchConcursoLoteria(game, concurso){
         headers: {Accept:'application/json'}
       });
       if(!resp.ok) throw new Error(`HTTP ${resp.status}`);
-      const bruto = await resp.json();
+      let bruto = await resp.json();
+
+      if(fonte.tipo === 'thor-local'){
+        bruto = bruto && bruto.resultados && bruto.resultados[fonte.slug];
+        if(!bruto || !bruto.concurso || !Array.isArray(bruto.dezenas) || !bruto.dezenas.length) throw new Error('base THOR sem resultado');
+        return bruto;
+      }
 
       if(fonte.tipo === 'caixa'){
         const dezenas = bruto.listaDezenas || bruto.dezenas || bruto.numeros || [];
@@ -6152,14 +6157,14 @@ async function fetchConcursoLoteria(game, concurso){
       fontes.forEach((fonte, idx)=>{
         tentarFonte(fonte, idx).then(data=>{
           if(terminou) return;
-          if(Number(data?.concurso)!==Number(concurso)){falhas++;if(falhas>=fontes.length){terminou=true;if(game.code==='LF'&&Number(concurso)===3788)resolve(RESULTADO_LOTOFACIL_3788);else reject(new Error('Concurso indisponível'));}return}
+          if(Number(data?.concurso)!==Number(concurso)){falhas++;if(falhas>=fontes.length){terminou=true;if(game.code==='LF'&&Number(concurso)===3789)resolve(RESULTADO_LOTOFACIL_3789);else reject(new Error('Concurso indisponível'));}return}
           terminou = true;
           controllers.forEach((c, i)=>{ if(i !== idx) try{ c.abort(); }catch(e){} });
           if(data && data.concurso) CONCURSO_CACHE_LOTERIA.set(chaveCacheConcurso(game, Number(data.concurso)), data);
           resolve(data);
         }).catch(()=>{
           falhas++;
-          if(falhas >= fontes.length && !terminou){ terminou=true; if(game.code==='LF'&&Number(concurso)===3788)resolve(RESULTADO_LOTOFACIL_3788);else reject(new Error('Falha ao buscar resultado em todas as fontes disponíveis')); }
+          if(falhas >= fontes.length && !terminou){ terminou=true; if(game.code==='LF'&&Number(concurso)===3789)resolve(RESULTADO_LOTOFACIL_3789);else reject(new Error('Falha ao buscar resultado em todas as fontes disponíveis')); }
         });
       });
     });
@@ -6168,9 +6173,9 @@ async function fetchConcursoLoteria(game, concurso){
   // Busca "latest": espera as fontes por uma janela curta e fica com o maior concurso.
   const resultados = await Promise.allSettled(fontes.map((fonte,idx)=>tentarFonte(fonte,idx)));
   const validos = resultados.filter(r=>r.status==='fulfilled' && r.value && r.value.concurso).map(r=>r.value);
-  if(!validos.length){if(game.code==='LF')return RESULTADO_LOTOFACIL_3788;throw new Error('Falha ao buscar resultado em todas as fontes disponíveis')}
+  if(!validos.length){if(game.code==='LF')return RESULTADO_LOTOFACIL_3789;throw new Error('Falha ao buscar resultado em todas as fontes disponíveis')}
   validos.sort((a,b)=>Number(b.concurso)-Number(a.concurso));
-  const data = game.code==='LF'&&Number(validos[0].concurso)<3788?RESULTADO_LOTOFACIL_3788:validos[0];
+  const data = game.code==='LF'&&Number(validos[0].concurso)<3789?RESULTADO_LOTOFACIL_3789:validos[0];
   CONCURSO_CACHE_LOTERIA.set(chaveCacheConcurso(game, Number(data.concurso)), data);
   return data;
 }
@@ -7523,6 +7528,17 @@ function abrirGeradorFiltro(code){
   carregarUltimoResultadoGerador(geradorGameAtual);
 }
 
+// Fonte padrão única: reaproveita exatamente a leitura do último resultado usada em Combinações.
+async function buscarUltimoComoCombinacoes(g){
+  const pronto = obterConcursoCache(g);
+  try{
+    const data = await fetchConcursoLoteria(g);
+    if(data && data.concurso) return data;
+  }catch(_){}
+  if(pronto && pronto.concurso) return pronto;
+  throw new Error('sem resultado atualizado');
+}
+
 // ---------- card com o resultado oficial da loteria escolhida, logo abaixo do botão GERAR ----------
 async function carregarUltimoResultadoGerador(g, concurso){
   const box = document.getElementById('geradorFiltroUltimoResultado');
@@ -7534,7 +7550,7 @@ async function carregarUltimoResultadoGerador(g, concurso){
   }
   box.innerHTML = `<div class="res-loading">Buscando ${concurso ? 'concurso Nº '+concurso : 'o último resultado'} de ${g.nome}…</div>`;
   try{
-    const data = await fetchConcursoLoteria(g, concurso);
+    const data = concurso ? await fetchConcursoLoteria(g, concurso) : await buscarUltimoComoCombinacoes(g);
     if(!geradorGameAtual || geradorGameAtual.code !== g.code) return; // usuário já trocou de loteria enquanto buscava
     if(!data || !data.concurso) throw new Error('sem dados');
     if(!concursoMaisRecentePorJogo[g.slug] || data.concurso > concursoMaisRecentePorJogo[g.slug]){
@@ -10429,6 +10445,21 @@ async function carregarHomeHero(g){
   if(!data && !homeHero.firstElementChild){
     homeHero.innerHTML = '<div class="home-hero" style="--hero-accent:'+g.color+';--hero-accent-deep:'+g.color+';"><div class="hh-last-draw"><div class="hh-ultimo-lbl">🕒 Último Sorteio</div></div></div>';
   }
+  // A tela principal usa a mesma fonte central das outras abas.
+  // O cache local só pinta instantaneamente; a fonte única sempre é consultada.
+  try{
+    const central = await fetch('./resultados-atualizados.json?_thor_home=' + Date.now(), {cache:'no-store'}).then(r=>{if(!r.ok) throw new Error('fonte central indisponível'); return r.json();});
+    const bruto = central && central.resultados && central.resultados[g.altSlug];
+    if(bruto && bruto.concurso && Array.isArray(bruto.dezenas)){
+      const fresco = {...bruto, concurso:Number(bruto.concurso), dezenas:bruto.dezenas.map(Number)};
+      if(!data || Number(fresco.concurso) >= Number(data.concurso||0)){
+        data = fresco;
+        homeCache[g.slug] = fresco;
+        concursoMaisRecentePorJogo[g.slug] = fresco.concurso;
+        try{localStorage.setItem('thor_home_resultado_'+g.slug,JSON.stringify(fresco))}catch(_){}
+      }
+    }
+  }catch(_){}
   if(!data){
     try{
       data = await fetchConcursoLoteria(g);
@@ -10493,10 +10524,10 @@ if(btnFalhasConcursosHome && overlayFalhasConcursos){
         if(frame.contentWindow && typeof frame.contentWindow.atualizarConcursosCaixa === 'function'){
           frame.contentWindow.atualizarConcursosCaixa();
         }else{
-          frame.src = 'falhas-concursos.html?v=thor7-v130-sequencial-2&t=' + Date.now();
+          frame.src = 'falhas-concursos.html?v=thor7-v157-fonte-unica&t=' + Date.now();
         }
       }catch(_){
-        frame.src = 'falhas-concursos.html?v=thor7-v130-sequencial-2&t=' + Date.now();
+        frame.src = 'falhas-concursos.html?v=thor7-v157-fonte-unica&t=' + Date.now();
       }
     }
     try{ history.pushState({thorFalhasConcursos:true},'',location.href); }catch(_){}
@@ -10516,7 +10547,7 @@ window.addEventListener('popstate', function(e){
 
 // ---------- atualização automática quando sai um novo resultado da CAIXA ----------
 async function silentFetchLatest(game){
-  try{ return await fetchConcursoLoteria(game); }catch(e){ return null; }
+  try{ return await buscarUltimoComoCombinacoes(game); }catch(e){ return null; }
 }
 
 async function checarNovoResultado(){
