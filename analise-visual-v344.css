@@ -1,0 +1,23 @@
+@import url('./analise-visual-v343.css');
+
+/* V3.44 — nenhuma fonte roxa dentro da aba Análise */
+#overlayTendencia [style*="color:var(--violet"],
+#overlayTendencia [style*="color: var(--violet"],
+#overlayTendencia [style*="color:#4C1D95"],
+#overlayTendencia [style*="color: #4C1D95"],
+#overlayTendencia [style*="color:#5B4B78"],
+#overlayTendencia [style*="color:#6D28D9"],
+#overlayTendencia [style*="color:#7C3AED"],
+#overlayTendencia [style*="color:#86198F"],
+#overlayTendencia [style*="color:#A21CAF"],
+#overlayTendencia .tend-row .tend-pct,
+#overlayTendencia .tend-row .tend-sub,
+#overlayTendencia .tend-row>div,
+#overlayTendencia #gerarConteudo span:not(.tend-ball),
+#overlayTendencia #falhasConteudo span:not(.tend-ball),
+#overlayTendencia #trioConteudo span:not(.tend-ball),
+#overlayTendencia #quenteConteudo span:not(.tend-ball){
+  color:#fff!important;
+  opacity:1!important;
+  text-shadow:0 1px 2px #001b20!important;
+}
