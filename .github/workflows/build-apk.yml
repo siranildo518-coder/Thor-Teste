@@ -1,0 +1,274 @@
+name: Gerar APK THOR TESTE
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - 'index.html'
+      - 'app-main.html'
+      - 'THOR-LOTERIAS.html'
+      - '*.js'
+      - '*.css'
+      - 'manifest.json'
+      - 'thor_icon.jpg'
+      - '.github/workflows/build-apk.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Configurar Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Criar projeto Android
+        shell: bash
+        run: |
+          mkdir -p android-apk/app/src/main/java/com/thorloterias/teste
+          mkdir -p android-apk/app/src/main/res/layout
+          mkdir -p android-apk/app/src/main/res/values
+          mkdir -p android-apk/app/src/main/res/values-v31
+          mkdir -p android-apk/app/src/main/res/drawable
+          cp thor_icon.jpg android-apk/app/src/main/res/drawable/thor_icon.jpg
+          cat > android-apk/app/src/main/res/drawable/splash_transparent.xml <<'EOF'
+          <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+              <solid android:color="@android:color/transparent"/>
+          </shape>
+          EOF
+
+          cat > android-apk/app/src/main/res/drawable/splash_transparent.xml <<'EOF'
+          <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+              <solid android:color="@android:color/transparent"/>
+              <size android:width="1dp" android:height="1dp"/>
+          </shape>
+          EOF
+
+          cat > android-apk/settings.gradle <<'EOF'
+          pluginManagement { repositories { google(); mavenCentral(); gradlePluginPortal() } }
+          dependencyResolutionManagement { repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS); repositories { google(); mavenCentral() } }
+          rootProject.name = 'ThorLoterias'
+          include ':app'
+          EOF
+
+          cat > android-apk/build.gradle <<'EOF'
+          plugins {
+              id 'com.android.application' version '8.7.3' apply false
+          }
+          EOF
+
+          cat > android-apk/app/build.gradle <<'EOF'
+          plugins { id 'com.android.application' }
+          android {
+              namespace 'com.thorloterias.teste'
+              compileSdk 35
+              defaultConfig {
+                  applicationId 'com.thorloterias.teste'
+                  minSdk 23
+                  targetSdk 35
+                  versionCode 155
+                  versionName 'THOR TESTE V155'
+              }
+          }
+          EOF
+
+          cat > android-apk/app/src/main/AndroidManifest.xml <<'EOF'
+          <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+              <uses-permission android:name="android.permission.INTERNET"/>
+              <application android:theme="@style/AppTheme" android:label="THOR TESTE" android:icon="@drawable/thor_icon" android:roundIcon="@drawable/thor_icon" android:usesCleartextTraffic="true">
+                  <activity android:name=".MainActivity" android:screenOrientation="portrait" android:exported="true">
+                      <intent-filter>
+                          <action android:name="android.intent.action.MAIN"/>
+                          <category android:name="android.intent.category.LAUNCHER"/>
+                      </intent-filter>
+                  </activity>
+              </application>
+          </manifest>
+          EOF
+
+          cat > android-apk/app/src/main/res/values/styles.xml <<'EOF'
+          <resources>
+              <style name="AppTheme" parent="android:style/Theme.Material.Light.NoActionBar">
+                  <item name="android:fontFamily">sans</item>
+                  <item name="android:colorAccent">#07101f</item>
+                  <item name="android:windowLightStatusBar">false</item>
+                  <item name="android:statusBarColor">#07101F</item>
+                  <item name="android:navigationBarColor">#07101F</item>
+                  <item name="android:windowBackground">@android:color/transparent</item>
+                  <item name="android:windowDisablePreview">true</item>
+              </style>
+          </resources>
+          EOF
+
+          cat > android-apk/app/src/main/res/values-v31/styles.xml <<'EOF'
+          <resources>
+              <style name="AppTheme" parent="android:style/Theme.Material.Light.NoActionBar">
+                  <item name="android:fontFamily">sans</item>
+                  <item name="android:colorAccent">#07101f</item>
+                  <item name="android:windowLightStatusBar">false</item>
+                  <item name="android:statusBarColor">#07101F</item>
+                  <item name="android:navigationBarColor">#07101F</item>
+                  <item name="android:windowBackground">@android:color/transparent</item>
+                  <item name="android:windowSplashScreenBackground">@android:color/transparent</item>
+                  <item name="android:windowSplashScreenAnimatedIcon">@drawable/splash_transparent</item>
+                  <item name="android:windowSplashScreenAnimationDuration">0</item>
+              </style>
+          </resources>
+          EOF
+
+          cat > android-apk/app/src/main/res/layout/activity_main.xml <<'EOF'
+          <WebView xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/webview"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"/>
+          EOF
+
+          cat > android-apk/app/src/main/java/com/thorloterias/teste/MainActivity.java <<'EOF'
+          package com.thorloterias.teste;
+
+          import android.app.Activity;
+          import android.os.Bundle;
+          import android.webkit.WebStorage;
+          import android.webkit.WebSettings;
+          import android.webkit.WebView;
+          import android.webkit.WebViewClient;
+          import android.webkit.WebResourceRequest;
+
+          public class MainActivity extends Activity {
+              private WebView webView;
+              @Override public void onCreate(Bundle savedInstanceState) {
+                  super.onCreate(savedInstanceState);
+                  getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(0xFF07101F));
+                  getWindow().setStatusBarColor(0xFF07101F);
+                  getWindow().setNavigationBarColor(0xFF07101F);
+                  setContentView(com.thorloterias.app.R.layout.activity_main);
+                  webView = findViewById(com.thorloterias.app.R.id.webview);
+                  webView.setBackgroundColor(android.graphics.Color.TRANSPARENT);
+                  WebSettings s = webView.getSettings();
+                  s.setJavaScriptEnabled(true);
+                  s.setDomStorageEnabled(true);
+                  s.setJavaScriptCanOpenWindowsAutomatically(true);
+                  s.setCacheMode(WebSettings.LOAD_DEFAULT);
+                  android.webkit.CookieManager.getInstance().setAcceptCookie(true);
+                  android.webkit.CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true);
+                  s.setDatabaseEnabled(true);
+                  s.setAllowFileAccess(true);
+                  s.setLoadWithOverviewMode(true);
+                  s.setUseWideViewPort(true);
+                  webView.setWebViewClient(new WebViewClient() {
+                      @Override public android.webkit.WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+                          // Mantem localStorage/cookies, mas força os arquivos web a serem revalidados.
+                          return super.shouldInterceptRequest(view, request);
+                      }
+                      @Override public void onPageFinished(WebView view, String url) {
+                          super.onPageFinished(view, url);
+                          android.webkit.CookieManager.getInstance().flush();
+                      }
+                  });
+                  // APK cliente: preserva localStorage/cookies (inclusive a trava), mas limpa SOMENTE cache web.
+                  // Isso evita precisar usar "Limpar dados" quando o gerenciador publica um novo cliente.
+                  webView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
+                  webView.loadUrl("https://siranildo518-coder.github.io/Thor-Teste/index.html?apk=teste-v155");
+              }
+              @Override protected void onPause() {
+                  android.webkit.CookieManager.getInstance().flush();
+                  super.onPause();
+              }
+              @Override protected void onStop() {
+                  android.webkit.CookieManager.getInstance().flush();
+                  super.onStop();
+              }
+              @Override public void onBackPressed() {
+                  if (webView != null && webView.canGoBack()) {
+                      webView.goBack();
+                  } else {
+                      final android.app.Dialog dialog = new android.app.Dialog(this);
+                      android.widget.LinearLayout caixa = new android.widget.LinearLayout(this);
+                      caixa.setOrientation(android.widget.LinearLayout.VERTICAL);
+                      caixa.setGravity(android.view.Gravity.CENTER);
+                      int p = (int)(24 * getResources().getDisplayMetrics().density);
+                      caixa.setPadding(p, p, p, p);
+
+                      android.graphics.drawable.GradientDrawable fundo = new android.graphics.drawable.GradientDrawable(
+                          android.graphics.drawable.GradientDrawable.Orientation.TL_BR,
+                          new int[]{0xFF172554, 0xFF5B21B6, 0xFF7C3AED});
+                      fundo.setCornerRadius(28 * getResources().getDisplayMetrics().density);
+                      fundo.setStroke((int)(1 * getResources().getDisplayMetrics().density), 0xFFBDA7FF);
+                      caixa.setBackground(fundo);
+
+                      android.widget.TextView titulo = new android.widget.TextView(this);
+                      titulo.setText("THOR TESTE");
+                      titulo.setTextColor(0xFFFFFFFF);
+                      titulo.setTextSize(21);
+                      titulo.setTypeface(null, android.graphics.Typeface.BOLD);
+                      titulo.setGravity(android.view.Gravity.CENTER);
+                      caixa.addView(titulo);
+
+                      android.widget.TextView mensagem = new android.widget.TextView(this);
+                      mensagem.setText("Você deseja realmente sair?");
+                      mensagem.setTextColor(0xFFF2ECFF);
+                      mensagem.setTextSize(16);
+                      mensagem.setGravity(android.view.Gravity.CENTER);
+                      mensagem.setPadding(0, p, 0, p);
+                      caixa.addView(mensagem);
+
+                      android.widget.Button ok = new android.widget.Button(this);
+                      ok.setText("OK");
+                      ok.setTextColor(0xFFFFFFFF);
+                      ok.setTextSize(15);
+                      ok.setTypeface(null, android.graphics.Typeface.BOLD);
+                      android.graphics.drawable.GradientDrawable botao = new android.graphics.drawable.GradientDrawable(
+                          android.graphics.drawable.GradientDrawable.Orientation.TOP_BOTTOM,
+                          new int[]{0xFF22C55E, 0xFF15803D});
+                      botao.setCornerRadius(14 * getResources().getDisplayMetrics().density);
+                      ok.setBackground(botao);
+                      android.widget.LinearLayout.LayoutParams bp = new android.widget.LinearLayout.LayoutParams(
+                          (int)(150 * getResources().getDisplayMetrics().density),
+                          (int)(48 * getResources().getDisplayMetrics().density));
+                      ok.setLayoutParams(bp);
+                      ok.setOnClickListener(v -> { dialog.dismiss(); finish(); });
+                      caixa.addView(ok);
+
+                      dialog.setContentView(caixa);
+                      android.view.Window w = dialog.getWindow();
+                      if (w != null) {
+                          w.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+                          w.setDimAmount(0.65f);
+                          w.addFlags(android.view.WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+                          w.setLayout((int)(320 * getResources().getDisplayMetrics().density), android.view.WindowManager.LayoutParams.WRAP_CONTENT);
+                      }
+                      dialog.show();
+                      if (dialog.getWindow() != null) {
+                          dialog.getWindow().setLayout((int)(320 * getResources().getDisplayMetrics().density), android.view.WindowManager.LayoutParams.WRAP_CONTENT);
+                      }
+                  }
+              }
+          }
+          EOF
+
+      - name: Gerar APK
+        working-directory: android-apk
+        run: gradle :app:assembleDebug --stacktrace
+
+      - name: Preparar APK
+        run: cp android-apk/app/build/outputs/apk/debug/app-debug.apk THOR-TESTE-V155.apk
+
+      - name: Disponibilizar APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: THOR-TESTE-V155-APK
+          path: THOR-TESTE-V155.apk
+          retention-days: 30
