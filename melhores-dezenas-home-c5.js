@@ -14,7 +14,7 @@
     tela=document.createElement('section');
     tela.id='thorMelhoresDezenasTela';
     tela.setAttribute('aria-label','Melhores dezenas');
-    tela.innerHTML='<button id="thorMelhoresDezenasVoltar" type="button" aria-label="Voltar">‹</button><img id="thorMelhoresDezenasTopo" src="https://siranildo518-coder.github.io/Thor-Teste/melhores-dezenas-topo-c6.png?v=thor7-c8" alt="Melhores dezenas"><main id="thorMelhoresDezenasConteudo"></main>';
+    tela.innerHTML='<button id="thorMelhoresDezenasVoltar" type="button" aria-label="Voltar">‹</button><img id="thorMelhoresDezenasTopo" src="https://siranildo518-coder.github.io/Thor-Teste/melhores-dezenas-topo-c9.jpg?v=thor7-c9" alt="Melhores dezenas"><main id="thorMelhoresDezenasConteudo"></main>';
     document.body.appendChild(tela);
     tela.querySelector('#thorMelhoresDezenasVoltar').onclick=function(e){e.preventDefault();e.stopPropagation();fecharTela()};
     return tela;
