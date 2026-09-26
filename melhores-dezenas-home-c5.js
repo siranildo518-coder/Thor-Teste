@@ -14,9 +14,8 @@
     tela=document.createElement('section');
     tela.id='thorMelhoresDezenasTela';
     tela.setAttribute('aria-label','Melhores dezenas');
-    tela.innerHTML='<header id="thorMelhoresDezenasCabecalho"><button id="thorMelhoresDezenasVoltar" type="button" aria-label="Voltar">‹</button></header><main id="thorMelhoresDezenasConteudo"></main>';
+    tela.innerHTML='<header id="thorMelhoresDezenasCabecalho"></header><main id="thorMelhoresDezenasConteudo"></main>';
     document.body.appendChild(tela);
-    tela.querySelector('#thorMelhoresDezenasVoltar').onclick=function(e){e.preventDefault();e.stopPropagation();fecharTela()};
     return tela;
   }
 
