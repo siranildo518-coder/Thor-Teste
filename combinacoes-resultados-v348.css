@@ -1,0 +1,173 @@
+@import url('./analise-frequencia-v347.css');
+
+/* V3.48 — segunda tela de Combinações / Jogos Desdobrados */
+#resultsSection{
+  min-height:100vh!important;
+  color:#fff!important;
+  background:
+    radial-gradient(circle at 50% 35%,rgba(94,20,204,.28),transparent 34%),
+    linear-gradient(180deg,#040b2a 0%,#03143c 52%,#08052b 100%)!important;
+}
+
+#resultsSection>header.top{
+  min-height:72px!important;
+  padding:10px 15px!important;
+  gap:12px!important;
+  background:linear-gradient(180deg,#6811e6 0%,#4506b7 62%,#230269 100%)!important;
+  border:0!important;
+  border-bottom:2px solid #8a49ff!important;
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.28),inset 0 -5px 8px rgba(15,0,70,.5),0 5px 15px rgba(70,0,180,.6)!important;
+}
+
+#resultsSection #backToSelection{
+  width:47px!important;height:47px!important;flex:0 0 47px!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  border:2px solid #9e45ff!important;border-radius:50%!important;
+  background:radial-gradient(circle at 35% 25%,#bc37ff,#6511dc 55%,#31007d)!important;
+  box-shadow:inset 0 2px 3px rgba(255,255,255,.35),0 0 14px #9b27ff!important;
+  color:#fff!important;font-size:0!important;
+}
+#resultsSection #backToSelection::before{content:'‹';font-size:43px;font-weight:900;line-height:.7;transform:translateY(-2px);}
+
+#resultsSection>header.top h1{
+  font-size:21px!important;font-weight:900!important;white-space:nowrap;
+  text-shadow:0 2px 2px #19004b,0 0 8px #e8b4ff!important;
+}
+#resultsSection>header.top h1::after{content:' 🎲';font-size:20px;}
+
+#resultsSection #floatingSave,
+#resultsSection #floatingExcel,
+#resultsSection #floatingShare,
+#resultsSection #floatingSalvarNome{
+  width:35px!important;height:35px!important;flex:0 0 35px!important;
+  border:2px solid rgba(255,255,255,.38)!important;
+  font-size:15px!important;
+  box-shadow:inset 0 2px 2px rgba(255,255,255,.35),inset 0 -3px 4px rgba(0,0,0,.3),0 3px 7px rgba(0,0,0,.5),0 0 9px currentColor!important;
+}
+#resultsSection #floatingSave{background:linear-gradient(180deg,#138dff,#0751d5)!important;}
+#resultsSection #floatingExcel{background:linear-gradient(180deg,#28e85b,#079425)!important;}
+#resultsSection #floatingShare{background:linear-gradient(180deg,#ff445d,#c9062b)!important;}
+#resultsSection #floatingSalvarNome{background:linear-gradient(180deg,#30313a,#050507)!important;}
+
+#resultsSection>div{
+  padding:25px 14px 80px!important;
+}
+
+#resultsSection .conf-card{
+  position:relative;
+  padding:13px 11px!important;
+  margin-bottom:15px!important;
+  color:#fff!important;
+  background:linear-gradient(145deg,rgba(4,36,90,.98),rgba(0,18,57,.99))!important;
+  border:2px solid #168fff!important;
+  border-radius:15px!important;
+  box-shadow:inset 0 0 22px rgba(27,110,255,.18),0 0 10px rgba(10,113,255,.45),0 8px 16px rgba(0,0,0,.35)!important;
+}
+
+#resultsSection .conf-title{
+  margin:-13px -11px 13px!important;
+  min-height:43px;padding:7px 14px!important;box-sizing:border-box;
+  display:flex;align-items:center;
+  color:#fff!important;font-size:18px!important;font-weight:900!important;
+  background:linear-gradient(90deg,#d520ff 0%,#6d13f0 45%,#1536c7 100%)!important;
+  border-radius:13px 13px 0 0!important;
+  text-shadow:0 2px 2px rgba(0,0,0,.7)!important;
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.25),inset 0 -3px 5px rgba(0,0,0,.25)!important;
+}
+#resultsSection #dezenasEscolhidasCard .conf-title::before{content:'🎯';margin-right:8px;}
+#resultsSection .conf-card:nth-of-type(2)>.conf-title::before{content:'⚙';margin-right:8px;font-size:23px;}
+
+#resultsSection #dezenasEscolhidasCard::after{
+  content:attr(data-count) ' dezenas';
+  position:absolute;right:14px;top:8px;
+  padding:5px 10px;border-radius:9px;
+  background:#151367;color:#fff;font-size:11px;font-weight:800;
+  box-shadow:inset 0 1px 2px rgba(255,255,255,.18),0 2px 4px rgba(0,0,0,.4);
+}
+
+#resultsSection #dezenasEscolhidasLista{gap:8px!important;padding:2px 3px 4px!important;}
+#resultsSection .escolhida-ball{
+  width:38px!important;height:38px!important;font-size:15px!important;
+  color:#171000!important;
+  background:radial-gradient(circle at 34% 22%,#fffbd6 0 5%,#ffd84d 21%,#ffad00 58%,#c56d00 100%)!important;
+  border:2px solid #ffd34e!important;
+  box-shadow:inset 0 4px 5px rgba(255,255,255,.72),inset 0 -5px 6px rgba(100,45,0,.35),0 0 9px #ffa600,0 3px 5px rgba(0,0,0,.55)!important;
+}
+
+#resultsSection #btnLimparEscolhidasResultado{
+  float:right;margin:8px 0 1px;padding:8px 17px;
+  border:1px solid #c0a8ff;border-radius:12px;
+  color:#fff;font-size:12px;font-weight:900;
+  background:linear-gradient(180deg,#5f5b82,#262342)!important;
+  box-shadow:inset 0 2px 2px rgba(255,255,255,.22),0 4px 0 #16142b,0 6px 9px rgba(0,0,0,.4);
+}
+
+#resultsSection #confSubtabRow{gap:0!important;margin:0 -1px 15px!important;}
+#resultsSection #confSubtabRow .subtab-btn{
+  min-height:45px!important;margin:0!important;border-radius:0!important;
+  border:1px solid #316ac9!important;
+  color:#fff!important;font-size:13px!important;font-weight:900!important;
+  background:linear-gradient(180deg,#34518d,#101d46)!important;
+}
+#resultsSection #confSubtabRow .subtab-btn:first-child{border-radius:12px 0 0 12px!important;}
+#resultsSection #confSubtabRow .subtab-btn:last-child{border-radius:0 12px 12px 0!important;}
+#resultsSection #confSubtabRow .subtab-btn.active{
+  background:linear-gradient(180deg,#c72dff,#7210ec 62%,#3b08a0)!important;
+  border-color:#ea8cff!important;
+  box-shadow:inset 0 2px 2px rgba(255,255,255,.27),0 0 13px #a620ff!important;
+}
+
+#resultsSection #sorteio2Anim>div:first-child label,
+#resultsSection #sorteio2Setup label{color:#fff!important;font-weight:800!important;font-size:15px!important;}
+#resultsSection #qtdSorteio2,
+#resultsSection #sorteio2QtdBadge{
+  color:#fff!important;font-size:21px!important;
+  border:2px solid #a327ff!important;
+  background:linear-gradient(180deg,#25165e,#120736)!important;
+  box-shadow:0 0 10px rgba(171,34,255,.65)!important;
+}
+#resultsSection #sorteio2Progresso{color:#fff!important;font-size:16px!important;text-shadow:0 2px 2px #000!important;}
+
+#resultsSection #sorteio2Anim>div:nth-child(3){
+  min-height:220px!important;padding:15px!important;
+  border:2px solid #7e2fff!important;border-radius:15px!important;
+  background:radial-gradient(circle at 50% 70%,rgba(133,41,255,.6),transparent 34%),linear-gradient(145deg,#150643,#241070 56%,#0a0b35)!important;
+  box-shadow:inset 0 0 35px rgba(153,55,255,.35),0 0 10px rgba(129,36,255,.5)!important;
+}
+#resultsSection #sorteio2Bola{
+  width:132px!important;height:132px!important;
+  background:radial-gradient(circle at 34% 25%,rgba(255,255,255,.92) 0 4%,rgba(210,200,255,.8) 10%,rgba(127,91,223,.55) 42%,rgba(58,28,135,.56) 68%,rgba(20,7,61,.82) 100%)!important;
+  border:2px solid #d8caff!important;
+  box-shadow:inset 9px 10px 16px rgba(255,255,255,.42),inset -12px -14px 19px rgba(15,0,60,.55),0 0 22px #b05cff,0 17px 22px rgba(0,0,0,.5)!important;
+}
+#resultsSection #sorteio2BolaMiolo{width:70px!important;height:70px!important;}
+#resultsSection #sorteio2BolaNum{font-size:27px!important;color:#13063c!important;}
+
+#resultsSection #btnSorteioBola2,
+#resultsSection #btnSorteioRestantes2{
+  min-height:46px!important;border-radius:13px!important;color:#fff!important;font-size:13px!important;
+}
+#resultsSection #btnSorteioBola2{background:linear-gradient(180deg,#ffd64b,#e98d00)!important;color:#2e1a00!important;}
+#resultsSection #btnSorteioRestantes2{background:linear-gradient(180deg,#2bea65,#08a937)!important;}
+
+#resultsSection #confListaSorteadas{
+  color:#fff!important;border:1px solid #297eff!important;
+  background:linear-gradient(180deg,#0d3476,#081e50)!important;
+  box-shadow:inset 0 0 10px rgba(34,131,255,.25)!important;
+}
+#resultsSection #confListaSorteadas span{color:#fff!important;}
+#resultsSection .conf-count{color:#aeb9dc!important;font-size:13px!important;}
+#resultsSection .conf-count strong{color:#ffd525!important;font-size:17px!important;}
+#resultsSection .conf-actions button{min-height:48px!important;color:#fff!important;font-size:14px!important;font-weight:900!important;border-radius:13px!important;}
+#resultsSection #btnLimparConf{background:linear-gradient(180deg,#ff3658,#c7002e)!important;border:2px solid #ff8da4!important;}
+#resultsSection #btnConferir{background:linear-gradient(180deg,#198cff,#073bd5)!important;border:2px solid #75c5ff!important;opacity:1!important;}
+#resultsSection #btnConferir:disabled{filter:saturate(.55);opacity:.62!important;}
+
+#resultsSection #gamesCountLabel2{font-size:13px!important;}
+#resultsSection>div>div:has(#gamesCountLabel2){display:block!important;border-color:#693dff!important;background:linear-gradient(90deg,#6913dc,#17216a)!important;}
+
+@media(max-width:390px){
+  #resultsSection>header.top{gap:7px!important;padding-left:9px!important;padding-right:9px!important;}
+  #resultsSection>header.top h1{font-size:18px!important;}
+  #resultsSection #floatingSave,#resultsSection #floatingExcel,#resultsSection #floatingShare,#resultsSection #floatingSalvarNome{width:31px!important;height:31px!important;flex-basis:31px!important;}
+}

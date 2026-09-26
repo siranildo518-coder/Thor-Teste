@@ -1,0 +1,1 @@
+THOR LOTERIAS base 142 - resultados: busca somente da loteria selecionada, sem consultas simultaneas.

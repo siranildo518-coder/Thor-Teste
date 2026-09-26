@@ -1,0 +1,25 @@
+#overlayProb{padding:0!important;background:#001328!important;align-items:flex-start!important;overflow-y:auto!important;color:#fff!important}
+#overlayProb .modal{width:100%!important;max-width:760px!important;min-height:100vh!important;margin:0 auto!important;padding:0 14px 26px!important;border:0!important;border-radius:0!important;background:radial-gradient(circle at 50% 10%,#075aa3 0,#003a70 25%,#001c3b 62%,#001326 100%)!important;box-sizing:border-box!important;box-shadow:none!important;overflow:visible!important}
+#overlayProb .prob-topo{width:calc(100% + 28px);margin-left:-14px;aspect-ratio:1024/245;background:url('./calculadora-topo-v331.jpg') center/cover no-repeat;border-bottom:3px solid #19c9ff;position:relative}
+#overlayProb .prob-voltar{position:absolute;left:1.6%;top:12%;width:11%;height:76%;border:0;background:transparent;cursor:pointer}
+#overlayProb .prob-lema{text-align:center;padding:10px 3px 7px;color:#bfeaff;font-weight:700;letter-spacing:.2em;font-size:clamp(10px,2.7vw,16px)}
+#overlayProb .prob-box{border:2px solid #16bfff;border-radius:18px;background:linear-gradient(180deg,rgba(6,69,130,.96),rgba(0,30,63,.96));box-shadow:inset 0 0 16px #008cff55,0 0 9px #00aaff55;margin:8px 0;padding:12px}
+#overlayProb .prob-loteria{display:grid;grid-template-columns:1fr minmax(120px,32%);gap:12px;align-items:center}
+#overlayProb label{display:block;font-weight:900;font-size:clamp(12px,3.5vw,18px);margin-bottom:7px}
+#overlayProb select{width:100%;height:48px;border:0;border-radius:12px;background:#fff;color:#062044;padding:0 16px;font-size:clamp(17px,4.5vw,25px);font-weight:900}
+#overlayProb .prob-padrao{background:linear-gradient(180deg,#fff7b8,#ffd65c);color:#382800;border:2px solid #ffe992;border-radius:14px;padding:9px;font-weight:700;line-height:1.35}
+#overlayProb .prob-campos{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:10px 0}
+#overlayProb .prob-campo{text-align:center;padding:10px 8px}
+#overlayProb .prob-campo strong{display:block;min-height:34px;font-size:clamp(11px,3vw,16px)}
+#overlayProb .prob-campo small{display:block;min-height:32px;color:#b9e8ff;font-size:clamp(9px,2.5vw,13px)}
+#overlayProb .prob-step{display:grid;grid-template-columns:45px 1fr 45px;gap:8px;align-items:center;margin-top:7px}
+#overlayProb .prob-step button{height:46px;border-radius:10px;border:2px solid #fff;font-size:29px;font-weight:900;color:#fff;box-shadow:inset 0 2px 5px #ffffff55,0 4px 0 #00152d}
+#overlayProb .prob-minus{background:linear-gradient(#ff4a56,#c60019)}#overlayProb .prob-plus{background:linear-gradient(#24ed69,#00972e)}
+#overlayProb .prob-step input{width:100%;height:46px;border:0;border-radius:10px;text-align:center;font-size:25px;font-weight:900;color:#041b3b;box-sizing:border-box}
+#overlayProb .prob-calcular{display:block;width:86%;margin:12px auto;padding:13px;border:2px solid #58ff92;border-radius:22px;background:linear-gradient(#28ef67,#00872b);color:#fff;font-size:clamp(18px,5vw,28px);font-weight:1000;box-shadow:inset 0 3px 7px #ffffff77,0 5px 0 #003d19,0 0 18px #24ff70aa}
+#overlayProb .prob-resultado{padding:0;overflow:hidden}.prob-titulo{padding:10px 14px;font-size:20px;font-weight:1000;background:linear-gradient(90deg,#075fa9,#003263)}
+#overlayProb .prob-principal{text-align:center;padding:15px 8px;background:#002148}.prob-principal p{margin:0 0 8px;font-weight:800}.prob-chance{color:#ffd600;font-size:clamp(28px,7vw,48px);font-weight:1000;text-shadow:0 2px 5px #000}.prob-percent{color:#d7f6ff;font-size:18px;font-weight:900}
+#overlayProb .prob-comparacao{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;padding:10px}.prob-mini{padding:9px 4px;text-align:center;border:2px solid #00caff;border-radius:12px;background:#04366b;font-weight:800;font-size:clamp(9px,2.5vw,13px)}.prob-mini:nth-child(1){border-color:#32ff70;background:#075b2c}.prob-mini:nth-child(3){border-color:#f451ff;background:#651074}.prob-mini:nth-child(4){border-color:#ffb400;background:#733300}
+#overlayProb .prob-outras{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;padding:10px}.prob-outra{text-align:center;background:#eaf7ff;color:#041b3b;border-radius:10px;overflow:hidden;font-weight:900;font-size:clamp(9px,2.4vw,13px)}.prob-outra b{display:block;background:#075aa3;color:white;padding:7px 2px}.prob-outra span{display:block;padding:8px 2px}
+#overlayProb .prob-rodape{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:12px;color:#bfeaff;font-size:12px}.prob-limpar{border:2px solid #ffd85b;border-radius:14px;background:linear-gradient(#ffad21,#d45600);color:#fff;padding:10px 15px;font-weight:900}
+@media(max-width:520px){#overlayProb .prob-loteria{grid-template-columns:1fr}.prob-padrao{font-size:11px}#overlayProb .prob-campos{gap:5px}#overlayProb .prob-campo{padding:7px 4px}#overlayProb .prob-step{grid-template-columns:36px 1fr 36px;gap:4px}#overlayProb .prob-step button,#overlayProb .prob-step input{height:40px;font-size:21px}#overlayProb .prob-comparacao{grid-template-columns:repeat(2,1fr)}#overlayProb .prob-outras{grid-template-columns:repeat(3,1fr)}}

@@ -1,0 +1,38 @@
+@import url('./calculadora-probabilidade-v331.css');
+
+/* V3.33: botões laterais menores e entrada numérica mais larga */
+#overlayProb .prob-campo{padding:9px 5px!important}
+#overlayProb .prob-step{
+  display:grid!important;
+  grid-template-columns:28px minmax(50px,1fr) 28px!important;
+  gap:4px!important;
+  width:100%!important;
+  margin-top:6px!important;
+}
+#overlayProb .prob-step button{
+  width:28px!important;
+  min-width:28px!important;
+  height:38px!important;
+  padding:0!important;
+  border-radius:8px!important;
+  font-size:21px!important;
+  line-height:34px!important;
+}
+#overlayProb .prob-step input{
+  display:block!important;
+  min-width:0!important;
+  width:100%!important;
+  height:38px!important;
+  padding:0 3px!important;
+  box-sizing:border-box!important;
+  border-radius:8px!important;
+  font-size:20px!important;
+  line-height:38px!important;
+  text-align:center!important;
+}
+@media(max-width:390px){
+  #overlayProb .prob-campos{gap:4px!important}
+  #overlayProb .prob-campo{padding-left:3px!important;padding-right:3px!important}
+  #overlayProb .prob-step{grid-template-columns:24px minmax(45px,1fr) 24px!important;gap:2px!important}
+  #overlayProb .prob-step button{width:24px!important;min-width:24px!important;font-size:18px!important}
+}

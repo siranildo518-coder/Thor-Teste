@@ -1,0 +1,15 @@
+@import url('./analise-visual-v342.css');
+
+/* V3.82 — as duas telas de Combinações usam o visual original da V3.42.
+   A foto do topo foi removida das duas telas. */
+#appHeader{
+  background-image:none!important;
+  background:linear-gradient(180deg,#38a957,#2d984a)!important;
+  border-bottom:1px solid #35d978!important;
+  box-shadow:none!important;
+}
+#resultsSection{
+  overflow-x:hidden!important;
+  -webkit-overflow-scrolling:touch!important;
+  touch-action:pan-y!important;
+}

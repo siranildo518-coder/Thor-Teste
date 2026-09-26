@@ -1,0 +1,10 @@
+@import url('./calculadora-probabilidade-v333.css');
+
+/* V3.34: cabeçalho da calculadora permanece visível durante a rolagem */
+#overlayProb .prob-topo{
+  position:sticky!important;
+  top:0!important;
+  z-index:30!important;
+  flex:0 0 auto!important;
+  box-shadow:0 5px 12px rgba(0,0,0,.5)!important;
+}

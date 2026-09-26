@@ -1,0 +1,54 @@
+@import url('./combinacoes-globo-v349.css');
+
+/* V3.50 — reduz somente a altura dos botões em Jogos Desdobrados */
+#resultsSection #backToSelection{
+  height:39px!important;
+  min-height:39px!important;
+  flex-basis:39px!important;
+}
+
+#resultsSection #floatingSave,
+#resultsSection #floatingExcel,
+#resultsSection #floatingShare,
+#resultsSection #floatingSalvarNome{
+  height:29px!important;
+  min-height:29px!important;
+}
+
+#resultsSection #btnLimparEscolhidasResultado{
+  min-height:30px!important;
+  padding-top:5px!important;
+  padding-bottom:5px!important;
+}
+
+#resultsSection #confSubtabRow .subtab-btn{
+  min-height:35px!important;
+  height:35px!important;
+  padding-top:4px!important;
+  padding-bottom:4px!important;
+}
+
+#resultsSection #btnSorteioIniciar2,
+#resultsSection #btnSorteioBola2,
+#resultsSection #btnSorteioRestantes2{
+  min-height:36px!important;
+  height:36px!important;
+  padding-top:4px!important;
+  padding-bottom:4px!important;
+}
+
+#resultsSection .conf-actions button{
+  min-height:38px!important;
+  height:38px!important;
+  padding-top:5px!important;
+  padding-bottom:5px!important;
+}
+
+#resultsSection #btnOficialUltimo,
+#resultsSection #btnOficialConcurso,
+#resultsSection #btnOficialAnterior,
+#resultsSection #btnOficialProximo{
+  min-height:30px!important;
+  padding-top:4px!important;
+  padding-bottom:4px!important;
+}

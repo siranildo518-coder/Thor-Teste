@@ -1,0 +1,338 @@
+{
+  "versao": 1,
+  "liberacoes": [
+    {
+      "hash": "153bb2b82fd10c03b3f8bff2b272fbf2740d130fec25ea57b932b472c4bb85cd",
+      "criadoEm": "2026-09-21T14:54:24Z",
+      "expiraEm": "2026-09-22T14:54:24Z",
+      "ativo": true
+    },
+    {
+      "hash": "8b2f4d91771fe33d37899805349e804423e1c8d200ae63b411c7a260ee3aa95d",
+      "criadoEm": "2026-09-21T14:59:58.366Z",
+      "expiraEm": "2026-09-22T14:59:58.372Z",
+      "ativo": true
+    },
+    {
+      "hash": "92401074b9a96b9b93062d46b94dfcea39dab5eb7c840a2ff24890ae5c8d21fe",
+      "criadoEm": "2026-09-21T15:03:35.845Z",
+      "expiraEm": "2026-09-22T15:03:35.845Z",
+      "ativo": true
+    },
+    {
+      "hash": "a5a23d053baea85bb2f634ca22563b89121af6ef439d18f8240c9127b1303e39",
+      "criadoEm": "2026-09-21T15:04:24.565Z",
+      "expiraEm": "2026-09-22T15:04:24.565Z",
+      "ativo": true
+    },
+    {
+      "hash": "8cead83a5ea0495c6950df001d1ae150656c6ec96494d3b9dfaa7cb0c76e193f",
+      "criadoEm": "2026-09-21T15:04:26.820Z",
+      "expiraEm": "2026-09-22T15:04:26.820Z",
+      "ativo": true
+    },
+    {
+      "hash": "754ded79cbdb862424659744ffb8547be3f3fbbcf3be3ed1f46efca945a3fd2e",
+      "criadoEm": "2026-09-21T15:10:00Z",
+      "expiraEm": "2026-09-22T15:10:00Z",
+      "ativo": true,
+      "compatHash": "199iyna"
+    },
+    {
+      "hash": "8949e4bda26a9ccf21b6aabb1b9e4c593a02af93c5a10f2878d12b2de0144d0e",
+      "criadoEm": "2026-09-21T19:26:12.368Z",
+      "expiraEm": "2026-09-22T19:26:12.375Z",
+      "ativo": true,
+      "compatHash": "1p9aigf"
+    },
+    {
+      "hash": "7e45641c8f3018fcc202c497fc7b1bda66e6c57c3857d878240f721f553f570f",
+      "criadoEm": "2026-09-21T19:59:41.030Z",
+      "expiraEm": "2026-09-22T19:59:41.030Z",
+      "ativo": true,
+      "compatHash": "lr9urj"
+    },
+    {
+      "hash": "9badfa22f6cdefe1cd90ea3611a16233482d837bd1a7692a20c0cae161e61209",
+      "criadoEm": "2026-09-21T20:11:41.301Z",
+      "expiraEm": "2026-09-22T20:11:41.301Z",
+      "ativo": true
+    },
+    {
+      "hash": "9be620d8e9e903c23a213c873d528fda7d64c797dd18084135c23160ab30aaba",
+      "criadoEm": "2026-09-21T20:44:06.966Z",
+      "expiraEm": "2026-09-22T20:44:06.966Z",
+      "ativo": true
+    },
+    {
+      "hash": "48b6c38a0511e69b38f687f8bfdb631a3071b5706fa76d6b581146b30433e3bb",
+      "criadoEm": "2026-09-21T20:58:03.005Z",
+      "expiraEm": "2026-09-22T20:58:03.006Z",
+      "ativo": true,
+      "compatHash": "1pn5m5u"
+    },
+    {
+      "hash": "371cd22102e08a687865cc06a4dfaa50aa0daa1cca8d93d6f0ff17b0fb3ed3f1",
+      "criadoEm": "2026-09-21T22:07:59.648Z",
+      "expiraEm": "2026-09-22T22:07:59.651Z",
+      "ativo": true,
+      "compatHash": "1krq4il"
+    },
+    {
+      "hash": "585f91ee834ad493b29721d1ab5d772de091c712f47963d74322a3b25c25bb5b",
+      "compatHash": "1hll874",
+      "criadoEm": "2026-09-21T22:36:35.646Z",
+      "expiraEm": "2026-09-22T22:36:35.648Z",
+      "ativo": true
+    },
+    {
+      "hash": "c4a10af4acd840293bd761f116f0d7c1becad9e490823132e66d27cbd9cae838",
+      "compatHash": "u408k9",
+      "criadoEm": "2026-09-21T22:46:38.327Z",
+      "expiraEm": "2026-09-22T22:46:38.327Z",
+      "ativo": true
+    },
+    {
+      "hash": "921c81f9c5f35e597bc4c85fa26615cf5bf97c616cc1574c0c34c70ebf237611",
+      "compatHash": "18kwu6w",
+      "criadoEm": "2026-09-21T22:52:11.663Z",
+      "expiraEm": "2026-09-22T22:52:11.664Z",
+      "ativo": true
+    },
+    {
+      "hash": "532d53851d634dc9c672c614ed9aa8a2bc44726621fdc75cc102d4899912be8c",
+      "compatHash": "jt34a7",
+      "criadoEm": "2026-09-21T22:54:25.751Z",
+      "expiraEm": "2026-09-22T22:54:25.756Z",
+      "ativo": true
+    },
+    {
+      "hash": "71fafec0cdf019eb2907912959333e3e44b19469ec423e4bd2fa867d941d535c",
+      "compatHash": "zw6yol",
+      "criadoEm": "2026-09-21T22:59:40.816Z",
+      "expiraEm": "2026-09-22T22:59:40.816Z",
+      "ativo": true
+    },
+    {
+      "hash": "b3078e2d32cae2adad67b15d4cb778b2d401f28e6dbab1b11fcd28f805d629f0",
+      "compatHash": "10t75zj",
+      "criadoEm": "2026-09-21T23:06:00.782Z",
+      "expiraEm": "2026-09-22T23:06:00.782Z",
+      "ativo": true
+    },
+    {
+      "hash": "eead4813224fe8abbd940335db7931c08e42dcaa14da1ca20f7416164ba771b2",
+      "compatHash": "l3xwo0",
+      "criadoEm": "2026-09-21T23:40:52.692Z",
+      "expiraEm": "2026-09-22T23:40:52.694Z",
+      "ativo": true
+    },
+    {
+      "hash": "b5b585cde6729199011477a8353e0fb556ad5cc91b9b2f5d35f38749d260cfb2",
+      "compatHash": "6qqebx",
+      "criadoEm": "2026-09-21T23:50:08.736Z",
+      "expiraEm": "2026-09-22T23:50:08.738Z",
+      "ativo": true
+    },
+    {
+      "hash": "36cdcb68510e5c5803625df57fc9a1806388659153c556758b738add6b78c8d8",
+      "compatHash": "14l4k69",
+      "criadoEm": "2026-09-22T02:05:20.221Z",
+      "expiraEm": "2026-09-23T02:05:20.230Z",
+      "ativo": true
+    },
+    {
+      "hash": "030b268b293d362a60d9847501da91a3b3e82ead9c34dc73485000d8f9a07d62",
+      "compatHash": "1om0neg",
+      "criadoEm": "2026-09-22T02:18:17.053Z",
+      "expiraEm": "2026-09-23T02:18:17.055Z",
+      "ativo": true
+    },
+    {
+      "hash": "69d76dcf56159b240ebdceb355f6bb6541bc16641d803b16d2f61fc01b807c75",
+      "compatHash": "7l2dlu",
+      "criadoEm": "2026-09-22T02:30:41.334Z",
+      "expiraEm": "2026-09-23T02:30:41.335Z",
+      "ativo": true
+    },
+    {
+      "hash": "482ad7c1e1f8e43816f0f525b9b7eb5586d2e696b56d2d3825e24a92d1448ce8",
+      "compatHash": "edqeph",
+      "criadoEm": "2026-09-22T02:54:39.567Z",
+      "expiraEm": "2026-09-23T02:54:39.568Z",
+      "ativo": true
+    },
+    {
+      "hash": "658f9a8b4f0801e19b9ddb64a00a8fc45a12588fde19397854ae29bd6db23f10",
+      "compatHash": "1bptqgz",
+      "criadoEm": "2026-09-22T02:55:01.074Z",
+      "expiraEm": "2026-09-23T02:55:01.074Z",
+      "ativo": true
+    },
+    {
+      "hash": "e656d293afeab98d35d747cbc976c7395c8ff83adbe40c342f1a61fa5a4fc673",
+      "compatHash": "1pbr8a5",
+      "criadoEm": "2026-09-22T14:23:52.905Z",
+      "expiraEm": "2026-09-23T14:23:52.908Z",
+      "ativo": true
+    },
+    {
+      "hash": "6fc0765a72369e121427c6f2c75aaaeadde8baabdc122c6419b342c95a0dddfb",
+      "compatHash": "1j7inda",
+      "criadoEm": "2026-09-22T14:24:44.947Z",
+      "expiraEm": "2026-09-23T14:24:44.947Z",
+      "ativo": true
+    },
+    {
+      "hash": "af08c5398b2023b28cca22f55cd44b502d2f8ec8e7c935d75fe24cd04cf63355",
+      "compatHash": "xeeujg",
+      "criadoEm": "2026-09-22T14:31:57.685Z",
+      "expiraEm": "2026-09-23T14:31:57.687Z",
+      "ativo": true
+    },
+    {
+      "hash": "f49aeb54445664ba19fcd794a6799d5b519112dc6f440091cf603dd7e0507730",
+      "compatHash": "1geg9rj",
+      "criadoEm": "2026-09-22T15:31:03.923Z",
+      "expiraEm": "2026-09-23T15:31:03.926Z",
+      "ativo": true
+    },
+    {
+      "hash": "865bb5c81d0f50a7ced5f59d74f88b10e30006fb8b0214d027fcfef45a7ecfc5",
+      "compatHash": "whr5y",
+      "criadoEm": "2026-09-22T15:40:26.271Z",
+      "expiraEm": "2026-09-23T15:40:26.272Z",
+      "ativo": true
+    },
+    {
+      "hash": "8de40bb88784e578be4567c8a4cc0f156c086b4dbee9f0bb2892830592678b8c",
+      "compatHash": "1i05moh",
+      "criadoEm": "2026-09-22T19:56:10.386Z",
+      "expiraEm": "2026-09-23T19:56:10.387Z",
+      "ativo": false,
+      "bloqueado": true
+    },
+    {
+      "hash": "d6d694e1b80cf8e53fc479c2a762c3b7b4ad625010c170639440e9cdd62c1b19",
+      "compatHash": "19gqlt3",
+      "criadoEm": "2026-09-22T20:06:57.178Z",
+      "expiraEm": "2026-09-23T20:06:57.179Z",
+      "ativo": true
+    },
+    {
+      "hash": "0243d97b83c14c1d3590e45d7d2d334927a3913b40fd528bc524d1e190f40ace",
+      "compatHash": "nawlzo",
+      "criadoEm": "2026-09-22T21:03:41.879Z",
+      "expiraEm": "2026-09-23T21:03:41.882Z",
+      "ativo": true
+    },
+    {
+      "hash": "8eb66ef340f936a32f72f5365424a872bf498f10510fbd5e733dbd54666546ad",
+      "compatHash": "1en3dz7",
+      "criadoEm": "2026-09-24T02:00:05.499Z",
+      "expiraEm": "2026-09-25T02:00:05.502Z",
+      "ativo": true
+    },
+    {
+      "hash": "b33f3b00661cf43ddfb3091cf10c4577e68ba124cb3811dd57c10061f4861a81",
+      "compatHash": "12s2qw1",
+      "criadoEm": "2026-09-24T02:06:18.252Z",
+      "expiraEm": "2026-09-25T02:06:18.253Z",
+      "ativo": true
+    },
+    {
+      "hash": "b2e691a30c8309425dfc1ca7af507ef06f847356c6bfead9349f9f6d4d06da7c",
+      "compatHash": "5rrqaq",
+      "criadoEm": "2026-09-24T02:12:38.387Z",
+      "expiraEm": "2026-10-01T02:12:38.387Z",
+      "ativo": true,
+      "canal": "navegador"
+    },
+    {
+      "hash": "f909e800917d1dfe2a65d29b45e6756b09c43e08b31162b8fc2f0867ee9cb89b",
+      "compatHash": "h6r05r",
+      "criadoEm": "2026-09-24T02:12:38.387Z",
+      "expiraEm": "2026-10-01T02:12:38.387Z",
+      "ativo": true,
+      "canal": "navegador"
+    },
+    {
+      "hash": "c36e80188547b6504eaf8321d8186deefbed0cae71c77de57352bf40419d52d5",
+      "compatHash": "zqzga0",
+      "criadoEm": "2026-09-24T02:12:38.387Z",
+      "expiraEm": "2026-10-01T02:12:38.387Z",
+      "ativo": true,
+      "canal": "navegador"
+    },
+    {
+      "hash": "71579a0d244469bb1d87e98df7a7df995d943cfa0c550c359bbc7c1891ec30db",
+      "compatHash": "1fstb1s",
+      "criadoEm": "2026-09-24T02:33:11.655Z",
+      "expiraEm": "2026-09-25T02:33:11.656Z",
+      "ativo": true
+    },
+    {
+      "hash": "e9731e75df96d117a6b563e10f352ba774a0364c8ef2bb7feef75f092cd9e8c2",
+      "compatHash": "9ovjwy",
+      "criadoEm": "2026-09-24T11:09:09.299Z",
+      "expiraEm": "2026-09-25T11:09:09.303Z",
+      "ativo": true
+    },
+    {
+      "hash": "5132ac1e1b5f9c5b33c28ccf69f09ecd7e574c7496e36bc90eca21d0696aeb78",
+      "compatHash": "dfjnns",
+      "criadoEm": "2026-09-24T11:14:00.198Z",
+      "expiraEm": "2026-09-25T11:14:00.198Z",
+      "ativo": true
+    },
+    {
+      "hash": "0d62ea70bfc59628f0db9345c5e967737ba4402735e991e1349fe4dfe13a4aea",
+      "compatHash": "1rr07og",
+      "criadoEm": "2026-09-24T12:18:30.337Z",
+      "expiraEm": "2026-09-25T12:18:30.338Z",
+      "ativo": true
+    },
+    {
+      "hash": "4c8081f7f85dc898ba42aafd8ab4f9e0d3cd96bf52668e856aa49992785d1ac8",
+      "compatHash": "kbjxcm",
+      "criadoEm": "2026-09-24T12:21:42.811Z",
+      "expiraEm": "2026-09-25T12:21:42.813Z",
+      "ativo": true
+    },
+    {
+      "hash": "34c8d267a91cb4c8aab8c7521efea1518f619416bcad79ba3ad6fbc1b39ee16c",
+      "compatHash": "1c3rqx5",
+      "criadoEm": "2026-09-24T12:22:32.211Z",
+      "expiraEm": "2026-09-25T12:22:32.217Z",
+      "ativo": true
+    },
+    {
+      "hash": "8974718083f34d15d1878a17a397e0de536c74b2905c1990eb9fd1ec2586303d",
+      "compatHash": "1bzf869",
+      "criadoEm": "2026-09-24T12:33:21.393Z",
+      "expiraEm": "2026-09-25T12:33:21.399Z",
+      "ativo": true
+    },
+    {
+      "hash": "6f4842e9303ecc24382ff67e9f3c80c2f3a60fc6343e39477734e2dbc128b03b",
+      "compatHash": "67lwrx",
+      "criadoEm": "2026-09-24T12:35:29.966Z",
+      "expiraEm": "2026-09-25T12:35:29.967Z",
+      "ativo": true
+    },
+    {
+      "hash": "074661e8bcc9cfc0b06de08427562a7f22089ff6124745ac511618546ff5c286",
+      "compatHash": "voss0c",
+      "criadoEm": "2026-09-24T12:36:04.879Z",
+      "expiraEm": "2026-09-25T12:36:04.879Z",
+      "ativo": true
+    },
+    {
+      "hash": "1194a07228f8fb3fb5b313ba822f74f9cc853583d2788b17654f20763bfb37c8",
+      "compatHash": "1yi08nf",
+      "criadoEm": "2026-09-24T13:49:30.302Z",
+      "expiraEm": "2026-09-25T13:49:30.306Z",
+      "ativo": true
+    }
+  ]
+}

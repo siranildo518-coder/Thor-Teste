@@ -1,0 +1,12 @@
+/* V3.37: escolha sem quadro explicativo e cabeçalhos fixos */
+#overlayGeradorLoteria>div>.note{
+  display:none!important;
+}
+#overlayGeradorFiltro>.top,
+#overlayGeradorFiltro.thor-loteria-topo>.top{
+  position:sticky!important;
+  top:0!important;
+  z-index:30!important;
+  flex:0 0 auto!important;
+  box-shadow:0 5px 13px rgba(0,0,0,.55)!important;
+}

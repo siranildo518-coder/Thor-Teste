@@ -1,0 +1,50 @@
+/* THOR 7 V3.21 - ajustes finais do topo e dos botoes do Gerador */
+html,body{width:100%;overflow-x:hidden}
+.head{display:block!important;width:100%!important;height:auto!important;min-height:0!important;max-height:none!important;margin:0!important;padding:0!important;background:#03152d!important;border:0!important;border-bottom:2px solid #1fd0ff!important;box-shadow:none!important;overflow:hidden!important}
+.head:before,.head:after,.head strong{display:none!important}
+.thor-gerador-topo{display:block!important;width:100%!important;max-width:none!important;height:auto!important;margin:0!important;padding:0!important;border:0!important;object-fit:cover!important;object-position:center!important}
+.filter{margin-top:0!important;padding-top:0!important}
+.menu{gap:3px!important;padding:4px!important}
+.menu .opt{height:29px!important;min-height:29px!important;max-height:29px!important;padding:0 2px!important;gap:3px!important;border-radius:8px!important;font-size:8px!important;line-height:1!important}
+.menu .opt .flower{font-size:10px!important}
+@media(max-width:520px){.menu .opt{font-size:7px!important;padding:0 1px!important}.menu .opt .flower{display:none!important}}
+
+/* Todos os botoes com a mesma altura dos botoes das loterias */
+.thor-mode,.go,.thor-action,.save,.copy-game{height:29px!important;min-height:29px!important;max-height:29px!important;border-radius:8px!important;font-size:9px!important;line-height:1!important;padding:0 7px!important;margin-top:7px!important;margin-bottom:7px!important}
+.go{width:72%!important;margin-left:14%!important;margin-right:14%!important;border-width:2px!important}
+.thor-mode{margin:0!important}
+.thor-actions{align-items:center!important}
+.thor-action,.save{margin:0!important}
+.copy-game{margin:0!important}
+@media(max-width:520px){.thor-mode,.go,.thor-action,.save,.copy-game{font-size:8px!important}.go{width:86%!important;margin-left:7%!important;margin-right:7%!important}}
+
+/* Blocos 1, 2 e 3 mais compactos, inclusive os numeros */
+.controls{gap:5px!important}
+.controls>label{padding:7px 8px 2px 38px!important;font-size:10px!important;line-height:1.1!important;border-radius:9px 9px 0 0!important}
+.controls>label:before{width:24px!important;height:24px!important;margin-left:-31px!important;margin-top:-3px!important;font-size:14px!important;border-width:1px!important}
+.controls>.field{height:34px!important;min-height:34px!important;margin-top:-5px!important;padding:0 9px!important;border-radius:0 0 9px 9px!important;font-size:16px!important}
+.controls>#thorQtdJogos{padding:6px!important;border-radius:9px!important}
+.controls>#thorQtdJogos .label{font-size:10px!important;margin:0 0 4px!important;line-height:1.1!important}
+.controls>#thorQtdJogos .label:before{width:24px!important;height:24px!important;margin-right:7px!important;font-size:14px!important;border-width:1px!important}
+.controls>#thorQtdJogos .field{height:34px!important;min-height:34px!important;padding:0 9px!important;border-radius:8px!important;font-size:16px!important}
+.thor-mode-wrap{gap:4px!important;padding:6px!important;border-radius:9px!important}
+.thor-mode-title{font-size:10px!important;line-height:1.1!important}
+.thor-mode-title b{width:24px!important;height:24px!important;margin-right:7px!important;font-size:14px!important;border-width:1px!important}
+
+/* Gerar Novos removido; Limpar fica logo abaixo do botao principal */
+.thor-actions{display:flex!important;justify-content:center!important;align-items:center!important;gap:7px!important;margin:0 0 7px!important}
+.thor-actions .save,.thor-actions .thor-clear{width:34%!important;flex:0 1 34%!important}
+
+/* Circulos 1, 2 e 3 menores e perfeitamente centralizados */
+.controls>label{display:flex!important;align-items:center!important;min-height:27px!important;padding:4px 8px!important}
+.controls>label:before{position:static!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;flex:0 0 18px!important;width:18px!important;height:18px!important;margin:0 7px 0 0!important;font-size:10px!important;line-height:18px!important;text-align:center!important}
+.controls>#thorQtdJogos .label,.thor-mode-title{display:flex!important;align-items:center!important;min-height:24px!important}
+.controls>#thorQtdJogos .label:before,.thor-mode-title b{display:inline-flex!important;align-items:center!important;justify-content:center!important;flex:0 0 18px!important;width:18px!important;height:18px!important;margin:0 7px 0 0!important;font-size:10px!important;line-height:18px!important;text-align:center!important}
+
+/* Etapa 1: dezenas; etapa 2: base de analise */
+#thorQtdDezenas{padding:6px!important;border:1px solid #178ed7!important;border-radius:9px!important;background:rgba(1,17,39,.9)!important}
+#thorQtdDezenas .label{display:flex!important;align-items:center!important;gap:5px!important;margin:0 0 4px!important;font-size:10px!important;line-height:1.1!important}
+#thorQtdDezenas .label:before{content:'1';display:inline-flex!important;align-items:center!important;justify-content:center!important;flex:0 0 18px!important;width:18px!important;height:18px!important;border-radius:50%!important;background:linear-gradient(#b92cff,#4a079c)!important;border:1px solid #cf8cff!important;font-size:10px!important}
+#thorQtdDezenas .label small{font-size:8px!important;font-weight:400!important;color:#dce8f7!important}
+#thorQtdDezenas .field{height:34px!important;min-height:34px!important;padding:0 9px!important;border-radius:8px!important;background:#fff!important;color:#09213d!important;border:2px solid #168ed7!important;font-size:16px!important}
+.controls>label:before{content:'2'!important;background:linear-gradient(#21c7ff,#0563d4)!important;border-color:#67e5ff!important}

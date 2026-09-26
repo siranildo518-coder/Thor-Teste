@@ -1,0 +1,15 @@
+/* Topo da Mega-Sena igual ao modelo enviado */
+#overlayGeradorFiltro.thor-loteria-topo>.top{display:block!important;width:100%!important;height:auto!important;min-height:0!important;aspect-ratio:1536/235!important;padding:0!important;background:var(--thor-topo-img) center/cover no-repeat!important;border-bottom:2px solid #52ff83!important;position:relative!important}
+#overlayGeradorFiltro.thor-loteria-topo>.top:after{display:none!important}
+#overlayGeradorFiltro.thor-loteria-topo #geradorFiltroTitulo{display:none!important}
+#overlayGeradorFiltro.thor-loteria-topo #geradorFiltroVoltar{position:absolute!important;left:1.8%!important;top:12%!important;width:9%!important;height:76%!important;min-width:0!important;border:0!important;background:transparent!important;box-shadow:none!important;opacity:.01!important;z-index:3!important}
+#overlayGeradorFiltro.thor-loteria-topo #geradorFiltroVoltar:after{display:none!important}
+
+/* Bolinhas do resultado em verde brilhante */
+#geradorFiltroUltimoResultado .result-balls{display:flex!important;flex-wrap:wrap!important;justify-content:center!important;gap:6px!important;margin:5px 0!important}
+#geradorFiltroUltimoResultado .result-ball-sm{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:34px!important;height:34px!important;min-width:34px!important;margin:0!important;border-radius:50%!important;border:2px solid #61ff87!important;background:radial-gradient(circle at 30% 22%,#8dffab 0,#17d94f 28%,#03842e 65%,#003d17 100%)!important;color:#fff!important;font-size:13px!important;font-weight:1000!important;text-shadow:0 1px 2px #00250e!important;box-shadow:inset 0 2px 3px rgba(255,255,255,.65),inset 0 -4px 5px rgba(0,42,15,.7),0 0 8px #09ed55!important}
+
+/* Repetidas em roxo como na foto */
+#geradorFiltroAnalise .gfc-ball-rep{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:34px!important;height:34px!important;min-width:34px!important;margin:2px!important;border-radius:50%!important;border:2px solid #e785ff!important;background:radial-gradient(circle at 30% 22%,#ec8cff 0,#c22ee4 32%,#71118d 68%,#39034d 100%)!important;color:#fff!important;font-size:13px!important;font-weight:1000!important;text-shadow:0 1px 2px #260032!important;box-shadow:inset 0 2px 3px rgba(255,255,255,.6),inset 0 -4px 5px rgba(47,0,62,.7),0 0 8px #c828ec!important}
+#geradorFiltroUltimoResultado .res-concurso-num{color:#ffd744!important;font-size:18px!important;font-weight:1000!important}
+@media(max-width:430px){#geradorFiltroUltimoResultado .result-ball-sm,#geradorFiltroAnalise .gfc-ball-rep{width:30px!important;height:30px!important;min-width:30px!important;font-size:11px!important}}

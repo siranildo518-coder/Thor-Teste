@@ -1,0 +1,35 @@
+/* THOR LOTERIAS — menu lateral laranja metálico 3D com bordas pretas */
+#homeSideNav{align-items:center!important}
+#homeSideNav .hs-menu,
+#homeSideNav .hs-item{
+  width:88%!important;min-height:38px!important;height:38px!important;padding:0 8px!important;margin-left:auto!important;margin-right:auto!important;margin-bottom:8px!important;box-sizing:border-box!important;display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;
+  background:linear-gradient(180deg,#fff2a8 0%,#ffc12d 12%,#ff9800 35%,#f06a00 62%,#b83b00 86%,#6f1d00 100%)!important;
+  border:2px solid #050505!important;border-radius:7px!important;color:#111!important;font-size:10px!important;font-weight:900!important;text-shadow:0 1px 0 rgba(255,255,255,.45)!important;
+  box-shadow:inset 0 3px 3px rgba(255,255,255,.95),inset 0 -5px 7px rgba(74,15,0,.58),inset 2px 0 3px rgba(255,255,255,.30),inset -2px 0 3px rgba(55,10,0,.35),0 3px 0 #050505,0 5px 8px rgba(0,0,0,.50),0 0 5px rgba(255,143,0,.75)!important;
+  transform:translateY(0) scale(1)!important;transition:transform .10s ease,box-shadow .10s ease,filter .10s ease!important;animation:thorMenuEntrada .32s ease-out both!important
+}
+#homeSideNav .hs-menu{font-size:0!important}#homeSideNav .hs-menu::after{content:'MENU';font-size:10px!important;font-weight:900!important;color:#111!important;width:100%!important;text-align:center!important}
+#homeSideNav .hs-item:active,#homeSideNav .hs-menu:active{transform:translateY(4px) scale(.985)!important;filter:brightness(.88)!important;box-shadow:inset 0 5px 9px rgba(78,20,0,.72),inset 0 -1px 2px rgba(255,255,255,.45),0 1px 0 #050505,0 1px 3px rgba(0,0,0,.45)!important}
+@keyframes thorMenuEntrada{0%{transform:translateY(-5px) scale(.97);filter:brightness(1.28)}60%{transform:translateY(2px) scale(1.01)}100%{transform:translateY(0) scale(1);filter:brightness(1)}}
+
+/* Menu grande aberto: topo roxo metálico e opções laranja metálico */
+#drawer{background:#fff!important}
+#drawer .drawer-head{
+  background:radial-gradient(circle at 72% 18%,rgba(255,80,255,.75),transparent 25%),linear-gradient(145deg,#2a0055 0%,#5b00a8 24%,#8d00e8 48%,#4b008c 74%,#220044 100%)!important;
+  border-bottom:3px solid #090909!important;
+  box-shadow:inset 0 3px 4px rgba(255,255,255,.55),inset 0 -7px 12px rgba(20,0,45,.68),0 3px 0 #050505,0 0 15px rgba(190,0,255,.8)!important;
+}
+#drawer .drawer-head:before{content:'';position:absolute;left:3%;right:3%;top:4px;height:2px;border-radius:50%;background:linear-gradient(90deg,transparent,#ffd7ff,#fff, #ffd7ff,transparent);opacity:.9;pointer-events:none}
+#drawer .drawer-item,#drawer .menu-item,#drawer button:not(.drawer-close){
+  background:linear-gradient(180deg,#fff2a8 0%,#ffc12d 10%,#ff9800 32%,#f06a00 60%,#b83b00 84%,#6f1d00 100%)!important;
+  border:3px solid #050505!important;border-radius:10px!important;color:#111!important;font-weight:900!important;
+  text-shadow:0 1px 0 rgba(255,255,255,.5)!important;
+  box-shadow:inset 0 3px 3px rgba(255,255,255,.95),inset 0 -6px 8px rgba(70,14,0,.60),0 3px 0 #050505,0 5px 8px rgba(0,0,0,.42),0 0 5px rgba(255,143,0,.65)!important;
+}
+#drawer .drawer-item:active,#drawer .menu-item:active,#drawer button:not(.drawer-close):active{transform:translateY(3px)!important;box-shadow:inset 0 5px 9px rgba(70,15,0,.72),0 1px 0 #050505!important}
+#drawer #drawerPerfilFotoBox{border:3px solid #fff!important;box-shadow:0 0 0 2px #160020,0 0 12px rgba(255,100,255,.8)!important}
+#drawer #drawerPerfilNome,#drawer #drawerPerfilSub{color:#fff!important;text-shadow:0 2px 3px rgba(0,0,0,.75)!important}
+
+/* THOR 6 — cabeçalho Jogos igual à imagem enviada: THOR LOTERIAS, sem seta. */
+#thorJogosTopo{background-image:url('./topo-thor-loterias.png?v=thor6-topo-1')!important;background-size:cover!important;background-position:center!important;background-repeat:no-repeat!important}
+#thorJogosVoltar,#thorJogosCoroa,#thorJogosTitulo{display:none!important}

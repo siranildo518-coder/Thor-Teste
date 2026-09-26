@@ -1,0 +1,6 @@
+@import url('./calculadora-probabilidade-v334.css');
+
+/* V3.35: cabeçalho sem o título “Calculadora de Probabilidade” */
+#overlayProb .prob-topo{
+  background-image:url('./calculadora-topo-v335.jpg')!important;
+}

@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Gerenciador de usuários — THOR LOTERIAS</title><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
+  <style>
+    :root{--roxo:#5b21b6;--roxo2:#7c2be8;--verde:#119447;--vermelho:#c93636;--cinza:#716b7d}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:linear-gradient(155deg,#3e148c,#7c25eb);font:15px Arial,sans-serif;color:#261943;padding:18px}
+    .card{width:min(460px,100%);margin:18px auto;background:#fff;border-radius:24px;padding:24px 20px;box-shadow:0 14px 35px #24005f80}
+    h1{margin:0;text-align:center;color:var(--roxo);font-size:24px}.sub{text-align:center;color:#837b91;margin:7px 0 22px}
+    label{display:block;font-weight:700;margin:13px 2px 6px;color:#4d4260}
+    input{width:100%;height:50px;border:1px solid #ded8e7;border-radius:13px;padding:0 14px;font-size:17px;outline:none;background:#fbfaff}
+    input:focus{border-color:#7c2be8;box-shadow:0 0 0 3px #7c2be820}
+    .senha{position:relative}.senha input{padding-right:52px}.olho{position:absolute;right:5px;top:5px;width:42px;height:40px;border:0;background:transparent;font-size:20px}
+    .linha{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+    button{height:49px;border:0;border-radius:13px;color:#fff;font-weight:800;font-size:15px;cursor:pointer;box-shadow:inset 0 2px 2px #ffffff70,0 5px 0 #301065,0 8px 14px #35107445}
+    button:active{transform:translateY(3px);box-shadow:inset 0 2px 5px #0005,0 2px 0 #301065}.salvar{background:linear-gradient(#18bf61,#087c37)}.limpar{background:linear-gradient(#ef5350,#b51f28)}
+    .config{margin-top:24px;border-top:1px solid #ece7f2;padding-top:16px}.config summary{cursor:pointer;color:var(--roxo);font-weight:800}
+    .info{margin-top:16px;min-height:46px;padding:12px;border-radius:12px;background:#f5f1fb;color:#635a70;line-height:1.45}.info.ok{background:#e7f8ed;color:#126833}.info.erro{background:#fff0f0;color:#a61d27}
+    .nota{font-size:12px;color:#81798b;margin-top:10px;line-height:1.4}.tag{display:inline-block;background:#eee8f8;color:#5b21b6;border-radius:999px;padding:4px 9px;font-weight:700;margin-top:8px}
+    .clientes{margin-top:22px;border-top:1px solid #ece7f2;padding-top:18px}.clientes-topo{display:flex;align-items:center;justify-content:space-between;gap:10px}.clientes h2{margin:0;color:var(--roxo);font-size:19px}.atualizar{height:38px;padding:0 13px;background:linear-gradient(#7950d7,#4d1c9c);box-shadow:inset 0 2px 2px #ffffff70,0 3px 0 #301065;font-size:12px}.lista{display:grid;gap:9px;margin-top:13px}.cliente{border:1px solid #e5dfec;border-radius:13px;padding:11px;background:#fbfaff}.cliente-linha{display:flex;align-items:center;justify-content:space-between;gap:8px}.cliente strong{font-size:15px}.codigo{font:11px monospace;color:#81798b;margin-top:4px}.protegida{color:#6a6175;font-size:12px}.acoes{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.redefinir,.ver,.remover,.liberar{height:32px;padding:0 8px;border-radius:8px;box-shadow:inset 0 2px 2px #ffffff70,0 3px 0 #301065;font-size:10px}.redefinir{background:linear-gradient(#7c2be8,#5317ac)}.ver{background:linear-gradient(#2686dc,#14549a)}.remover{background:linear-gradient(#ee5353,#aa2028)}.liberar{background:linear-gradient(#f3a51f,#c66a00)}.navegador{background:linear-gradient(#18a86b,#08734a)}.vazio{color:#81798b;text-align:center;padding:14px}
+    @media(max-width:380px){.linha{grid-template-columns:1fr}.card{padding:20px 16px}}
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>THOR LOTERIAS — GERENCIADOR</h1>
+    <p class="sub">Criador de usuário e senha</p>
+
+    <label for="usuario">Novo usuário</label>
+    <input id="usuario" autocomplete="off" placeholder="Digite o nome do usuário">
+
+    <label for="senha">Nova senha</label>
+    <div class="senha">
+      <input id="senha" type="password" autocomplete="new-password" placeholder="Digite a senha">
+      <button class="olho" id="olho" type="button" aria-label="Mostrar senha">👁️</button>
+    </div>
+
+    <div class="linha">
+      <button class="salvar" id="criar" type="button">CRIAR USUÁRIO</button>
+      <button class="limpar" id="limpar" type="button">LIMPAR</button>
+    </div>
+    <button class="salvar" id="liberarCadastroTeste" type="button" style="width:100%;margin-top:12px;">LIBERAR CADASTRO TESTE</button>
+
+    <div id="status" class="info">Preencha o usuário e a senha para cadastrar.</div>
+
+    <section class="clientes">
+      <div class="clientes-topo">
+        <h2>Clientes cadastrados</h2>
+        <button class="atualizar" id="carregarClientes" type="button">ATUALIZAR</button>
+      </div>
+      <p class="nota">Senhas novas criadas neste gerenciador podem ser visualizadas somente neste aparelho. Para senhas antigas indisponíveis, use “Redefinir”.</p>
+      <div id="listaClientes" class="lista"><div class="vazio">Toque em ATUALIZAR para ver os clientes.</div></div>
+    </section>
+
+    <details class="config">
+      <summary>Configuração do GitHub</summary>
+      <label for="token">Token de acesso</label>
+      <div class="senha">
+        <input id="token" type="password" autocomplete="off" placeholder="github_pat_... ou ghp_...">
+        <button class="olho" id="olhoToken" type="button" aria-label="Mostrar token">👁️</button>
+      </div>
+      <label for="repo">Repositório</label>
+      <input id="repo" value="siranildo518-coder/Thor-Teste" autocomplete="off">
+      <p class="nota">O token fica guardado somente neste aparelho. Ele precisa ter permissão para editar o conteúdo do repositório.</p>
+    </details>
+  </main>
+  <script>
+    const $=id=>document.getElementById(id);
+    const TOKEN_KEY='thor_gerenciador_github_token_v2';
+    const REPO_KEY='thor_gerenciador_repo_v2';
+    const SENHAS_KEY='thor_gerenciador_senhas_v1';
+    $('token').value=localStorage.getItem(TOKEN_KEY)||'';
+    $('repo').value=localStorage.getItem(REPO_KEY)||$('repo').value;
+
+    function hashLogin(str){
+      str=str.trim().toLowerCase().normalize('NFC');
+      let h=5381;
+      for(let i=0;i<str.length;i++) h=((h*33)^str.charCodeAt(i))>>>0;
+      return h.toString(36);
+    }
+
+    async function sha256Hex(texto){
+      const entrada=String(texto||'').trim().toUpperCase();
+      if(window.crypto&&window.crypto.subtle){
+        try{
+          const bytes=new TextEncoder().encode(entrada);
+          const digest=await window.crypto.subtle.digest('SHA-256',bytes);
+          return Array.from(new Uint8Array(digest)).map(b=>b.toString(16).padStart(2,'0')).join('');
+        }catch(e){}
+      }
+      function sha256Pure(ascii){
+        function rightRotate(value,amount){return(value>>>amount)|(value<<(32-amount))}
+        var mathPow=Math.pow,maxWord=mathPow(2,32),lengthProperty='length';
+        var i,j,result='',words=[],asciiBitLength=ascii[lengthProperty]*8;
+        var hash=[],k=[],primeCounter=0,isComposite={};
+        for(var candidate=2;primeCounter<64;candidate++){
+          if(!isComposite[candidate]){
+            for(i=0;i<313;i+=candidate)isComposite[i]=candidate;
+            hash[primeCounter]=(mathPow(candidate,.5)*maxWord)|0;
+            k[primeCounter++]=(mathPow(candidate,1/3)*maxWord)|0;
+          }
+        }
+        ascii+='\x80';
+        while(ascii[lengthProperty]%64-56)ascii+='\x00';
+        for(i=0;i<ascii[lengthProperty];i++){
+          j=ascii.charCodeAt(i);
+          if(j>>8)throw new Error('Entrada inválida');
+          words[i>>2]|=j<<((3-i)%4)*8;
+        }
+        words[words[lengthProperty]]=((asciiBitLength/maxWord)|0);
+        words[words[lengthProperty]]=asciiBitLength;
+        for(j=0;j<words[lengthProperty];){
+          var w=words.slice(j,j+=16),oldHash=hash.slice(0),a=hash.slice(0);
+          for(i=0;i<64;i++){
+            var w15=w[i-15],w2=w[i-2];
+            var wv=w[i]=(i<16)?w[i]:(w[i-16]+(rightRotate(w15,7)^rightRotate(w15,18)^(w15>>>3))+w[i-7]+(rightRotate(w2,17)^rightRotate(w2,19)^(w2>>>10)))|0;
+            var e=a[4],A=a[0];
+            var temp1=(a[7]+(rightRotate(e,6)^rightRotate(e,11)^rightRotate(e,25))+((e&a[5])^((~e)&a[6]))+k[i]+wv)|0;
+            var temp2=((rightRotate(A,2)^rightRotate(A,13)^rightRotate(A,22))+((A&a[1])^(A&a[2])^(a[1]&a[2])))|0;
+            a=[(temp1+temp2)|0].concat(a);a[4]=(a[4]+temp1)|0;a.length=8;
+          }
+          for(i=0;i<8;i++)hash[i]=(a[i]+oldHash[i])|0;
+        }
+        for(i=0;i<8;i++)for(j=3;j+1;j--){var b=(hash[i]>>(j*8))&255;result+=((b<16)?'0':'')+b.toString(16)}
+        return result;
+      }
+      return sha256Pure(unescape(encodeURIComponent(entrada)));
+    }
+    function gerarCodigoCadastro(){
+      const alfabeto='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      const bytes=new Uint32Array(8);
+      crypto.getRandomValues(bytes);
+      return Array.from(bytes,n=>alfabeto[n%alfabeto.length]).join('');
+    }
+    function carregarSenhas(){try{return JSON.parse(localStorage.getItem(SENHAS_KEY)||'{}')}catch(e){return {}}}
+    function salvarSenha(hash,usuario,senha){const dados=carregarSenhas();dados[hash]={usuario,senha};localStorage.setItem(SENHAS_KEY,JSON.stringify(dados))}
+    function apagarSenha(hash){const dados=carregarSenhas();delete dados[hash];localStorage.setItem(SENHAS_KEY,JSON.stringify(dados))}
+    function utf8ParaBase64(texto){
+      const bytes=new TextEncoder().encode(texto);let bin='';
+      for(let i=0;i<bytes.length;i+=0x8000) bin+=String.fromCharCode(...bytes.subarray(i,i+0x8000));
+      return btoa(bin);
+    }
+    function base64ParaUtf8(base64){
+      const bin=atob(base64.replace(/\n/g,''));const bytes=new Uint8Array(bin.length);
+      for(let i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
+      return new TextDecoder().decode(bytes);
+    }
+    function mostrar(msg,tipo=''){$('status').className='info '+tipo;$('status').innerHTML=msg}
+    function alternar(input,botao){const ver=input.type==='password';input.type=ver?'text':'password';botao.textContent=ver?'🙈':'👁️'}
+    $('olho').onclick=()=>alternar($('senha'),$('olho'));
+    $('olhoToken').onclick=()=>alternar($('token'),$('olhoToken'));
+    $('limpar').onclick=()=>{$('usuario').value='';$('senha').value='';mostrar('Campos limpos.');$('usuario').focus()};
+
+    function limparTokenSalvo(){
+      try{localStorage.removeItem(TOKEN_KEY)}catch(e){}
+      $('token').value='';
+    }
+
+    async function testarPermissaoGithub(){
+      const token=$('token').value.trim();
+      const repo=$('repo').value.trim();
+      if(!token) throw new Error('Informe um token do GitHub em “Configuração do GitHub”.');
+      if(!repo.includes('/')) throw new Error('Repositório inválido. Use proprietário/nome.');
+      const r=await fetch(`https://api.github.com/repos/${repo}`,{
+        cache:'no-store',
+        headers:{Accept:'application/vnd.github+json',Authorization:`Bearer ${token}`,'X-GitHub-Api-Version':'2022-11-28'}
+      });
+      const d=await r.json().catch(()=>({}));
+      if(r.status===401){
+        limparTokenSalvo();
+        throw new Error('Token do GitHub inválido ou expirado. Gere um novo token e tente novamente.');
+      }
+      if(!r.ok) throw new Error(d.message||`Falha do GitHub (${r.status}).`);
+      const p=d.permissions||{};
+      if(!(p.push===true||p.admin===true||p.maintain===true)){
+        throw new Error('SEM PERMISSÃO DE ESCRITA. No GitHub, dê ao token acesso a este repositório com “Contents: Read and write”.');
+      }
+      localStorage.setItem(TOKEN_KEY,token);
+      localStorage.setItem(REPO_KEY,repo);
+      return true;
+    }
+
+    async function github(path,opcoes={}){
+      const token=$('token').value.trim();
+      if(!token) throw new Error('Abra “Configuração do GitHub” e informe o token de acesso.');
+      const repo=$('repo').value.trim();
+      if(!repo.includes('/')) throw new Error('Repositório inválido. Use proprietário/nome.');
+      localStorage.setItem(TOKEN_KEY,token);localStorage.setItem(REPO_KEY,repo);
+      const resposta=await fetch(`https://api.github.com/repos/${repo}/contents/${path}`,{
+        ...opcoes,
+        cache:'no-store',
+        headers:{Accept:'application/vnd.github+json',Authorization:`Bearer ${token}`,'X-GitHub-Api-Version':'2022-11-28',...(opcoes.headers||{})}
+      });
+      const dados=await resposta.json().catch(()=>({}));
+      if(!resposta.ok){
+        if(resposta.status===401){
+          limparTokenSalvo();
+          const erro=new Error('Token do GitHub inválido ou expirado. Informe um token novo.');
+          erro.status=401;throw erro;
+        }
+        if(resposta.status===403){
+          const erro=new Error('SEM PERMISSÃO. O token precisa ter acesso ao repositório Thor-Teste com “Contents: Read and write”.');
+          erro.status=403;throw erro;
+        }
+        const erro=new Error(dados.message||`Falha do GitHub (${resposta.status}).`);erro.status=resposta.status;throw erro
+      }
+      return dados;
+    }
+
+    async function atualizarArquivo(path,alterar,mensagem){
+      let ultimoErro;
+      for(let tentativa=1;tentativa<=3;tentativa++){
+        try{
+          const atual=await github(path+'?ref=main&_='+Date.now());
+          const texto=base64ParaUtf8(atual.content);
+          const novo=alterar(texto);
+          if(novo===texto) return false;
+          await github(path,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:mensagem,content:utf8ParaBase64(novo),sha:atual.sha,branch:'main'})});
+          return true;
+        }catch(e){
+          ultimoErro=e;
+          const conflito=e.status===409||e.status===422||/does not match|sha/i.test(e.message||'');
+          if(!conflito||tentativa===3) throw e;
+          await new Promise(resolve=>setTimeout(resolve,700*tentativa));
+        }
+      }
+      throw ultimoErro;
+    }
+
+    function extrairClientes(texto){
+      const inicio=texto.indexOf('const CREDENCIAIS_VALIDAS = [');
+      const fim=texto.indexOf('];',inicio);
+      if(inicio<0||fim<0) throw new Error('A lista de clientes não foi encontrada.');
+      const bloco=texto.slice(inicio,fim);
+      const clientes=[];
+      const re=/'([a-z0-9]+)'\s*,\s*\/\/\s*([^\n\r]+)/gi;
+      let m;
+      while((m=re.exec(bloco))){
+        const comentario=m[2].trim();
+        const senhaComentario=(comentario.match(/\(senha\s+([^\)]+)\)/i)||[])[1]||null;
+        const nome=comentario.replace(/\s*\(senha.*$/i,'').trim();
+        const cofre=carregarSenhas()[m[1]];
+        clientes.push({hash:m[1],nome:nome||'Cliente',senha:(cofre&&cofre.senha)||senhaComentario});
+      }
+      return clientes;
+    }
+
+    async function carregarClientes(){
+      const area=$('listaClientes');area.innerHTML='<div class="vazio">Carregando clientes…</div>';
+      try{
+        const atual=await github('app-main.html?ref=main');
+        const clientes=extrairClientes(base64ParaUtf8(atual.content));
+        if(!clientes.length){area.innerHTML='<div class="vazio">Nenhum cliente encontrado.</div>';return}
+        area.innerHTML='';
+        clientes.forEach(cliente=>{
+          const item=document.createElement('div');item.className='cliente';
+          const linha=document.createElement('div');linha.className='cliente-linha';
+          const dados=document.createElement('div');
+          const nome=document.createElement('strong');nome.textContent=cliente.nome;
+          const senha=document.createElement('div');senha.className='protegida';senha.textContent='Senha: ••••••';
+          const codigo=document.createElement('div');codigo.className='codigo';codigo.textContent='Código: '+cliente.hash;
+          const acoes=document.createElement('div');acoes.className='acoes';
+          const ver=document.createElement('button');ver.type='button';ver.className='ver';ver.textContent='VER SENHA';
+          ver.onclick=()=>{if(cliente.senha){senha.textContent='Senha: '+cliente.senha;setTimeout(()=>senha.textContent='Senha: ••••••',10000)}else alert('A senha antiga não pode ser recuperada. Use Redefinir.')};
+          const redefinir=document.createElement('button');redefinir.type='button';redefinir.className='redefinir';redefinir.textContent='REDEFINIR';redefinir.onclick=()=>redefinirSenha(cliente);
+          const remover=document.createElement('button');remover.type='button';remover.className='remover';remover.textContent='REMOVER';remover.onclick=()=>removerCliente(cliente);
+          const liberar=document.createElement('button');liberar.type='button';liberar.className='liberar';liberar.textContent='LIBERAR APARELHO';liberar.onclick=()=>liberarAparelho(cliente);
+          const navegador=document.createElement('button');navegador.type='button';navegador.className='navegador';navegador.textContent='ACESSO NAVEGADOR';navegador.onclick=()=>alternarAcessoNavegador(cliente,navegador);
+          atualizarBotaoNavegador(cliente,navegador);
+          acoes.append(ver,redefinir,liberar,navegador,remover);dados.append(nome,senha,codigo);linha.append(dados,acoes);item.append(linha);area.append(item);
+        });
+      }catch(e){area.innerHTML='<div class="vazio">'+String(e.message||e)+'</div>';mostrar(String(e.message||e),'erro')}
+    }
+
+    async function atualizarBotaoNavegador(cliente,botao){
+      botao.textContent='NAVEGADOR';
+      botao.title='Função desativada neste gerenciador para evitar erro de permissão.';
+    }
+
+    async function alternarAcessoNavegador(cliente,botao){
+      mostrar('Acesso pelo navegador não é alterado por este gerenciador.','erro');
+    }
+
+    async function liberarAparelho(cliente){
+      mostrar('A liberação de aparelho está desativada neste gerenciador para evitar erro de permissão.','erro');
+    }
+
+    async function redefinirSenha(cliente){
+      const nova=prompt('Digite a nova senha de '+cliente.nome+':');
+      if(nova===null) return;
+      if(nova.trim().length<4){mostrar('A nova senha precisa ter pelo menos 4 caracteres.','erro');return}
+      const novoHash=hashLogin(`${cliente.nome}|${nova.trim()}`);
+      mostrar('Redefinindo a senha de '+cliente.nome+'…');
+      try{
+        await testarPermissaoGithub();
+        await atualizarArquivo('app-main.html',texto=>{
+          const re=new RegExp("'"+cliente.hash+"'\\s*,\\s*//[^\\n\\r]*");
+          if(!re.test(texto)) throw new Error('O cliente não foi encontrado para atualização.');
+          return texto.replace(re,`'${novoHash}', // ${cliente.nome}`);
+        },`Redefinir senha de ${cliente.nome}`);
+        apagarSenha(cliente.hash);salvarSenha(novoHash,cliente.nome,nova.trim());
+        mostrar('Senha de <b>'+cliente.nome+'</b> redefinida e publicada.','ok');
+        await carregarClientes();
+      }catch(e){mostrar(e.message||'Não foi possível redefinir a senha.','erro')}
+    }
+
+    async function removerCliente(cliente){
+      if(!confirm('Remover o usuário '+cliente.nome+'? Ele não conseguirá mais entrar no aplicativo.')) return;
+      mostrar('Removendo '+cliente.nome+'…');
+      try{
+        await testarPermissaoGithub();
+        await atualizarArquivo('app-main.html',texto=>{
+          const re=new RegExp("\\s*'"+cliente.hash+"'\\s*,\\s*//[^\\n\\r]*(?:\\r?\\n)?");
+          if(!re.test(texto)) throw new Error('O cliente não foi encontrado para remoção.');
+          return texto.replace(re,'\n');
+        },`Remover usuário ${cliente.nome}`);
+        apagarSenha(cliente.hash);
+        mostrar('Usuário <b>'+cliente.nome+'</b> removido do aplicativo.','ok');
+        await carregarClientes();
+      }catch(e){mostrar(e.message||'Não foi possível remover o usuário.','erro')}
+    }
+
+    $('carregarClientes').onclick=carregarClientes;
+    if($('token').value.trim()) carregarClientes();
+
+    $('liberarCadastroTeste').onclick=async()=>{
+      const btn=$('liberarCadastroTeste');
+      btn.disabled=true;
+      mostrar('Gerando liberação de cadastro…');
+      try{
+        await testarPermissaoGithub();
+        const codigo=gerarCodigoCadastro();
+        const hash=await sha256Hex(codigo);
+        const compatHash=hashLogin(codigo);
+        const criadoEm=new Date().toISOString();
+        const expiraEm=new Date(Date.now()+24*60*60*1000).toISOString();
+        await atualizarArquivo('cadastros-liberados.json',texto=>{
+          let dados;
+          try{dados=JSON.parse(texto)}catch(e){dados={versao:1,liberacoes:[]}}
+          if(!dados||typeof dados!=='object') dados={versao:1,liberacoes:[]};
+          if(!Array.isArray(dados.liberacoes)) dados.liberacoes=[];
+          dados.versao=1;
+          dados.liberacoes.push({hash,compatHash,criadoEm,expiraEm,ativo:true});
+          return JSON.stringify(dados,null,2)+'\n';
+        },'Liberar cadastro teste');
+        mostrar('CADASTRO TESTE LIBERADO.<br>Envie este código ao cliente:<br><span class="tag" style="font-size:20px;letter-spacing:2px;">'+codigo+'</span><br><small>Uso único · válido por 24 horas.</small>','ok');
+      }catch(e){
+        mostrar(e.message||'Não foi possível liberar o cadastro teste.','erro');
+      }finally{
+        btn.disabled=false;
+      }
+    };
+
+    $('criar').onclick=async()=>{
+      const usuario=$('usuario').value.trim();const senha=$('senha').value.trim();
+      if(!usuario||!senha){mostrar('Preencha o usuário e a senha.','erro');return}
+      if(usuario.length<2){mostrar('O usuário precisa ter pelo menos 2 caracteres.','erro');return}
+      if(senha.length<4){mostrar('A senha precisa ter pelo menos 4 caracteres.','erro');return}
+      const btn=$('criar');btn.disabled=true;mostrar('Enviando o cadastro para o aplicativo…');
+      try{
+        await testarPermissaoGithub();
+        const hash=hashLogin(`${usuario}|${senha}`);
+        await atualizarArquivo('app-main.html',texto=>{
+          if(texto.includes(`'${hash}'`)) throw new Error('Esse usuário e senha já estão cadastrados.');
+          const inicio=texto.indexOf('const CREDENCIAIS_VALIDAS = [');
+          const fim=texto.indexOf('];',inicio);
+          if(inicio<0||fim<0) throw new Error('A lista de usuários não foi encontrada no aplicativo.');
+          const linha=`  '${hash}', // ${usuario}\n`;
+          return texto.slice(0,fim)+linha+texto.slice(fim);
+        },`Cadastrar usuário ${usuario}`);
+        salvarSenha(hash,usuario,senha);
+        mostrar(`Usuário <b>${usuario.replace(/[<>&]/g,'')}</b> criado e publicado com sucesso.<br><span class="tag">Código: ${hash}</span>`,'ok');
+        $('usuario').value='';$('senha').value='';
+        await carregarClientes();
+      }catch(e){mostrar(e.message||'Não foi possível criar o usuário.','erro')}
+      finally{btn.disabled=false}
+    };
+  </script>
+</body>
+</html>

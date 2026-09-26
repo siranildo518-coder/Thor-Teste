@@ -1,13 +1,14 @@
 {
   "name": "THOR TESTE",
   "short_name": "THOR TESTE",
-  "description": "THOR TESTE - ambiente separado da versão principal",
-  "start_url": "./index.html?v=2",
+  "description": "Cópia isolada do THOR LOTERIAS para testes",
+  "start_url": "./index.html?v=thor-teste-v155",
   "scope": "./",
   "display": "standalone",
   "background_color": "#07101f",
   "theme_color": "#07101f",
   "orientation": "portrait",
+  "id": "/Thor-Teste/",
   "icons": [
     {
       "src": "icon-192.png?v=2",
@@ -21,6 +22,5 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
-  ],
-  "id": "/Thor-Teste/"
+  ]
 }

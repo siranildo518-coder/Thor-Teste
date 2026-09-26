@@ -1,0 +1,1 @@
+Correção da tela Jogos aplicada sem alterar a base 142.

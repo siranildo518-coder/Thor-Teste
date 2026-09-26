@@ -1,0 +1,199 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0d4d94"><title>Probabilidade de Falha — Loterias CAIXA</title><style>
+*{box-sizing:border-box}html{height:100%;overflow-y:auto;scroll-behavior:auto;-webkit-overflow-scrolling:touch}body{margin:0;min-height:100%;background:#eef2f6;color:#172033;font-family:Arial,Helvetica,sans-serif;padding:10px;overflow-x:hidden;touch-action:pan-y;overscroll-behavior-y:auto}.app{width:min(100%,430px);margin:0 auto}.title{background:linear-gradient(#1768bb,#0e4c90);color:#fff;text-align:center;font-weight:800;padding:10px;border-radius:8px 8px 0 0}.box,.calcBox,.result{background:#fff;border:1px solid #ccd5df;padding:10px;box-shadow:0 2px 7px #0001}.box{margin-bottom:8px}label,.modeLabel{display:block;font-size:10px;color:#657382;font-weight:800;margin-bottom:5px}.trigger{width:100%;height:34px;border:1px solid #b7c7d6;border-radius:8px;background:linear-gradient(#fff,#edf3f8);color:#174d7f;font-weight:900}.mode{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}.mode button{height:28px;border:1px solid #c3d0dc;border-radius:7px;font-size:10px;font-weight:900}.fail.active{color:#fff;background:linear-gradient(#ff6670,#cf2937)}.repeat.active{color:#fff;background:linear-gradient(#42cf83,#159653)}.navigator{display:grid;grid-template-columns:78px 1fr 78px;gap:6px}.navBtn{height:34px;border:1px solid #9fb2c4;border-radius:6px;background:linear-gradient(#ffffff 0%,#e8f0f7 52%,#c8d7e5 100%);color:#24537e;font-size:9px;font-weight:900;box-shadow:0 4px 0 #8fa6ba,0 5px 7px #0002;transform:translateY(0);transition:transform .07s ease,box-shadow .07s ease}.navBtn:active{transform:translateY(4px);box-shadow:0 0 0 #8fa6ba,inset 0 2px 5px #73899d66}.navBtn:disabled{opacity:.5;box-shadow:0 2px 0 #aebdca;transform:none}.current{height:34px;border:1px solid #9eb6cd;border-radius:6px;text-align:center;background:#f8fafc}.current small{display:block;font-size:7px;color:#7d8794}.current b{font-size:18px;color:#0d4d94}.contestInput{display:block;width:100%;height:22px;border:0;outline:0;background:transparent;text-align:center;font-size:18px;font-weight:900;color:#0d4d94;padding:0;margin:0;-moz-appearance:textfield}.contestInput::-webkit-outer-spin-button,.contestInput::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}.target{text-align:center;font-size:9px;color:#788593;margin:7px}.previousTitle{display:flex;justify-content:space-between;font-size:11px;font-weight:800}.balls{display:flex;flex-wrap:wrap;justify-content:center;gap:5px;margin-top:7px}.ball,.rankBall{width:27px;height:27px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#3a93eb,#0b58a4);color:#fff;font-size:9px;font-weight:900}.calcBox{text-align:center}.qty{width:82px;height:30px;text-align:center;font-size:15px;font-weight:900}.action{width:100%;height:27px;margin-top:5px;font-size:9px;border-radius:6px;color:#fff;font-weight:900;border:1px solid #0b7138;background:linear-gradient(#55dc8b 0%,#20ae5d 55%,#118044 100%);box-shadow:0 4px 0 #086536,0 5px 7px #0003;transform:translateY(0);transition:transform .07s ease,box-shadow .07s ease}.action:active,.action.calculando{transform:translateY(4px);box-shadow:0 0 0 #086536,inset 0 2px 5px #064c2b88}.calcSpinner{display:inline-block;width:12px;height:12px;margin-right:6px;vertical-align:-2px;border:2px solid #ffffff66;border-top-color:#fff;border-radius:50%;animation:calcSpin .42s linear infinite}@keyframes calcSpin{to{transform:rotate(360deg)}}.refresh{height:24px;background:#eaf1f8;color:#28527c;border-color:#c5d2df;font-size:10px}.status{font-size:8.5px;color:#738092;margin-top:4px;line-height:1.15}.result{display:none;margin-top:8px}.result.show{display:block}.result h2{font-size:10px;text-align:center;margin:5px 0}.rankItem.falha-confirmada{background:linear-gradient(#dff8e8,#b9edca)!important;border-color:#35a85f!important;box-shadow:0 0 0 2px #35a85f33,0 3px 9px #15965322!important}.rankItem.falha-confirmada .rankBall{background:linear-gradient(#49d57f,#159653)!important;color:#fff!important;border-color:#0f7d43!important}.rankItem.falha-confirmada .pct{color:#117a40!important}.falhou-label{margin-top:2px;font-size:9px;font-weight:900;color:#117a40;letter-spacing:.4px}.rankItem.acerto-confirmado{background:linear-gradient(#dff8e8,#b9edca)!important;border-color:#35a85f!important;box-shadow:0 0 0 2px #35a85f33,0 3px 9px #15965322!important}.rankItem.acerto-confirmado .rankBall{background:linear-gradient(#49d57f,#159653)!important;color:#fff!important;border-color:#0f7d43!important}.rankItem.acerto-confirmado .pct{color:#117a40!important}.acertou-label{margin-top:2px;font-size:9px;font-weight:900;color:#117a40;letter-spacing:.4px}.rankGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:5px}.rankItem{border:1px solid #d6dee7;border-radius:6px;padding:4px;text-align:center;box-shadow:none}.rankHead{display:flex;align-items:center;justify-content:center;gap:6px}.rankBall{background:linear-gradient(145deg,#ff6969,#c92432)}.pct{font-size:13px;font-weight:900;color:#c42130}.modal{position:fixed;inset:0;background:#111d2c99;display:none;align-items:center;justify-content:center;padding:14px;z-index:9}.modal.show{display:flex}.modalBox{width:min(100%,400px);max-height:90vh;overflow:auto;background:#eef7ff;border-radius:18px;padding:8px}.opt{width:100%;height:48px;margin:3px 0;border:1px solid #c8d8e8;border-radius:12px;background:#fff;text-align:left;padding:0 12px;font-weight:900;color:#164a78}.opt.sel{border-color:#d72aa6;background:#fff0fb}.confirm{width:100%;height:38px;margin-top:6px;border:0;border-radius:10px;background:#0757b5;color:#fff;font-weight:900}
+</style></head><body><div class="app"><div class="title">Probabilidade de Falha</div><section class="box"><label>Escolha a loteria</label><button class="trigger" id="trigger">Lotofácil⌄</button><div class="modeLabel" style="margin-top:8px">Tipo de análise</div><div class="mode"><button id="fail" class="fail active">FALHAR</button><button id="repeat" class="repeat">REPETIR</button></div><div class="navigator"><button class="navBtn" id="prev">‹<br>ANTERIOR</button><div class="current"><small>CONCURSO</small><input id="contest" class="contestInput" type="number" inputmode="numeric" min="1" aria-label="Digite o concurso"></div><button class="navBtn" id="next">›<br>PRÓXIMO</button></div><div class="target">Análise para o concurso seguinte: <b id="target">—</b></div><div class="previousTitle"><span>Dezenas do concurso</span><span id="date">—</span></div><div class="balls" id="balls"></div></section><section class="calcBox"><label>Quantas dezenas deseja analisar?</label><input class="qty" id="qty" type="number" min="1" value="6"><button class="action" id="calc">CALCULAR</button><button class="action refresh" id="refresh">ATUALIZAR CONCURSOS</button><div class="status" id="status">Carregando resultado oficial...</div></section><section class="result" id="result"><h2 id="resultTitle"></h2><div class="rankGrid" id="rank"></div></section></div><div class="modal" id="modal"><div class="modalBox"><div id="opts"></div><button class="confirm" id="confirm">CONFIRMAR</button></div></div><script>
+const API='https://servicebus2.caixa.gov.br/portaldeloterias/api/';const LATEST_STORE='thor_falhas_latest_v131';function lerUltimos(){try{return JSON.parse(localStorage.getItem(LATEST_STORE)||'{}')||{}}catch(_){return {}}}function guardarUltimo(k,d){if(!d||!d.c)return;try{const m=lerUltimos(),a=m[k];if(!a||(+d.c)>=+(a.c||0)){m[k]=d;localStorage.setItem(LATEST_STORE,JSON.stringify(m))}}catch(_){}}function ultimoGuardado(k){try{return lerUltimos()[k]||null}catch(_){return null}}const CURRENT_STORE='thor_falhas_current_v1';function lerAtuais(){try{return JSON.parse(localStorage.getItem(CURRENT_STORE)||'{}')||{}}catch(_){return {}}}function guardarAtual(k,n){n=+n;if(!n)return;try{const m=lerAtuais();m[k]=n;localStorage.setItem(CURRENT_STORE,JSON.stringify(m))}catch(_){}}function atualGuardado(k){try{return +(lerAtuais()[k]||0)}catch(_){return 0}}const LOT={lotofacil:['Lotofácil','lotofacil',15,25],megasena:['Mega-Sena','megasena',6,60],quina:['Quina','quina',5,80],lotomania:['Lotomania','lotomania',20,100],timemania:['Timemania','timemania',7,80],duplasena:['Dupla Sena','duplasena',6,50],diadesorte:['Dia de Sorte','diadesorte',7,31],maismilionaria:['+Milionária','maismilionaria',6,50],supersete:['Super Sete','supersete',7,10]};let key='lotofacil',pending=key,mode='fail',latest=0,draw=null,cache={};let palpites={};try{palpites=JSON.parse(localStorage.getItem('thor_falhas_palpites_v1')||'{}')||{}}catch(_){palpites={}}function salvarPalpites(){try{localStorage.setItem('thor_falhas_palpites_v1',JSON.stringify(palpites))}catch(_){}};const $=x=>document.getElementById(x),two=n=>String(n).padStart(2,'0');function wilson(s,n){if(!n)return 0;let z=1.959963984540054,p=s/n,z2=z*z,d=1+z2/n,c=(p+z2/(2*n))/d,h=z*Math.sqrt((p*(1-p)+z2/(4*n))/n)/d;return Math.max(0,c-h)}async function fetchC(n=null){
+  if(n&&cache[key+n])return cache[key+n];
+  // O último concurso já confirmado também pode ser usado imediatamente na navegação.
+  if(n){const salvo=ultimoGuardado(key);if(salvo&&+salvo.c===+n){cache[key+n]=salvo;return salvo}}
+
+  const slug=LOT[key][1];
+  if(n){
+    // O primeiro resultado válido libera Próximo/Anterior sem aguardar fontes lentas.
+    const direto=(async()=>{
+      const ctl=new AbortController(),timer=setTimeout(()=>ctl.abort(),3500);
+      try{
+        const r=await fetch(API+slug+'/'+n,{signal:ctl.signal,cache:'default'});
+        if(!r.ok)throw new Error('HTTP '+r.status);
+        const j=await r.json(),numero=+(j.numero||j.concurso||j.numeroConcurso||0);
+        const dezenas=j.listaDezenas||j.dezenas||j.numeros||[];
+        if(numero!==+n||!Array.isArray(dezenas)||!dezenas.length)throw new Error('Concurso diferente');
+        return {c:numero,date:j.dataApuracao||j.data||'',nums:dezenas.map(Number)};
+      }finally{clearTimeout(timer)}
+    })();
+    const app=(async()=>{
+      if(!window.parent||window.parent===window||typeof window.parent.fetchConcursoLoteria!=='function'||!Array.isArray(window.parent.GAMES))throw new Error('Sem fonte do app');
+      const game=window.parent.GAMES.find(g=>g.slug===slug||g.altSlug===slug);
+      if(!game)throw new Error('Loteria indisponível');
+      const x=await window.parent.fetchConcursoLoteria(game,n);
+      if(+x?.concurso!==+n||!Array.isArray(x.dezenas)||!x.dezenas.length)throw new Error('Concurso diferente');
+      return {c:+x.concurso,date:x.data||'',nums:x.dezenas.map(Number)};
+    })();
+    try{const d=await Promise.any([direto,app]);cache[key+n]=d;return d}catch(_){}
+  }
+  // Para o ÚLTIMO concurso, usa primeiro a fonte única central do THOR.
+  // Isso mantém esta aba sincronizada com a tela principal e as demais abas.
+  if(!n){
+    try{
+      const r=await fetch('resultados-atualizados.json?_thor_falhas='+Date.now(),{cache:'no-store',headers:{Accept:'application/json','Cache-Control':'no-cache'}});
+      if(r.ok){
+        const j=await r.json(), x=j&&j.resultados&&j.resultados[slug];
+        if(x&&x.concurso&&Array.isArray(x.dezenas)&&x.dezenas.length){
+          const d={c:+x.concurso,date:x.data||'',nums:x.dezenas.map(Number)};
+          const salvo=ultimoGuardado(key);
+          const melhor=(salvo&&+salvo.c>+d.c)?salvo:d;
+          guardarUltimo(key,melhor);
+          return melhor;
+        }
+      }
+    }catch(_){}
+  }
+
+  const candidatos=[];
+  let ultimoErro=null;
+
+  // Para concurso específico, basta uma resposta válida do número pedido.
+  // Para o concurso mais recente, consulta todas as fontes disponíveis e
+  // escolhe o MAIOR número de concurso, evitando ficar preso em cache antigo.
+  try{
+    if(window.parent && window.parent!==window && typeof window.parent.fetchConcursoLoteria==='function' && Array.isArray(window.parent.GAMES)){
+      const game=window.parent.GAMES.find(g=>g.slug===slug||g.altSlug===slug);
+      if(game){
+        const x=await window.parent.fetchConcursoLoteria(game,n||undefined);
+        if(x&&x.concurso&&Array.isArray(x.dezenas)&&x.dezenas.length){
+          const d={c:+x.concurso,date:x.data||'',nums:x.dezenas.map(Number)};
+          if(n){cache[key+n]=d;return d}
+          candidatos.push(d);
+        }
+      }
+    }
+  }catch(e){ultimoErro=e}
+
+  const urls=[
+    'https://servicebus2.caixa.gov.br/portaldeloterias/api/'+slug+(n?'/'+n:'')+'?timestamp='+Date.now(),
+    'https://servicebus2.caixa.gov.br/portaldeloterias/api/'+slug+(n?'/'+n:'')+'?v='+Date.now(),
+    'https://loteriascaixa-api.herokuapp.com/api/'+slug+(n?'/'+n:'/latest'),
+    'https://loterias-gutotech.herokuapp.com/api/'+slug+(n?'/'+n:'/latest'),
+    'https://loterias-caixa-gov.herokuapp.com/api/'+slug+(n?'/'+n:'/latest')
+  ];
+
+  const tentativas=await Promise.allSettled(urls.map(async base=>{
+    const ctl=new AbortController(),timer=setTimeout(()=>ctl.abort(),4500);
+    try{
+      const sep=base.includes('?')?'&':'?';
+      const r=await fetch(base+sep+'_thor='+Date.now(),{
+        cache:'no-store',
+        signal:ctl.signal,
+        headers:{Accept:'application/json','Cache-Control':'no-cache'}
+      });
+      if(!r.ok)throw new Error('HTTP '+r.status);
+      const j=await r.json();
+      const numero=+(j.numero||j.concurso||j.numeroConcurso||0);
+      const dezenas=j.listaDezenas||j.dezenas||j.numeros||[];
+      if(!numero||!Array.isArray(dezenas)||!dezenas.length)throw new Error('Resposta inválida');
+      if(n && numero!==+n)throw new Error('Concurso diferente do solicitado');
+      return {c:numero,date:j.dataApuracao||j.data||'',nums:dezenas.map(Number)};
+    }finally{clearTimeout(timer)}
+  }));
+
+  for(const t of tentativas){
+    if(t.status==='fulfilled'){
+      const d=t.value;
+      if(n){cache[key+n]=d;return d}
+      candidatos.push(d);
+    }else{
+      ultimoErro=t.reason||ultimoErro;
+    }
+  }
+
+  if(candidatos.length){
+    candidatos.sort((a,b)=>b.c-a.c);
+    return candidatos[0];
+  }
+  throw ultimoErro||new Error('Nenhuma fonte disponível');
+}function render(){if(!draw)return;guardarAtual(key,draw.c);$('contest').value=draw.c;$('target').textContent=draw.c+1;$('date').textContent=draw.date;$('balls').innerHTML=draw.nums.slice().sort((a,b)=>a-b).map(n=>'<span class="ball">'+two(n)+'</span>').join('');$('qty').max=draw.nums.length;$('next').disabled=draw.c>=latest;
+  const chaveAtual=mode==='repeat'?key+'|repeat|'+draw.c:key+'|'+draw.c;
+  const chaveAnterior=mode==='repeat'?key+'|repeat|'+(draw.c-1):key+'|'+(draw.c-1);
+
+  // Palpite do concurso atual é sempre para o PRÓXIMO concurso.
+  // Não marca acerto/falha antes de o resultado oficial seguinte existir.
+  let atual=palpites[chaveAtual];
+  if(atual&&atual.mode===mode){
+    const qExibir=Math.max(1,Math.min(atual.q||atual.ranking.length,atual.ranking.length,draw.nums.length));
+    $('resultTitle').textContent=qExibir+' dezenas para '+(mode==='repeat'?'REPETIR':'FALHAR')+' • concurso '+(draw.c+1);
+    $('rank').innerHTML=atual.ranking.slice(0,qExibir).map((r,i)=>'<div class="rankItem"><div class="rankHead"><span class="rankBall">'+two(r.v)+'</span><small>'+(i+1)+'º</small></div><div class="pct">'+(r.score*100).toFixed(2).replace('.',',')+'%</div></div>').join('');
+    $('result').classList.add('show');
+    return;
+  }
+
+  // Só confirma quando o concurso seguinte já existe e foi carregado oficialmente.
+  let pal=palpites[chaveAnterior];
+  if(pal&&pal.mode===mode){
+    const qExibir=Math.max(1,Math.min(pal.q||pal.ranking.length,pal.ranking.length,draw.nums.length));
+    let conf=pal.ranking.slice(0,qExibir).map(r=>({...r,confirmada:mode==='repeat'?draw.nums.includes(r.v):!draw.nums.includes(r.v)}));
+    $('resultTitle').textContent=qExibir+' dezenas para '+(mode==='repeat'?'REPETIR':'FALHAR')+' • concurso '+draw.c;
+    $('rank').innerHTML=conf.map((r,i)=>'<div class="rankItem'+(r.confirmada?(mode==='repeat'?' acerto-confirmado':' falha-confirmada'):'')+'"><div class="rankHead"><span class="rankBall">'+two(r.v)+'</span><small>'+(i+1)+'º</small></div><div class="pct">'+(r.score*100).toFixed(2).replace('.',',')+'%</div>'+(r.confirmada?(mode==='repeat'?'<div class="acertou-label">ACERTOU</div>':'<div class="falhou-label">FALHOU</div>'):'')+'</div>').join('');
+    $('result').classList.add('show');
+  }else{
+    $('result').classList.remove('show');
+  }
+}async function load(n=null){$('status').textContent='Carregando resultado oficial...';if(!n&&!draw){const salvo=ultimoGuardado(key);if(salvo&&salvo.c){draw=salvo;latest=Math.max(latest,+salvo.c);render();$('status').textContent='Conferindo concursos mais recentes...'}}try{if(n){const recebido=await fetchC(n);draw=recebido;latest=Math.max(latest||0,+recebido.c)}else{const recebido=await fetchC();const salvo=ultimoGuardado(key);const melhor=(salvo&&+salvo.c>+recebido.c)?salvo:recebido;latest=Math.max(latest||0,+melhor.c,+recebido.c);guardarUltimo(key,melhor);const atual=atualGuardado(key);if(atual&&atual>=1&&atual<=latest&&atual!==+melhor.c){try{draw=await fetchC(atual)}catch(_){draw=melhor}}else{draw=melhor}}render();$('status').textContent=draw&&+draw.c<latest?LOT[key][0]+' • último disponível: '+latest+' • analisando concurso '+draw.c:LOT[key][0]+' • concurso carregado pela CAIXA'}catch(e){$('status').textContent='Não foi possível carregar. Toque em ATUALIZAR CONCURSOS.'}}async function calculate(){if(!draw)return;const calcBtn=$('calc');if(calcBtn.dataset.busy==='1')return;calcBtn.dataset.busy='1';calcBtn.classList.add('calculando');calcBtn.innerHTML='<span class="calcSpinner"></span>CALCULANDO...';$('result').classList.remove('show');const inicioCalc=Date.now();let q=Math.max(1,Math.min(+$('qty').value||6,draw.nums.length));$('status').textContent='Carregando os últimos 10 concursos...';try{let ns=[];for(let n=Math.max(1,draw.c-10);n<=draw.c;n++)ns.push(n);let ds=await Promise.all(ns.map(fetchC));let ranking=draw.nums.map(v=>{let a=0,s=0;for(let i=0;i<ds.length-1;i++){if(ds[i].nums.includes(v)){a++;let rep=ds[i+1].nums.includes(v);if(mode==='repeat'?rep:!rep)s++}}return{v,score:wilson(s,a)}}).sort((a,b)=>b.score-a.score).slice(0,q);if(mode==='fail'){palpites[key+'|'+draw.c]={base:draw.c,q,mode:'fail',ranking:ranking.map(r=>({v:r.v,score:r.score}))};salvarPalpites()}else{palpites[key+'|repeat|'+draw.c]={base:draw.c,q,mode:'repeat',ranking:ranking.map(r=>({v:r.v,score:r.score}))};salvarPalpites()}$('resultTitle').textContent=q+' dezenas para '+(mode==='repeat'?'REPETIR':'FALHAR')+' • concurso '+(draw.c+1);$('rank').innerHTML=ranking.map((r,i)=>'<div class="rankItem"><div class="rankHead"><span class="rankBall">'+two(r.v)+'</span><small>'+(i+1)+'º</small></div><div class="pct">'+(r.score*100).toFixed(2).replace('.',',')+'%</div></div>').join('');const esperaResultado=Math.max(0,3000-(Date.now()-inicioCalc));if(esperaResultado)await new Promise(resolve=>setTimeout(resolve,esperaResultado));$('result').classList.add('show');$('status').textContent=mode==='repeat'?'Repetições calculadas':'Falhas calculadas — avance para o próximo concurso para conferir'}catch(e){$('status').textContent='Não foi possível calcular'}finally{const espera=Math.max(0,3000-(Date.now()-inicioCalc));await new Promise(resolve=>setTimeout(resolve,espera));calcBtn.classList.remove('calculando');calcBtn.dataset.busy='0';calcBtn.textContent='CALCULAR'}}function modal(){let o=$('opts');o.innerHTML='';Object.entries(LOT).forEach(([k,v])=>{let b=document.createElement('button');b.className='opt'+(pending===k?' sel':'');b.textContent=v[0];b.onclick=()=>{pending=k;modal()};o.appendChild(b)});$('modal').classList.add('show')}$('trigger').onclick=()=>{pending=key;modal()};$('confirm').onclick=()=>{key=pending;$('trigger').textContent=LOT[key][0]+'⌄';$('modal').classList.remove('show');cache={};draw=null;latest=0;load()};$('fail').onclick=()=>{mode='fail';$('fail').classList.add('active');$('repeat').classList.remove('active');render()};$('repeat').onclick=()=>{mode='repeat';$('repeat').classList.add('active');$('fail').classList.remove('active');render()};$('prev').onclick=()=>draw&&draw.c>1&&load(draw.c-1);$('next').onclick=()=>draw&&draw.c<latest&&load(draw.c+1);$('contest').addEventListener('change',()=>{let n=parseInt($('contest').value,10);if(!Number.isFinite(n)||n<1){$('contest').value=draw?draw.c:'';return}if(latest&&n>latest)n=latest;load(n)});$('contest').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('contest').blur()}});$('calc').onclick=calculate;$('qty').addEventListener('input',()=>{$('result').classList.remove('show');$('status').textContent='Toque em CALCULAR para analisar a nova quantidade.'});
+let atualizacaoAutomaticaEmCurso=false;
+async function atualizarConcursosCaixa(){
+  if(atualizacaoAutomaticaEmCurso) return;
+  if(navigator.onLine===false) return;
+  atualizacaoAutomaticaEmCurso=true;
+  cache={};
+  // Atualiza somente o limite do concurso mais recente.
+  // Se o usuário estiver analisando um concurso antigo, NÃO pula a tela para o último:
+  // ele continua avançando concurso por concurso pelos botões ANTERIOR/PRÓXIMO.
+  const salvo=ultimoGuardado(key);
+  const concursoVisualAtual=(draw&&draw.c)?+draw.c:0;
+  const concursoAntes=Math.max(latest||0,concursoVisualAtual,+(salvo&&salvo.c||0));
+  try{
+    const novo=await fetchC();
+    if(!novo||!novo.c) return;
+    if(concursoAntes&&novo.c<concursoAntes){
+      return;
+    }
+    const melhor=(salvo&&+salvo.c>+novo.c)?salvo:novo;
+    latest=Math.max(latest||0,+novo.c,+(melhor&&melhor.c||0));
+    guardarUltimo(key,melhor);
+
+    // Ao atualizar, se saiu concurso novo, mostra o novo concurso imediatamente.
+    // Anterior/Próximo continuam disponíveis para navegar concurso por concurso.
+    if(!draw || +melhor.c > +draw.c){
+      draw=melhor;
+      guardarAtual(key,draw.c);
+    }
+    render();
+
+    if(draw&&+draw.c<latest){
+      $('status').textContent=LOT[key][0]+' • último disponível: '+latest+' • analisando concurso '+draw.c;
+    }else{
+      $('status').textContent=LOT[key][0]+' • concurso '+latest+' atualizado pela CAIXA';
+    }
+  }catch(e){
+    if(!draw) await load();
+  }finally{
+    atualizacaoAutomaticaEmCurso=false;
+  }
+}
+$('refresh').onclick=atualizarConcursosCaixa;
+
+// Atualiza o limite do concurso mais recente sem trocar o concurso que está sendo analisado.
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible') atualizarConcursosCaixa();
+});
+window.addEventListener('focus',atualizarConcursosCaixa);
+window.addEventListener('online',atualizarConcursosCaixa);
+
+// Enquanto a tela estiver aberta, confere periodicamente se a CAIXA publicou concurso novo.
+setInterval(()=>{
+  if(document.visibilityState==='visible' && navigator.onLine!==false) atualizarConcursosCaixa();
+},10*1000);
+
+// Força nova consulta também quando o iframe é restaurado do cache do Android/WebView.
+window.addEventListener('pageshow',()=>atualizarConcursosCaixa());
+// Na abertura, ignora o concurso visual antigo salvo e sincroniza imediatamente com a fonte única.
+(async()=>{ try{ await atualizarConcursosCaixa(); }catch(_){ await load(); } })();
+</script></body></html>

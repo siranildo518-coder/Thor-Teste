@@ -1,0 +1,40 @@
+/* THOR LOTERIAS - tela inicial fiel à referência aprovada */
+html.thor-home-open, body.thor-home-open { overflow: hidden !important; background:#000 !important; }
+#thorRefHomeLite{
+  position:fixed; inset:0; z-index:2147483000; overflow:auto; overscroll-behavior:contain;
+  background:#020304; color:#fff; -webkit-overflow-scrolling:touch;
+}
+#thorRefHomeLite *{box-sizing:border-box}
+#thorRefHomeLite .thr-exact-stage{
+  position:relative; width:min(100%,720px); margin:0 auto; background:#020304;
+  min-height:100%; box-shadow:0 0 36px rgba(0,0,0,.85);
+}
+#thorRefHomeLite .thr-exact-image{
+  display:block; width:100%; height:auto; min-height:100%; object-fit:contain;
+  user-select:none; -webkit-user-drag:none; pointer-events:none;
+}
+#thorRefHomeLite .thr-hot{
+  position:absolute; display:block; border:0; margin:0; padding:0; background:transparent;
+  color:transparent; font-size:0; cursor:pointer; -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation; outline:none;
+}
+#thorRefHomeLite .thr-hot:active{background:rgba(255,205,72,.055)}
+#thorRefHomeLite .hot-menu{left:1.4%;top:.6%;width:13.3%;height:6.5%}
+#thorRefHomeLite .hot-a1{left:1.5%;top:41.25%;width:32.1%;height:8.35%}
+#thorRefHomeLite .hot-a2{left:34.45%;top:41.25%;width:31.1%;height:8.35%}
+#thorRefHomeLite .hot-a3{left:66.25%;top:41.25%;width:31.05%;height:8.35%}
+#thorRefHomeLite .hot-b1{left:1.5%;top:50.25%;width:32.1%;height:8.35%}
+#thorRefHomeLite .hot-b2{left:34.45%;top:50.25%;width:31.1%;height:8.35%}
+#thorRefHomeLite .hot-b3{left:66.25%;top:50.25%;width:31.05%;height:8.35%}
+#thorRefHomeLite .hot-c1{left:1.5%;top:59.15%;width:32.1%;height:8.35%}
+#thorRefHomeLite .hot-c2{left:34.45%;top:59.15%;width:31.1%;height:8.35%}
+#thorRefHomeLite .hot-c3{left:66.25%;top:59.15%;width:31.05%;height:8.35%}
+#thorRefHomeLite .hot-result{left:1.45%;top:68.15%;width:96.0%;height:7.25%}
+#thorRefHomeLite .hot-home{left:1.5%;top:84.45%;width:18.9%;height:7.25%}
+#thorRefHomeLite .hot-nav-analysis{left:20.4%;top:84.45%;width:19.4%;height:7.25%}
+#thorRefHomeLite .hot-nav-comb{left:39.8%;top:84.45%;width:20.0%;height:7.25%}
+#thorRefHomeLite .hot-nav-calc{left:59.8%;top:84.45%;width:19.3%;height:7.25%}
+#thorRefHomeLite .hot-nav-games{left:79.1%;top:84.45%;width:18.1%;height:7.25%}
+@media (min-width:721px){
+  #thorRefHomeLite{background:radial-gradient(circle at 50% 25%,#17120a 0,#050607 42%,#000 100%)}
+}
