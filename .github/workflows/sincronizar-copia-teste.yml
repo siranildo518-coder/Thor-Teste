@@ -78,18 +78,6 @@ jobs:
               ('siranildo518-coder/THOR-LOTERIAS', 'siranildo518-coder/Thor-Teste'),
               ('repositório THOR-LOTERIAS', 'repositório Thor-Teste'),
           ])
-          replace('.github/workflows/build-apk.yml', [
-              ('Gerar APK THOR LOTERIAS', 'Gerar APK THOR TESTE'),
-              ('com/thorloterias/app', 'com/thorloterias/teste'),
-              ("com.thorloterias.app", "com.thorloterias.teste"),
-              ("versionCode 147", "versionCode 155"),
-              ("versionName 'THOR 7 V145'", "versionName 'THOR TESTE V155'"),
-              ('android:label="THOR LOTERIAS"', 'android:label="THOR TESTE"'),
-              ('titulo.setText("THOR LOTERIAS")', 'titulo.setText("THOR TESTE")'),
-              ('github.io/THOR-LOTERIAS/index.html?apk=145', 'github.io/Thor-Teste/index.html?apk=teste-v155'),
-              ('THOR-7-V145.apk', 'THOR-TESTE-V155.apk'),
-              ('THOR-7-V145-APK', 'THOR-TESTE-V155-APK'),
-          ])
           PY
 
       - name: Publicar somente no THOR TESTE
