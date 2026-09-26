@@ -1,4 +1,11 @@
 {
-  "versao": 1,
-  "usuarios": []
+  "versao": 2,
+  "usuarios": [
+    {
+      "usuario": "teste",
+      "hash": "oxvhil",
+      "ativo": true,
+      "bloqueado": false
+    }
+  ]
 }
