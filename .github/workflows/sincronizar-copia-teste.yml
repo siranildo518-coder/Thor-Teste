@@ -23,7 +23,7 @@ jobs:
         shell: bash
         run: |
           git clone --depth 1 https://github.com/siranildo518-coder/THOR-LOTERIAS.git /tmp/thor-oficial
-          rsync -a --delete --exclude='.git' --exclude='.github/workflows/sincronizar-copia-teste.yml' /tmp/thor-oficial/ ./
+          rsync -a --delete --exclude='.git' --exclude='.github/workflows/' /tmp/thor-oficial/ ./
           python3 - <<'PY'
           from pathlib import Path
 
