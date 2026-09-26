@@ -1,0 +1,47 @@
+name: Aplicar THOR 7 C2
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/aplicar-thor7-c2.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  aplicar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Instalar Copiar Todos
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          p=Path('gerador.html')
+          s=p.read_text(encoding='utf-8')
+          tag='<script src="./copiar-todos-jogos-c2.js?v=thor7-c2"></script>'
+          if tag not in s:
+              s=s.replace('</body>',tag+'</body>',1)
+          p.write_text(s,encoding='utf-8')
+
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          s=s.replace('thor-teste-v156-login','thor7-c2')
+          p.write_text(s,encoding='utf-8')
+
+          p=Path('sw.js')
+          s=p.read_text(encoding='utf-8')
+          s=s.replace('thor-teste-v156-login','thor7-c2')
+          p.write_text(s,encoding='utf-8')
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add gerador.html index.html sw.js
+          git commit -m "THOR 7 C2 - copiar todos os jogos"
+          git push origin main
