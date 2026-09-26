@@ -7942,6 +7942,9 @@ function renderGeradorResultado(g, jogos, maisAtrasadas, maisSairam, totalConcur
       ${resumoPremiacaoGerador(g.code)}
       <div id="geradorOportunidades" style="margin-top:7px;border:1px solid #EFE7F7;border-radius:10px;overflow:hidden;background:#FCFAFF;${conferindo ? '' : 'display:none;'}"><div style="padding:5px 7px;background:#F6F0FC;font-family:'Baloo 2',sans-serif;font-size:11px;font-weight:800;color:#7E22CE;">🏆 Oportunidades de premiação</div>${oportunidadesHtml}</div>
     </div>
+    <div style="display:flex;gap:8px;margin-bottom:8px;">
+      <button id="geradorCopiarTodosBtn" class="download-btn" style="display:block;width:100%;margin-top:0;padding:8px;font-size:12px;font-weight:800;background:linear-gradient(#35c679,#087c45);color:#fff;border:1.5px solid #16834d;">📋 Copiar jogos</button>
+    </div>
     <div style="display:flex;gap:8px;margin-bottom:12px;">
       <button id="geradorLimparBtn" class="download-btn" style="display:block;flex:1;margin-top:0;padding:7px;font-size:12px;background:#fff;color:#B91C1C;border:1.5px solid #B91C1C;"><span id="geradorLimparSpinner" style="display:none;width:11px;height:11px;border:2px solid rgba(185,28,28,.35);border-top-color:#B91C1C;border-radius:50%;margin-right:6px;vertical-align:middle;animation:girarBtn .6s linear infinite;"></span><span id="geradorLimparLabel">Limpar jogos</span></button>
       <a id="geradorJogarOnlineBtn" class="download-btn" href="https://loterias.caixa.gov.br/Paginas/${g.officialSlug}.aspx" target="_blank" rel="noopener" style="display:block;flex:1;margin-top:0;padding:7px;font-size:12px;text-align:center;text-decoration:none;box-sizing:border-box;">Jogar online</a>
@@ -7953,6 +7956,17 @@ function renderGeradorResultado(g, jogos, maisAtrasadas, maisSairam, totalConcur
   const tabJogosBtn = document.getElementById('geradorFiltroTabJogos');
   // Jogos gerados aparecem no painel; a aba Meus jogos salvos lista apenas os salvos com nome.
   gfcMostrarTab('jogos');
+
+  document.getElementById('geradorCopiarTodosBtn').addEventListener('click', async function(){
+    const texto = jogos.map(jogo=>jogo.map(n=>String(n).padStart(2,'0')).join(' ')).join('\n');
+    try{
+      if(navigator.clipboard && window.isSecureContext) await navigator.clipboard.writeText(texto);
+      else{
+        const ta=document.createElement('textarea');ta.value=texto;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();
+      }
+      const original=this.innerHTML;this.innerHTML='✓ Jogos copiados';setTimeout(()=>{this.innerHTML=original},1400);
+    }catch(e){ alert('Não foi possível copiar os jogos.'); }
+  });
 
   document.getElementById('geradorLimparBtn').addEventListener('click', function(){
     const limparBtn = this;
