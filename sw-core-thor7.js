@@ -1,7 +1,7 @@
 // THOR LOTERIAS - Service Worker
 // THOR 7 V3.75 - calculadora de probabilidade e cache sincronizados
 const CACHE_PREFIX='thor-teste-';
-const CACHE_NAME=CACHE_PREFIX+'thor7-v155-isolado';
+const CACHE_NAME=CACHE_PREFIX+'thor7-c2-fix2';
 const CORE=['./','./index.html','./index-core-thor7.html','./app-main.html','./app-direct.html','./manifest.json','./icon-192.png','./thor-home-topo-v316.jpg'];
 const PALPITES_CARD='<button class="home-feature-card" style="--fc:#d41948" data-home-target="btnTendenciaAtalho"><span class="hfc-icon">◎</span><span><strong>Palpites</strong><small>Sugestões inteligentes</small></span></button>';
 const CALC_CARD='<button class="home-feature-card" style="--fc:#e98a00" data-home-target="btnSimularAtalho"><span class="hfc-icon">▤</span><span><strong>Calculadora</strong><small>Probabilidades e estimativas</small></span></button>';
@@ -64,7 +64,7 @@ self.addEventListener('activate',event=>{
     await Promise.all(keys.filter(k=>k.startsWith(CACHE_PREFIX)&&k!==CACHE_NAME).map(k=>caches.delete(k)));
     await self.clients.claim();
     const clients=await self.clients.matchAll({type:'window',includeUncontrolled:true});
-    clients.forEach(c=>c.postMessage({type:'THOR_UPDATED',version:'THOR 7 V144',refresh:'thor7-v144-direto'}));
+    clients.forEach(c=>c.postMessage({type:'THOR_UPDATED',version:'THOR 7 C2',refresh:'thor7-c2-fix2'}));
   })());
 });
 
@@ -84,6 +84,23 @@ self.addEventListener('fetch',event=>{
   }
 
   const chave=chaveCache(req);
+
+  // O Gerador sempre busca primeiro a versão atual para não esconder novas funções.
+  if(u.pathname.endsWith('/gerador.html')){
+    event.respondWith((async()=>{
+      try{
+        const fresh=await respostaAtualizada(req);
+        if(fresh&&fresh.ok){
+          const cache=await caches.open(CACHE_NAME);
+          await cache.put(chave,fresh.clone());
+        }
+        return fresh;
+      }catch(_){
+        return await offlineFallback(req) || Response.error();
+      }
+    })());
+    return;
+  }
 
   // Abertura e arquivos estáticos: cache imediato, atualização silenciosa em segundo plano.
   event.respondWith((async()=>{
