@@ -82,14 +82,8 @@ var boasFixar=tela.querySelector('#thorMdBoasFixar');var campoFixar=tela.querySe
     criarTela();adicionarBotao();window.addEventListener('popstate',fecharTela);
     var observador=new MutationObserver(adicionarBotao);
     observador.observe(document.documentElement,{childList:true,subtree:true});
-    /* mantém somente o mesmo acesso Melhores Dezenas caso a home seja reconstruída */
-    setInterval(adicionarBotao,800);
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',iniciar,{once:true});else iniciar();
 })();
 
 /* C62 ajuste: somente quadros com numeros */
-
-/* C74: leve aumento somente dos botoes verdes das dezenas */
-.thor-md-fixar-bolas{grid-template-columns:repeat(3,31px)!important;column-gap:14px!important;row-gap:11px!important}
-.thor-md-fixar-bola{width:31px!important;height:29px!important;min-height:29px!important}
