@@ -56,8 +56,8 @@ var boasFixar=tela.querySelector('#thorMdBoasFixar');var campoFixar=tela.querySe
     return tela;
   }
 
-  function abrirTela(){criarTela().classList.add('ativo');try{history.pushState({thorMelhoresDezenas:true},'',location.href)}catch(_){}}
-  function fecharTela(){if(tela)tela.classList.remove('ativo')}
+  function abrirTela(){var t=criarTela();if(!t)return;t.style.display='block';t.style.visibility='visible';t.style.opacity='1';t.style.pointerEvents='auto';t.classList.add('ativo');try{history.pushState({thorMelhoresDezenas:true},'',location.href)}catch(_){}}
+  function fecharTela(){if(tela){tela.classList.remove('ativo');tela.style.display='';tela.style.visibility='';tela.style.opacity='';tela.style.pointerEvents=''}}
 
   function adicionarBotao(){
     var grade=document.getElementById('homeFeatureGrid');
