@@ -42,7 +42,7 @@ function ligar(){
  if(!s||s.dataset.autoConcurso==='1')return false;
  s.dataset.autoConcurso='1';
  s.addEventListener('change',function(){setTimeout(atualizar,0)});
- if(a)a.addEventListener('click',function(e){e.stopImmediatePropagation();e.preventDefault();navegar(-1)},true);
+ if(a)a.addEventListener('click',function(e){e.stopImmediatePropagation();e.preventDefault();try{if(typeof window.THOR_MD_LIMPAR_RESULTADOS==='function')window.THOR_MD_LIMPAR_RESULTADOS()}catch(_){}navegar(-1)},true);
  if(p)p.addEventListener('click',function(e){e.stopImmediatePropagation();e.preventDefault();navegar(1)},true);
  atualizar(); return true;
 }
