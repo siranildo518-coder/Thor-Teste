@@ -86,3 +86,7 @@ var boasFixar=tela.querySelector('#thorMdBoasFixar');var campoFixar=tela.querySe
 })();
 
 /* C62 ajuste: somente quadros com numeros */
+
+/* C73: acima de 20 dezenas, manter 4 por linha inclusive no celular */
+.thor-md-fixar-bolas.quatro-colunas{grid-template-columns:repeat(4,28px)!important;column-gap:10px!important;justify-content:center!important}
+@media(max-width:360px){.thor-md-fixar-bolas.quatro-colunas{grid-template-columns:repeat(4,27px)!important;column-gap:7px!important}}
