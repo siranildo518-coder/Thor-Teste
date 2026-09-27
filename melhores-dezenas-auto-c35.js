@@ -21,7 +21,7 @@ function render(d,l){
  cache[l]=cache[l]||{}; cache[l][n]=d;window.THOR_MELHORES_HISTORICO[l]=window.THOR_MELHORES_HISTORICO[l]||[];var hist=window.THOR_MELHORES_HISTORICO[l],item={numero:n,dezenas:a};var pos=hist.findIndex(function(x){return Number(x.numero)===n});if(pos>=0)hist[pos]=item;else hist.push(item);hist.sort(function(x,y){return Number(y.numero)-Number(x.numero)});
  if(numero())numero().textContent=n;
  var c=bolas(); if(c){c.innerHTML='';var cs=cor(l);a.forEach(function(x){var b=document.createElement('span');b.className='thor-md-bola';b.textContent=x;b.style.background='linear-gradient(180deg,'+cs[0]+','+cs[1]+')';c.appendChild(b)})}
- try{if(typeof window.THOR_MD_CONCURSO_MUDOU==='function')setTimeout(window.THOR_MD_CONCURSO_MUDOU,0);else if(typeof window.THOR_MD_DESTACAR_SORTEADOS==='function')setTimeout(window.THOR_MD_DESTACAR_SORTEADOS,0)}catch(_){}
+ var t=tela(),base=Number(t&&t.dataset.calculoConcurso)||0;if(t&&base&&n>base){var mapa={};a.forEach(function(x){mapa[String(Number(x))]=1});t.querySelectorAll('.thor-md-fixar-bola,.thor-md-excluir-bola').forEach(function(b){var sp=b.querySelector('span'),ok=sp&&mapa[String(Number(sp.textContent))];b.classList.toggle('thor-md-sorteada',!!ok)})}
  return true;
 }
 async function buscar(l,n){
@@ -42,7 +42,7 @@ function ligar(){
  if(!s||s.dataset.autoConcurso==='1')return false;
  s.dataset.autoConcurso='1';
  s.addEventListener('change',function(){setTimeout(atualizar,0)});
- if(a)a.addEventListener('click',function(e){e.stopImmediatePropagation();e.preventDefault();try{if(typeof window.THOR_MD_LIMPAR_RESULTADOS==='function')window.THOR_MD_LIMPAR_RESULTADOS()}catch(_){}navegar(-1)},true);
+ if(a)a.addEventListener('click',function(e){e.stopImmediatePropagation();e.preventDefault();var t=tela();if(t){var gf=t.querySelector('#thorMdFixarBolas'),ge=t.querySelector('#thorMdExcluirBolas'),bf=t.querySelector('#thorMdResultadoFixar'),be=t.querySelector('#thorMdResultadoExcluir');if(gf)gf.innerHTML='';if(ge)ge.innerHTML='';if(bf)bf.style.display='none';if(be)be.style.display='none';delete t.dataset.calculoConcurso}navegar(-1)},true);
  if(p)p.addEventListener('click',function(e){e.stopImmediatePropagation();e.preventDefault();navegar(1)},true);
  atualizar(); return true;
 }
