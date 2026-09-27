@@ -86,6 +86,3 @@ var boasFixar=tela.querySelector('#thorMdBoasFixar');var campoFixar=tela.querySe
 })();
 
 /* C62 ajuste: somente quadros com numeros */
-
-/* C71: resultados de excluir em vermelho */
-.thor-md-resultado-excluir .thor-md-excluir-bola{background:linear-gradient(180deg,#e44b58,#a51020)!important;border-color:#ffd6da!important;box-shadow:inset 0 0 0 1px rgba(255,170,175,.35),0 0 4px rgba(235,45,60,.45)!important}.thor-md-resultado-excluir .thor-md-excluir-num{background:#fff!important;color:#7b0712!important}
