@@ -82,6 +82,8 @@ var boasFixar=tela.querySelector('#thorMdBoasFixar');var campoFixar=tela.querySe
     criarTela();adicionarBotao();window.addEventListener('popstate',fecharTela);
     var observador=new MutationObserver(adicionarBotao);
     observador.observe(document.documentElement,{childList:true,subtree:true});
+    /* mantém somente o mesmo acesso Melhores Dezenas caso a home seja reconstruída */
+    setInterval(adicionarBotao,800);
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',iniciar,{once:true});else iniciar();
 })();
