@@ -93,4 +93,4 @@ var boasFixar=tela.querySelector('#thorMdBoasFixar');var campoFixar=tela.querySe
 /* C62 ajuste: somente quadros com numeros */
 
 /* C74: destaque de dezenas sorteadas no concurso seguinte, somente na aba */
-#thorMelhoresDezenasTela .thor-md-sorteada{outline:2px solid #ffe04b!important;box-shadow:0 0 8px #ffe04b,inset 0 0 0 1px rgba(255,255,255,.65)!important;transform:scale(1.08)}
+(function(){var st=document.createElement('style');st.textContent='#thorMelhoresDezenasTela .thor-md-sorteada{outline:2px solid #ffe04b!important;box-shadow:0 0 8px #ffe04b,inset 0 0 0 1px rgba(255,255,255,.65)!important;transform:scale(1.08)}';document.head.appendChild(st)})();
