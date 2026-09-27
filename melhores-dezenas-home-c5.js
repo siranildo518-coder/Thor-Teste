@@ -72,8 +72,9 @@ var boasFixar=tela.querySelector('#thorMdBoasFixar');var campoFixar=tela.querySe
       botao.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();abrirTela()},true);
     }
     var jogos=document.getElementById('thorJogosSalvosHome');
-    if(jogos&&jogos.parentNode===grade){if(jogos.nextElementSibling!==botao)grade.insertBefore(botao,jogos.nextSibling)}
+    if(jogos&&jogos.parentNode===grade){if(botao.parentNode!==grade||jogos.nextElementSibling!==botao)grade.insertBefore(botao,jogos.nextSibling)}
     else if(botao.parentNode!==grade){grade.appendChild(botao)}
+    botao.style.display='';
     return true;
   }
 
