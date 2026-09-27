@@ -20,6 +20,7 @@ function render(d,l){
  var a=dezenas(d,l); if(!n||!a.length)return false;
  cache[l]=cache[l]||{}; cache[l][n]=d;window.THOR_MELHORES_HISTORICO[l]=window.THOR_MELHORES_HISTORICO[l]||[];var hist=window.THOR_MELHORES_HISTORICO[l],item={numero:n,dezenas:a};var pos=hist.findIndex(function(x){return Number(x.numero)===n});if(pos>=0)hist[pos]=item;else hist.push(item);hist.sort(function(x,y){return Number(y.numero)-Number(x.numero)});
  if(numero())numero().textContent=n;
+ try{if(typeof window.THOR_MD_DESTACAR_SORTEADOS==='function')setTimeout(window.THOR_MD_DESTACAR_SORTEADOS,0)}catch(_){}
  var c=bolas(); if(c){c.innerHTML='';var cs=cor(l);a.forEach(function(x){var b=document.createElement('span');b.className='thor-md-bola';b.textContent=x;b.style.background='linear-gradient(180deg,'+cs[0]+','+cs[1]+')';c.appendChild(b)})}
  return true;
 }
