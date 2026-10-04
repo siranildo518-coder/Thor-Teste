@@ -10076,13 +10076,20 @@ async function carregarFalhas(gameParam){
       repetidos.forEach(item=>{
         const pcts = item.grupo.map(n=>pctPorNumero[n]).filter(p=>p!==null && p!==undefined);
         item.pctMedia = pcts.length>0 ? (pcts.reduce((a,b)=>a+b,0)/pcts.length) : null;
+        // Índice de risco da aba Falhas: combina a falha histórica das dezenas
+        // com a pressão de repetição do grupo na janela escolhida.
+        // É um índice comparativo (0–100), não uma garantia de probabilidade futura.
+        const pressaoRepeticao = validos.length ? (item.count/validos.length)*100 : 0;
+        item.riscoFalha = item.pctMedia===null
+          ? null
+          : Math.max(0,Math.min(100,(item.pctMedia*0.75)+(pressaoRepeticao*0.25)));
       });
     }
 
     // ordenado da maior para a menor chance de falhar
     repetidos.sort((a,b)=>{
-      const pa = a.pctMedia===null || a.pctMedia===undefined ? -1 : a.pctMedia;
-      const pb = b.pctMedia===null || b.pctMedia===undefined ? -1 : b.pctMedia;
+      const pa = a.riscoFalha===null || a.riscoFalha===undefined ? -1 : a.riscoFalha;
+      const pb = b.riscoFalha===null || b.riscoFalha===undefined ? -1 : b.riscoFalha;
       return pb - pa || b.count - a.count;
     });
 
@@ -10123,7 +10130,7 @@ function renderFalhas(repetidos, validos, numeroUltimo, tamanho){
       <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:6px;">
         ${topo.grupo.map(n=>`<span class="falha-ball-3d"><span>${n.toString().padStart(2,'0')}</span></span>`).join('')}
       </div>
-      <div style="font-size:13.5px;color:var(--ink);">Chance média de falha: <strong>${pctExibicao(topo.pctMedia)}%</strong> (baseado nos últimos 10 concursos)</div>
+      <div style="font-size:13.5px;color:var(--ink);">Índice de risco de falha: <strong>${pctExibicao(topo.riscoFalha)}%</strong><br><span style="font-size:11px;color:var(--muted);">Falha histórica média: ${pctExibicao(topo.pctMedia)}% · risco calculado cruzando falha + repetição do grupo</span></div>
     </div>` : '';
 
   const rows = repetidos.map((item,i)=>{
@@ -10146,7 +10153,7 @@ function renderFalhas(repetidos, validos, numeroUltimo, tamanho){
       ? `<div style="display:inline-block;margin-top:4px;margin-left:4px;padding:2px 8px;border-radius:999px;background:linear-gradient(120deg,#38BDF8,#1D4ED8);color:#fff;font-size:10.5px;font-weight:700;">⚠ MAIOR CHANCE DE FALHAR</div>`
       : '';
     const pctTxt = item.pctMedia!==undefined && item.pctMedia!==null
-      ? `<div class="tend-pct" style="margin-bottom:2px;">Chance média de falha: <strong>${pctExibicao(item.pctMedia)}%</strong></div>` : '';
+      ? `<div class="tend-pct" style="margin-bottom:2px;">Risco de falha: <strong>${pctExibicao(item.riscoFalha)}%</strong> <span style="font-size:10.5px;color:var(--muted);">(média histórica ${pctExibicao(item.pctMedia)}%)</span></div>` : '';
     return `
     <div class="tend-row trio-clickable${i===0 && emDestaque ? ' tend-top1':''}" data-trio="${item.grupo.join(',')}" style="${destaqueEstilo}cursor:pointer;flex-wrap:wrap;animation-delay:${Math.min(i,20)*280}ms;">
       <div style="display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin-right:10px;max-width:110px;">${bolas}</div>
@@ -10161,7 +10168,7 @@ function renderFalhas(repetidos, validos, numeroUltimo, tamanho){
 
   cont.innerHTML = `
     <div class="note" style="margin:14px 0;">
-      Com base nos concursos Nº <strong>${listaConcursos}</strong>: estas ${rotulo} se repetiram juntas em mais de um desses sorteios, ordenadas da <strong>maior</strong> para a <strong>menor chance de falhar</strong> no próximo concurso.<br>
+      Com base nos concursos Nº <strong>${listaConcursos}</strong>: estas ${rotulo} se repetiram juntas em mais de um desses sorteios, ordenadas do <strong>maior</strong> para o <strong>menor índice de risco de falha</strong>, cruzando a falha histórica das dezenas com a repetição do grupo.<br>
       <span style="font-size:11.5px;">Cada sorteio é independente — isso é apenas estatística histórica, não é garantia de resultado futuro.</span>
     </div>
     ${cardDestaque}
