@@ -42,7 +42,7 @@ function carregarFirebase(){
   return _promessaFirebase;
 }
 </script>
-<script src="./cadastro-foto-c74.js?v=c78?v=c74-foto"></script>
+<script src="./cadastro-foto-c74.js?v=c79"></script>
 <script>
 // ---------- Login por usuário/senha (100% local, não depende de internet) ----------
 // Como adicionar um cliente novo: peça pro Claude gerar o hash de "usuario|senha"
@@ -522,7 +522,7 @@ function sairDoLogin(){
 if(!loginJaValidado()){
   const startupGuard = document.createElement('style');
   startupGuard.id = 'thorLoginStartupGuard';
-  startupGuard.textContent = 'html,body{background:linear-gradient(160deg,#4C1D95,#6D28D9)!important} body>*:not(#loginOverlay){visibility:hidden!important}';
+  startupGuard.textContent = 'html,body{background:linear-gradient(160deg,#4C1D95,#6D28D9)!important} body>*:not(#loginOverlay):not(#thorCadastroFotoOverlay){visibility:hidden!important}';
   document.head.appendChild(startupGuard);
 }
 
@@ -561,7 +561,7 @@ function montarTelaLogin(){
         <input id="cadastroUsuario" placeholder="Crie seu usuário" autocomplete="off" style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:10px;border:1px solid #E7DFF5;margin-bottom:10px;font-size:14.5px;">
         <input id="cadastroSenha" type="password" placeholder="Crie sua senha" autocomplete="new-password" style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:10px;border:1px solid #E7DFF5;margin-bottom:10px;font-size:14.5px;">
         <input id="cadastroSenha2" type="password" placeholder="Confirme sua senha" autocomplete="new-password" style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:10px;border:1px solid #E7DFF5;margin-bottom:6px;font-size:14.5px;">
-        <small style="display:block;text-align:center;color:#8B80A3;margin:6px 0">Thor-Teste C78 • Foto obrigatória</small>
+        <small style="display:block;text-align:center;color:#8B80A3;margin:6px 0">Thor-Teste C79 • Foto obrigatória</small>
         <div id="cadastroErro" style="color:#B7791F;font-size:12.5px;min-height:18px;margin-bottom:8px;"></div>
         <button id="cadastroCriarBtn" type="button" style="width:100%;padding:13px;border:none;border-radius:10px;background:linear-gradient(135deg,#159447,#087735);color:#fff;font-family:'Baloo 2',sans-serif;font-weight:700;font-size:15px;cursor:pointer;">CONTINUAR PARA A FOTO</button>
         <button id="cadastroEntrarBtn" type="button" hidden style="width:100%;padding:13px;border:0;border-radius:10px;background:#5B21B6;color:white;font-weight:bold">ENTRAR</button>
