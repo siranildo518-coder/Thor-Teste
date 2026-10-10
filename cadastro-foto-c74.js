@@ -1,22 +1,23 @@
-/* Thor-Teste C80: foto obrigatória, câmera frontal e confirmação do servidor. */
+/* Thor-Teste C81: foto obrigatória, câmera frontal e confirmação do servidor. */
 async function thorCapturarEnviarFoto(contaHash, usuario) {
   if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia) throw new Error('Abra o Thor-Teste por HTTPS e permita o acesso à câmera.');
   return new Promise((resolve, reject) => {
     const box = document.createElement('dialog');
     box.id='thorCadastroFotoOverlay';
     box.style.cssText='position:fixed;inset:0;z-index:2147483647;margin:0;border:0;box-sizing:border-box;width:100vw;height:100dvh;max-width:none;max-height:none;background:#241438;overflow:auto;padding:18px;display:grid;place-items:center;color:#222';
-    box.innerHTML='<section style="background:white;border-radius:16px;padding:18px;max-width:350px;width:100%;box-sizing:border-box"><h2 style="margin:0 0 8px">Foto do cadastro</h2><p>Mostre seu rosto inteiro, com boa iluminação.</p><video autoplay playsinline muted style="width:100%;max-height:300px;border-radius:12px;transform:scaleX(-1)"></video><img alt="Foto que será enviada" hidden style="width:100%;max-height:300px;object-fit:contain;border-radius:12px"><p role="status"></p><label style="display:block;margin:12px 0"><input type="checkbox"> Autorizo enviar minha foto ao painel do administrador.</label><div style="display:flex;flex-wrap:wrap;gap:8px"><button data-action="capture" disabled>Tirar foto</button><button data-action="retake" hidden>Tirar novamente</button><button data-action="send" hidden>Enviar foto</button><button data-action="cancel">Cancelar</button></div><small style="display:block;margin-top:12px">Thor-Teste C80</small></section>';
+    box.innerHTML='<section style="background:white;border-radius:16px;padding:18px;max-width:350px;width:100%;box-sizing:border-box"><h2 style="margin:0 0 8px">Foto do cadastro</h2><p>Mostre seu rosto inteiro, com boa iluminação.</p><video autoplay playsinline muted style="width:100%;max-height:300px;border-radius:12px;transform:scaleX(-1)"></video><img alt="Foto que será enviada" hidden style="width:100%;max-height:300px;object-fit:contain;border-radius:12px"><p role="status"></p><div style="display:flex;flex-wrap:wrap;gap:8px"><button data-action="capture" disabled>Tirar foto</button><button data-action="retake" hidden>Tirar novamente</button><button data-action="send" hidden>Enviar foto</button></div><small style="display:block;margin-top:12px">Thor-Teste C81</small></section>';
     box.querySelectorAll('button').forEach(b=>b.style.cssText='padding:12px;border-radius:9px;border:1px solid #ddd;background:#5b21b6;color:white');
     document.body.append(box);
     if(typeof box.showModal==='function')box.showModal();
     else box.setAttribute('open','');
-    const video=box.querySelector('video'), image=box.querySelector('img'), status=box.querySelector('[role=status]'), consent=box.querySelector('input');
-    const capture=box.querySelector('[data-action=capture]'), retake=box.querySelector('[data-action=retake]'), send=box.querySelector('[data-action=send]'), cancel=box.querySelector('[data-action=cancel]');
+    const video=box.querySelector('video'), image=box.querySelector('img'), status=box.querySelector('[role=status]');
+    const capture=box.querySelector('[data-action=capture]'), retake=box.querySelector('[data-action=retake]'), send=box.querySelector('[data-action=send]');
     let stream=null, photo='', closed=false, busy=false;
     const stop=()=>{stream?.getTracks().forEach(t=>t.stop());stream=null;video.srcObject=null};
     const finish=(err,data)=>{closed=true;stop();window.removeEventListener('pagehide',onExit);box.remove();err?reject(err):resolve(data)};
     const onExit=()=>{if(!closed)finish(new Error('Captura interrompida. Tente novamente.'))};
     window.addEventListener('pagehide',onExit);
+    box.addEventListener('cancel',e=>{e.preventDefault();if(!busy)finish(new Error('Cadastro interrompido. A foto não foi enviada.'));});
     async function openCamera(){
       capture.disabled=true;status.textContent='Abrindo câmera…';
       try{const next=await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:{ideal:'user'},width:{ideal:640},height:{ideal:640}}});if(closed){next.getTracks().forEach(t=>t.stop());return}stream=next;video.srcObject=stream;await video.play();capture.disabled=false;status.textContent='Enquadre o rosto e toque em Tirar foto.'}
@@ -32,15 +33,13 @@ async function thorCapturarEnviarFoto(contaHash, usuario) {
       stop();image.src=photo;image.hidden=false;video.hidden=true;capture.hidden=true;retake.hidden=false;send.hidden=false;status.textContent='Confira a foto antes de enviar.';
     };
     retake.onclick=()=>{if(busy)return;photo='';image.removeAttribute('src');image.hidden=true;video.hidden=false;capture.hidden=false;send.hidden=true;retake.hidden=true;openCamera()};
-    cancel.onclick=()=>{if(!busy)finish(new Error('A foto é obrigatória. O cadastro ainda não foi concluído.'))};
     send.onclick=async()=>{
       if(busy||!photo)return;
-      if(!consent.checked){status.textContent='Confirme a autorização para enviar a foto.';return}
-      busy=true;send.disabled=true;retake.disabled=true;cancel.disabled=true;status.textContent='Enviando foto…';
+      busy=true;send.disabled=true;retake.disabled=true;status.textContent='Enviando foto…';
       try{
         const receipt=await thorSalvarFotoTeste(contaHash,usuario,photo);
         finish(null,receipt);
-      }catch(e){status.textContent=e.message;busy=false;send.disabled=false;retake.disabled=false;cancel.disabled=false}
+      }catch(e){status.textContent=e.message;busy=false;send.disabled=false;retake.disabled=false}
     };
     openCamera();
   });
