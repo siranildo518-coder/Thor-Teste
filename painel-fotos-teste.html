@@ -118,7 +118,9 @@ function refreshData(gen,force=false){
  const task=(async()=>{await Promise.all(names.map(async name=>{try{await readCollection(name,gen)}catch(e){if(gen===generation){sourceErrors.set(name,name+': '+e.message);render()}}}));
  if(gen!==generation)return;
  if(names.length>1&&!sourceErrors.has('usuarios_login')&&!sourceErrors.has('contas_ativadas')){registrationsAt=Date.now();registrationsLoaded=true}
- render();clearTimeout(pollTimer);pollTimer=setTimeout(()=>{if(document.visibilityState==='visible')refreshData(gen)},300000);
+ render();clearTimeout(pollTimer);
+ if([...sourceErrors.values()].some(message=>/quota|RESOURCE_EXHAUSTED/i.test(message))){status('Limite de uso do Firebase atingido. Atualização automática pausada; tente Atualizar após a liberação da cota.',true);return;}
+ pollTimer=setTimeout(()=>{if(document.visibilityState==='visible')refreshData(gen)},300000);
  })();refreshTask=task;task.finally(()=>{if(refreshTask===task)refreshTask=null}).catch(()=>{});return task;
 }
 $('connect').onclick=async()=>{const email=$('adminEmail').value.trim(),password=$('adminPassword').value,input=$('token').value.trim();if(!email||!password)return status('Preencha o e-mail e a senha administrativos.',true);disconnect();const gen=generation;token=input;$('connect').disabled=true;status('Consultando o login do Firebase…');try{const data=await requestJson('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key='+config.apiKey,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password,returnSecureToken:true})});if(gen!==generation)return;if(data.localId!=='IZy2rLYsgxWJeZvLOnsnoRfRjfk2')throw Error('Essa conta não é a administradora autorizada nas regras.');sessionToken=data.idToken;sessionExpiry=Date.now()+Number(data.expiresIn)*1000;connected=true;$('disconnect').hidden=false;$('refresh').disabled=false;status('Login confirmado. Consultando usuários…');if(token)loadStatic(gen).catch(()=>{});await refreshData(gen)}catch(e){if(gen===generation){disconnect();status('Não foi possível entrar: '+e.message,true)}}finally{if(gen===generation){$('adminPassword').value='';$('connect').disabled=connected}}};
@@ -126,7 +128,7 @@ $('disconnect').onclick=disconnect;
 $('search').oninput=()=>{clearTimeout(searchTimer);searchTimer=setTimeout(render,120)};
 $('filter').onchange=render;
 $('refresh').onclick=async()=>{if(!connected)return;$('refresh').disabled=true;try{await refreshData(generation,true)}finally{if(connected)$('refresh').disabled=false}};
-setInterval(()=>{if(connected&&document.visibilityState==='visible')refreshData(generation)},10000);
+// Atualização de dados a cada 5 minutos pelo pollTimer; sem consulta a cada 10 segundos.
 setInterval(()=>{if(connected&&document.visibilityState==='visible')render()},15000);
 document.addEventListener('visibilitychange',()=>{if(connected&&document.visibilityState==='visible')refreshData(generation)});
 window.addEventListener('online',()=>{if(connected)refreshData(generation,true)});
