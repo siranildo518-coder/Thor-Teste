@@ -1,0 +1,19 @@
+// INSERIR dentro de match /databases/{database}/documents nas regras existentes.
+// Não substitui as regras de outras coleções. Revisar regras amplas existentes:
+// um allow read/write global também pode liberar esta coleção.
+match /fotos_cadastro_teste/{uid} {
+  allow get: if request.auth != null &&
+    (request.auth.uid == uid || request.auth.uid == 'IZy2rLYsgxWJeZvLOnsnoRfRjfk2');
+  allow list: if request.auth != null && request.auth.uid == 'IZy2rLYsgxWJeZvLOnsnoRfRjfk2';
+  allow create, update: if request.auth != null && request.auth.uid == uid
+    && request.resource.data.keys().hasAll(['contaHash','usuario','foto','consentimento','enviadoEm','ambiente'])
+    && request.resource.data.keys().hasOnly(['contaHash','usuario','foto','consentimento','enviadoEm','ambiente'])
+    && request.resource.data.contaHash is string && request.resource.data.contaHash.size() > 0 && request.resource.data.contaHash.size() <= 40
+    && request.resource.data.usuario is string && request.resource.data.usuario.size() >= 2 && request.resource.data.usuario.size() <= 120
+    && request.resource.data.foto is string && request.resource.data.foto.size() <= 180000
+    && request.resource.data.foto.matches('data:image/jpeg;base64,[A-Za-z0-9+/=]+')
+    && request.resource.data.consentimento == true
+    && request.resource.data.enviadoEm is timestamp
+    && request.resource.data.ambiente == 'Thor-Teste C74';
+  allow delete: if request.auth != null && request.auth.uid == 'IZy2rLYsgxWJeZvLOnsnoRfRjfk2';
+}

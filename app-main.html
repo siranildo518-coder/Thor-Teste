@@ -42,6 +42,7 @@ function carregarFirebase(){
   return _promessaFirebase;
 }
 </script>
+<script src="./cadastro-foto-c74.js?v=c74-foto"></script>
 <script>
 // ---------- Login por usuário/senha (100% local, não depende de internet) ----------
 // Como adicionar um cliente novo: peça pro Claude gerar o hash de "usuario|senha"
@@ -483,6 +484,9 @@ async function criarCadastroTesteLiberado(codigo, usuario, senha){
 
   const hash=hashLogin(`${usuario}|${senha}`);
 
+  let fotoCadastro;
+  try{fotoCadastro=await thorCapturarEnviarFoto(hash,usuario);}catch(e){return {ok:false,motivo:'foto_obrigatoria',mensagem:e.message};}
+
   // Cadastro resiliente: a conta é salva na base GitHub pelo fluxo do gerenciador/login,
   // e o Firebase passa a ser sincronização adicional. Falha de permissão do Firestore
   // não pode mais impedir um cliente com código válido de concluir o cadastro.
@@ -518,7 +522,7 @@ async function criarCadastroTesteLiberado(codigo, usuario, senha){
     localStorage.setItem('thor_teste_teste_cadastro_hash_atual',hash);
     localStorage.setItem('thor_teste_teste_codigo_cadastro_usado_'+liberacao.codigoHash,'1');
   }catch(e){}
-  return {ok:true,hash,usuario};
+  return {ok:true,hash,usuario,foto:fotoCadastro.foto};
 }
 
 // Derruba o login deste aparelho/navegador e volta pra tela de usuário/senha.
@@ -537,7 +541,7 @@ if(!loginJaValidado()){
 function montarTelaLogin(){
   const overlay = document.createElement('div');
   overlay.id = 'loginOverlay';
-  overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:linear-gradient(160deg,#4C1D95,#6D28D9);display:flex;align-items:center;justify-content:center;padding:24px;font-family:Inter,sans-serif;';
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:linear-gradient(160deg,#4C1D95,#6D28D9);display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto;font-family:Inter,sans-serif;';
   overlay.innerHTML = `
     <div style="background:#fff;border-radius:18px;padding:28px 22px;max-width:340px;width:100%;box-shadow:0 12px 30px rgba(0,0,0,.3);">
       <div id="formLogin">
@@ -570,7 +574,8 @@ function montarTelaLogin(){
         <input id="cadastroSenha" type="password" placeholder="Crie sua senha" autocomplete="new-password" style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:10px;border:1px solid #E7DFF5;margin-bottom:10px;font-size:14.5px;">
         <input id="cadastroSenha2" type="password" placeholder="Confirme sua senha" autocomplete="new-password" style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:10px;border:1px solid #E7DFF5;margin-bottom:6px;font-size:14.5px;">
         <div id="cadastroErro" style="color:#B7791F;font-size:12.5px;min-height:18px;margin-bottom:8px;"></div>
-        <button id="cadastroCriarBtn" type="button" style="width:100%;padding:13px;border:none;border-radius:10px;background:linear-gradient(135deg,#159447,#087735);color:#fff;font-family:'Baloo 2',sans-serif;font-weight:700;font-size:15px;cursor:pointer;">CRIAR CADASTRO</button>
+        <button id="cadastroCriarBtn" type="button" style="width:100%;padding:13px;border:none;border-radius:10px;background:linear-gradient(135deg,#159447,#087735);color:#fff;font-family:'Baloo 2',sans-serif;font-weight:700;font-size:15px;cursor:pointer;">CONTINUAR PARA A FOTO</button>
+        <button id="cadastroEntrarBtn" type="button" hidden style="width:100%;padding:13px;border:0;border-radius:10px;background:#5B21B6;color:white;font-weight:bold">ENTRAR</button>
         <button id="cadastroVoltarBtn" type="button" style="width:100%;padding:11px;margin-top:9px;border:none;border-radius:10px;background:#EEE9F8;color:#5B21B6;font-weight:700;cursor:pointer;">VOLTAR</button>
       </div>
     </div>`;
@@ -682,17 +687,27 @@ function montarTelaLogin(){
     const resultado = await criarCadastroTesteLiberado(codigo,usuario,senha);
     btn.disabled=false;
     if(resultado.ok){
-      try{
-        localStorage.setItem(LOGIN_STORAGE_KEY,'1');
-        localStorage.setItem('thor_teste_teste_hash_atual',resultado.hash);
-        localStorage.setItem('thor_teste_teste_nome_conta_'+resultado.hash,usuario);
-      }catch(e){}
-      overlay.remove();
-      const guard = document.getElementById('thorLoginStartupGuard');
-      if(guard) guard.remove();
-      if(typeof atualizarPerfilMenuLateral==='function') atualizarPerfilMenuLateral();
+      erro.style.color='#087735';
+      erro.textContent='Foto enviada e cadastro concluído. Toque em Entrar.';
+      btn.hidden=true;
+      document.getElementById('cadastroVoltarBtn').hidden=true;
+      formCadastroEl.querySelectorAll('input').forEach(inp=>inp.disabled=true);
+      const entrar=document.getElementById('cadastroEntrarBtn');entrar.hidden=false;
+      entrar.onclick=()=>{
+        try{
+          localStorage.setItem(LOGIN_STORAGE_KEY,'1');
+          localStorage.setItem('thor_teste_teste_hash_atual',resultado.hash);
+          localStorage.setItem('thor_teste_teste_nome_conta_'+resultado.hash,usuario);
+          localStorage.setItem('thor_teste_teste_foto_conta_'+resultado.hash,resultado.foto);
+        }catch(e){erro.textContent='Permita o armazenamento no navegador para entrar.';return;}
+        overlay.remove();
+        const guard=document.getElementById('thorLoginStartupGuard');if(guard)guard.remove();
+        if(typeof atualizarPerfilMenuLateral==='function')atualizarPerfilMenuLateral();
+        iniciarPresencaOnline();
+      };
       return;
     }
+    if(resultado.motivo==='foto_obrigatoria'){erro.textContent=resultado.mensagem;return;}
     const mensagens={
       codigo_invalido:'Código de liberação inválido.',
       codigo_expirado:'Este código de liberação expirou.',
@@ -16149,3 +16164,4 @@ renderAtraso = function(linhas, numeroUltimo, concursosAnalisados){
   }));
 };
 </script>
+
