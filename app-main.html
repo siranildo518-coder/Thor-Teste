@@ -418,54 +418,40 @@ async function sha256HexCadastro(texto){
 }
 
 async function buscarLiberacaoCadastroTeste(codigo){
-  const codigoNormalizado = String(codigo||'').trim().toUpperCase();
-  const codigoCompat = hashLogin(codigoNormalizado);
-  let codigoHash = '';
-  try{ codigoHash = await sha256HexCadastro(codigoNormalizado); }catch(e){}
-
-  const urls = [
-    './cadastros-liberados.json?_='+Date.now(),
-    'https://raw.githubusercontent.com/siranildo518-coder/Thor-Teste/main/cadastros-liberados.json?nocache='+Date.now(),
-    'https://api.github.com/repos/siranildo518-coder/Thor-Teste/contents/cadastros-liberados.json?ref=main&nocache='+Date.now()
+  const codigoNormalizado=String(codigo||'').trim().toUpperCase();
+  const codigoCompat=hashLogin(codigoNormalizado);
+  const codigoHash=await sha256HexCadastro(codigoNormalizado);
+  const agora=Date.now();
+  const urls=[
+    './cadastros-liberados.json?c75='+agora,
+    'https://raw.githubusercontent.com/siranildo518-coder/Thor-Teste/main/cadastros-liberados.json?c75='+agora,
+    'https://api.github.com/repos/siranildo518-coder/Thor-Teste/contents/cadastros-liberados.json?ref=main&c75='+agora
   ];
-
-  let ultimoErro = null;
+  let consultou=false;
   for(const url of urls){
+    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),8000);
     try{
-      const resposta = await fetch(url,{
-        cache:'no-store',
-        headers:{'Cache-Control':'no-cache'}
-      });
-      if(!resposta.ok) throw new Error('HTTP '+resposta.status);
-      let dados = await resposta.json();
-      // A API /contents do GitHub devolve o arquivo em Base64; o raw devolve o JSON direto.
-      if(dados && dados.content && dados.encoding === 'base64'){
-        const limpo = String(dados.content).replace(/\s/g,'');
-        dados = JSON.parse(decodeURIComponent(escape(atob(limpo))));
+      const resposta=await fetch(url,{cache:'no-store',signal:controller.signal});
+      if(!resposta.ok)throw new Error('HTTP '+resposta.status);
+      let dados=await resposta.json();
+      if(dados&&dados.content&&dados.encoding==='base64'){
+        dados=JSON.parse(decodeURIComponent(escape(atob(String(dados.content).replace(/\s/g,'')))));
       }
-      const lista = Array.isArray(dados && dados.liberacoes) ? dados.liberacoes : [];
-      const item = lista.find(x=>x && x.ativo !== false && (
-        (x.compatHash && x.compatHash === codigoCompat) ||
-        (codigoHash && x.hash === codigoHash)
+      if(!Array.isArray(dados?.liberacoes))throw new Error('Lista de códigos indisponível.');
+      consultou=true;
+      const item=dados.liberacoes.find(x=>x&&(
+        x.compatHash===codigoCompat||x.hash===codigoHash
       ));
-      if(!item){
-        ultimoErro = {ok:false,motivo:'codigo_invalido'};
-        continue;
-      }
-      if(item.expiraEm){
-        const limite = Date.parse(item.expiraEm);
-        if(Number.isFinite(limite) && Date.now() > limite){
-          return {ok:false,motivo:'codigo_expirado'};
-        }
-      }
-      return {ok:true,codigoHash:(item.hash||codigoCompat),codigoCompat,item};
-    }catch(e){
-      ultimoErro = e;
-    }
+      if(!item)continue;
+      if(item.ativo===false)return {ok:false,motivo:'codigo_invalido'};
+      if(item.expiraEm&&Number.isFinite(Date.parse(item.expiraEm))&&Date.now()>Date.parse(item.expiraEm))return {ok:false,motivo:'codigo_expirado'};
+      if(item.consumido===true||localStorage.getItem('thor_teste_teste_codigo_cadastro_usado_'+(item.hash||codigoCompat))==='1')return {ok:false,motivo:'codigo_usado'};
+      return {ok:true,codigoHash:item.hash||codigoCompat,codigoCompat,item};
+    }catch(e){console.warn('Consulta de código do Thor-Teste:',e.message);}
+    finally{clearTimeout(timer);}
   }
-
-  if(ultimoErro && ultimoErro.ok === false) return ultimoErro;
-  throw ultimoErro || new Error('Não foi possível consultar a liberação do cadastro.');
+  if(consultou)return {ok:false,motivo:'codigo_invalido'};
+  throw new Error('Não foi possível consultar os códigos do Thor-Teste.');
 }
 
 async function criarCadastroTesteLiberado(codigo, usuario, senha){

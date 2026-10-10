@@ -333,6 +333,13 @@
       "criadoEm": "2026-09-24T13:49:30.302Z",
       "expiraEm": "2026-09-25T13:49:30.306Z",
       "ativo": true
+    },
+    {
+      "hash": "c95bc40a3ea1ffe6e6a260c9341d480d0f9db8a2cf1909bd76727be8603ef1f1",
+      "compatHash": "dcwnvp",
+      "criadoEm": "2026-10-10T21:42:46.541Z",
+      "expiraEm": "2026-10-11T21:42:46.543Z",
+      "ativo": true
     }
   ]
 }
