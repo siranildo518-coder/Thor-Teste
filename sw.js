@@ -1,2 +1,2 @@
-// Thor-Teste C82: atualização do cadastro sem alterar dados de login.
-importScripts('./sw-core-thor7.js?v=c82-foto');
+// Thor-Teste C84: atualização do cadastro sem alterar dados de login.
+importScripts('./sw-core-thor7.js?v=c84-vidro');
