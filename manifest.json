@@ -2,7 +2,7 @@
   "name": "THOR TESTE",
   "short_name": "THOR TESTE",
   "description": "Cópia isolada do THOR LOTERIAS para testes",
-  "start_url": "./index.html?v=thor-teste-v156",
+  "start_url": "./index.html?v=thor-teste-v157",
   "scope": "./",
   "display": "standalone",
   "background_color": "#07101f",

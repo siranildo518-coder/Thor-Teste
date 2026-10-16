@@ -79,8 +79,8 @@ jobs:
                   applicationId 'com.thorloterias.teste'
                   minSdk 23
                   targetSdk 35
-                  versionCode 156
-                  versionName 'THOR TESTE V156'
+                  versionCode 157
+                  versionName 'THOR TESTE V157'
               }
           }
           EOF
@@ -181,7 +181,7 @@ jobs:
                   // APK cliente: preserva localStorage/cookies (inclusive a trava), mas limpa SOMENTE cache web.
                   // Isso evita precisar usar "Limpar dados" quando o gerenciador publica um novo cliente.
                   webView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
-                  webView.loadUrl("https://siranildo518-coder.github.io/Thor-Teste/index.html?apk=teste-v156");
+                  webView.loadUrl("https://siranildo518-coder.github.io/Thor-Teste/index.html?apk=teste-v157");
               }
               @Override protected void onPause() {
                   android.webkit.CookieManager.getInstance().flush();
@@ -264,11 +264,11 @@ jobs:
         run: gradle :app:assembleDebug --stacktrace
 
       - name: Preparar APK
-        run: cp android-apk/app/build/outputs/apk/debug/app-debug.apk THOR-TESTE-V156.apk
+        run: cp android-apk/app/build/outputs/apk/debug/app-debug.apk THOR-TESTE-V157.apk
 
       - name: Disponibilizar APK
         uses: actions/upload-artifact@v4
         with:
-          name: THOR-TESTE-V156-APK
-          path: THOR-TESTE-V156.apk
+          name: THOR-TESTE-V157-APK
+          path: THOR-TESTE-V157.apk
           retention-days: 30
