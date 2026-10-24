@@ -9,14 +9,38 @@ function gruposParaCompartilhar(){
  return banco().map(function(g,i){return {nome:(g.nome||('Jogos Salvos '+(i+1))).trim(),jogos:Array.isArray(g.jogos)?g.jogos:[]}})
  .filter(function(g){return g.jogos.length&&(filtro==='Todos'||g.nome===filtro)});
 }
-async function compartilharJogos(){
+function compartilharJogos(){
  var grupos=gruposParaCompartilhar();
- if(!grupos.length){alert('Nenhum jogo salvo nesta seleção.');return}
- if(filtro==='Todos'&&grupos.length>1){alert('Selecione o nome dos jogos que deseja compartilhar.');return}
- var txt=grupos.map(function(g){return g.jogos.map(function(j){return numsJogo(j).map(function(n){return String(n).padStart(2,'0')}).join(' ')}).join('\n')}).join('\n');
- if(!navigator.share){alert('O compartilhamento não está disponível neste navegador. Abra no navegador do celular para compartilhar.');return}
- try{await navigator.share({title:grupos[0].nome,text:txt})}
- catch(e){if(e.name!=='AbortError')alert('Não foi possível compartilhar os jogos. Tente novamente.')}
+ var old=document.getElementById('thorCompartilharSelecao');if(old)old.remove();
+ var modal=document.createElement('div');modal.id='thorCompartilharSelecao';
+ modal.style.cssText='position:fixed;inset:0;z-index:2147483647;background:#000b;display:flex;align-items:center;justify-content:center;padding:18px';
+ var panel=document.createElement('section');panel.setAttribute('role','dialog');panel.setAttribute('aria-modal','true');panel.setAttribute('aria-label','Compartilhar jogos');
+ panel.style.cssText='width:min(380px,94vw);max-height:85vh;overflow:auto;background:#fff;color:#13283c;padding:16px;border:2px solid #eda72a;border-radius:14px;font-family:Arial';
+ var title=document.createElement('strong');title.textContent='Compartilhar jogos';panel.appendChild(title);
+ var status=document.createElement('p');status.setAttribute('role','status');
+ var select=document.createElement('select');select.style.cssText='display:block;width:100%;margin:12px 0;padding:10px;font-size:16px';
+ if(grupos.length>1){var first=document.createElement('option');first.value='';first.textContent='Escolha os jogos salvos';select.appendChild(first)}
+ grupos.forEach(function(g,i){var option=document.createElement('option');option.value=String(i);option.textContent=g.nome;select.appendChild(option)});
+ var text=document.createElement('textarea');text.readOnly=true;text.rows=5;text.setAttribute('aria-label','Jogos selecionados');text.style.cssText='width:100%;box-sizing:border-box;font-size:16px;margin-bottom:12px';
+ var actions=document.createElement('div');actions.style.cssText='display:flex;gap:8px;flex-wrap:wrap';
+ function button(label,action){var b=document.createElement('button');b.type='button';b.textContent=label;b.style.cssText='padding:10px;border:0;border-radius:7px;background:#087c40;color:white;font-weight:bold';b.onclick=action;actions.appendChild(b);return b}
+ function selected(){return select.value!==''?grupos[Number(select.value)]:null}
+ function refresh(){var g=selected();text.value=g?g.jogos.map(function(j){return numsJogo(j).map(function(n){return String(n).padStart(2,'0')}).join(' ')}).join('\n'):'';copy.disabled=share.disabled=!g;status.textContent=!grupos.length?'Nenhum jogo salvo nesta seleção.':!g?'Selecione acima o conjunto que deseja compartilhar.':'Toque em Compartilhar ou Copiar jogos.'}
+ var copy=button('Copiar jogos',async function(){
+  copy.disabled=true;var ok=false;
+  try{if(navigator.clipboard&&navigator.clipboard.writeText){await navigator.clipboard.writeText(text.value);ok=true}}catch(e){}
+  if(!ok){text.focus();text.select();text.setSelectionRange(0,text.value.length);try{ok=document.execCommand('copy')}catch(e){}}
+  copy.disabled=false;
+  if(ok){modal.remove();var notice=document.createElement('div');notice.setAttribute('role','status');notice.textContent='Jogos copiados!';notice.style.cssText='position:fixed;bottom:25px;left:10%;width:80%;text-align:center;background:#087c40;color:white;padding:12px;z-index:2147483647;border-radius:8px';document.body.appendChild(notice);setTimeout(function(){notice.remove()},2500)}
+  else status.textContent='A cópia automática foi bloqueada. Toque e segure o texto selecionado e escolha Copiar.';
+ });
+ var share=button('Compartilhar',async function(){
+  if(!navigator.share){status.textContent='Este aplicativo não oferece compartilhamento direto. Use Copiar jogos e cole no WhatsApp ou em outro aplicativo.';return}
+  try{await navigator.share({title:selected().nome,text:text.value});modal.remove()}
+  catch(e){if(e.name!=='AbortError')status.textContent='Não foi possível abrir o compartilhamento. Use Copiar jogos.'}
+ });
+ button('Fechar',function(){modal.remove()});
+ select.onchange=refresh;panel.appendChild(select);panel.appendChild(text);panel.appendChild(actions);panel.appendChild(status);modal.appendChild(panel);document.body.appendChild(modal);refresh();
 }
 
 function salvarTxt(){var blob=new Blob([textoJogos()],{type:'text/plain;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Meus Jogos.txt';document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},500)}
