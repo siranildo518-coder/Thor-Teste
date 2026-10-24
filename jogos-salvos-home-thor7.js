@@ -5,7 +5,27 @@ function voltarInicio(){var t=document.getElementById('thorJogosSalvosTelaIndepe
 function filtros(){var box=document.getElementById('thorJsFiltros'),b=banco(),nomes=['Todos'];b.forEach(function(g,i){var n=(g.nome||('Jogos Salvos '+(i+1))).trim();if(nomes.indexOf(n)<0)nomes.push(n)});box.innerHTML='';nomes.forEach(function(n){var x=document.createElement('button');x.className='js-filtro'+(n===filtro?' active':'');x.textContent=n;x.onclick=function(){filtro=n;render()};box.appendChild(x)})}
 function numsJogo(j){if(Array.isArray(j))return j.map(Number);if(j&&Array.isArray(j.j))return j.j.map(Number);return[]}
 function textoJogos(){var b=banco(),linhas=['THOR LOTERIAS - JOGOS SALVOS',''];b.forEach(function(g,gi){var jogos=Array.isArray(g.jogos)?g.jogos:[];linhas.push((g.nome||('Jogos Salvos '+(gi+1)))+' - '+jogos.length+' jogos');jogos.forEach(function(j,i){linhas.push('Jogo '+(i+1)+': '+numsJogo(j).map(function(n){return String(n).padStart(2,'0')}).join(' '))});linhas.push('')});return linhas.join('\n')}
-async function compartilharJogos(){var txt=textoJogos();try{if(navigator.share){await navigator.share({title:'THOR LOTERIAS - Jogos salvos',text:txt})}else if(navigator.clipboard){await navigator.clipboard.writeText(txt);alert('Jogos copiados para compartilhar.')}}catch(e){}}
+function gruposParaCompartilhar(){
+ return banco().map(function(g,i){return {nome:(g.nome||('Jogos Salvos '+(i+1))).trim(),jogos:Array.isArray(g.jogos)?g.jogos:[]}})
+ .filter(function(g){return g.jogos.length&&(filtro==='Todos'||g.nome===filtro)});
+}
+async function compartilharJogos(){
+ var grupos=gruposParaCompartilhar();
+ if(!grupos.length){alert('Nenhum jogo salvo nesta seleção.');return}
+ if(filtro==='Todos'&&grupos.length>1){alert('Selecione o nome dos jogos que deseja compartilhar.');return}
+ var txt=grupos.map(function(g){return g.jogos.map(function(j){return numsJogo(j).map(function(n){return String(n).padStart(2,'0')}).join(' ')}).join('\n')}).join('\n');
+ if(navigator.share){
+  try{await navigator.share({title:grupos[0].nome,text:txt});return}
+  catch(e){if(e.name==='AbortError')return}
+ }
+ var copiado=false;
+ try{if(navigator.clipboard&&navigator.clipboard.writeText){await navigator.clipboard.writeText(txt);copiado=true}}catch(e){}
+ if(!copiado){
+  var ta=document.createElement('textarea');ta.value=txt;ta.style.cssText='position:fixed;opacity:0;left:0;top:0';document.body.appendChild(ta);ta.focus();ta.select();
+  try{copiado=document.execCommand('copy')}catch(e){}ta.remove();
+ }
+ alert(copiado?'Jogos selecionados copiados. Cole no aplicativo em que deseja compartilhar.':'Não foi possível compartilhar ou copiar os jogos. Tente novamente.');
+}
 function salvarTxt(){var blob=new Blob([textoJogos()],{type:'text/plain;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Meus Jogos.txt';document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},500)}
 function render(){filtros();var box=document.getElementById('thorJsLista'),b=banco(),res=resultadoAtual?dezenas(resultadoAtual).map(Number):[],alvo=loterias[atual][2];if(filtro!=='Todos')b=b.filter(function(g,i){return (g.nome||('Jogos Salvos '+(i+1)))===filtro});if(!b.length){box.innerHTML='<div style="text-align:center;color:#aab7c4;padding:10px">Nenhum jogo salvo neste filtro.</div>';return}box.innerHTML='';b.slice().reverse().forEach(function(g){var card=document.createElement('div');card.className='js-grupo';var jogos=Array.isArray(g.jogos)?g.jogos:[];var tit=document.createElement('div');tit.className='js-grupo-titulo';tit.textContent=(g.nome||'Jogos Salvos')+' · '+jogos.length+' jogo'+(jogos.length===1?'':'s');card.appendChild(tit);jogos.forEach(function(j,i){var ns=numsJogo(j),pontos=res.length?ns.filter(function(n){return res.indexOf(Number(n))>=0}).length:0,premiado=pontos===alvo;var linha=document.createElement('div');linha.className='js-jogo'+(premiado?' js-jogo-premiado':'');linha.innerHTML='<div class="js-jogo-top"><span class="js-jogo-nome">Jogo '+(i+1)+'</span><span class="js-trofeu">🏆 Jogo premiado</span>'+(res.length?'<span class="js-pontos">'+pontos+' pontos</span>':'')+'</div><div class="js-jogo-bolas"></div>';ns.forEach(function(n){var s=document.createElement('span');s.className='js-jogo-ball';s.textContent=String(n).padStart(2,'0');linha.lastChild.appendChild(s)});card.appendChild(linha)});box.appendChild(card)})}
 function dezenas(d){var a=d&&(d.listaDezenas||d.dezenas||d.numeros||d.resultado);return Array.isArray(a)?a:[]}
