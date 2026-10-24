@@ -52,6 +52,17 @@ function gruposParaCompartilhar(){
 }
 function compartilharJogos(){
  var grupos=gruposParaCompartilhar();
+ if(grupos.length===1&&typeof navigator.share==='function'){
+  var txt=grupos[0].jogos.map(function(j){return numsJogo(j).map(function(n){return String(n).padStart(2,'0')}).join(' ')}).join('\n');
+  try{
+   Promise.resolve(navigator.share({title:grupos[0].nome,text:txt})).catch(function(e){if(!e||e.name!=='AbortError')abrirPainelCompartilharJogos()});
+  }catch(e){abrirPainelCompartilharJogos()}
+  return;
+ }
+ abrirPainelCompartilharJogos();
+}
+function abrirPainelCompartilharJogos(){
+ var grupos=gruposParaCompartilhar();
  var old=document.getElementById('thorCompartilharSelecao');if(old)old.remove();
  var modal=document.createElement('div');modal.id='thorCompartilharSelecao';
  modal.style.cssText='position:fixed;inset:0;z-index:2147483647;background:#000b;display:flex;align-items:center;justify-content:center;padding:18px';
@@ -80,6 +91,7 @@ function compartilharJogos(){
   try{await navigator.share({title:selected().nome,text:text.value});modal.remove()}
   catch(e){if(e.name!=='AbortError')status.textContent='Não foi possível abrir o compartilhamento. Use Copiar jogos.'}
  });
+ button('WhatsApp',function(){var g=selected();if(!g){status.textContent='Selecione os jogos primeiro.';return}window.open('https://wa.me/?text='+encodeURIComponent(text.value),'_blank','noopener')});
  button('Fechar',function(){modal.remove()});
  select.onchange=refresh;panel.appendChild(select);panel.appendChild(text);panel.appendChild(actions);panel.appendChild(status);modal.appendChild(panel);document.body.appendChild(modal);refresh();
 }
