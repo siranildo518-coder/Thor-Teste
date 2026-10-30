@@ -352,8 +352,11 @@
       "hash": "100f85fbc38bbcf248429ce6fe65597c30621ec84f53a1306797e952ca43d6f3",
       "compatHash": "130vsmt",
       "criadoEm": "2026-10-30T23:40:50.931Z",
-      "expiraEm": "2026-10-31T23:40:50.931Z",
-      "ativo": true
+      "expiraEm": "2026-10-31T23:43:44.188Z",
+      "ativo": true,
+      "usado": false,
+      "utilizado": false,
+      "reativadoEm": "2026-10-30T23:43:44.188Z"
     }
   ]
 }
