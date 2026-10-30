@@ -445,7 +445,11 @@ async function buscarLiberacaoCadastroTeste(codigo){
       if(!item)continue;
       if(item.ativo===false)return {ok:false,motivo:'codigo_invalido'};
       if(item.expiraEm&&Number.isFinite(Date.parse(item.expiraEm))&&Date.now()>Date.parse(item.expiraEm))return {ok:false,motivo:'codigo_expirado'};
-      if(item.consumido===true||localStorage.getItem('thor_teste_teste_codigo_cadastro_usado_'+(item.hash||codigoCompat))==='1')return {ok:false,motivo:'codigo_usado'};
+      // O JSON compartilhado e a fonte de verdade; a reativacao administrativa limpa o bloqueio local antigo.
+      const usoLocal=localStorage.getItem('thor_teste_teste_codigo_cadastro_usado_'+(item.hash||codigoCompat))==='1';
+      const reativado=!!(item.reativadoEm&&Number.isFinite(Date.parse(item.reativadoEm)));
+      const usadoServidor=item.consumido===true||item.usado===true||item.utilizado===true;
+      if(usadoServidor||(usoLocal&&!reativado))return {ok:false,motivo:'codigo_usado'};
       return {ok:true,codigoHash:item.hash||codigoCompat,codigoCompat,item};
     }catch(e){console.warn('Consulta de código do Thor-Teste:',e.message);}
     finally{clearTimeout(timer);}
