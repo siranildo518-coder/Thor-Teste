@@ -422,13 +422,10 @@ async function buscarLiberacaoCadastroTeste(codigo){
   const codigoCompat=hashLogin(codigoNormalizado);
   const codigoHash=await sha256HexCadastro(codigoNormalizado);
   const agora=Date.now();
+  // Isolamento: o Thor Teste usa apenas os codigos do repositorio de teste.
   const urls=[
-    'https://api.github.com/repos/siranildo518-coder/THOR-LOTERIAS/contents/cadastros-liberados.json?ref=main&c82='+agora,
-    'https://siranildo518-coder.github.io/THOR-LOTERIAS/cadastros-liberados.json?c77='+agora,
-    'https://raw.githubusercontent.com/siranildo518-coder/THOR-LOTERIAS/main/cadastros-liberados.json?c77='+agora,
-    './cadastros-liberados.json?c75='+agora,
-    'https://raw.githubusercontent.com/siranildo518-coder/Thor-Teste/main/cadastros-liberados.json?c75='+agora,
-    'https://api.github.com/repos/siranildo518-coder/Thor-Teste/contents/cadastros-liberados.json?ref=main&c75='+agora
+    'https://api.github.com/repos/siranildo518-coder/Thor-Teste/contents/cadastros-liberados.json?ref=main&_='+agora,
+    'https://raw.githubusercontent.com/siranildo518-coder/Thor-Teste/main/cadastros-liberados.json?_='+agora
   ];
   let consultou=false;
   for(const url of urls){
@@ -510,6 +507,7 @@ async function criarCadastroTesteLiberado(codigo, usuario, senha){
     }
     localStorage.setItem('thor_teste_teste_cadastro_hash_atual',hash);
     localStorage.setItem('thor_teste_teste_codigo_cadastro_usado_'+liberacao.codigoHash,'1');
+    localStorage.setItem('thor_teste_codigo_conta_'+hash,liberacao.codigoHash);
   }catch(e){}
   return {ok:true,hash,usuario,foto:fotoCadastro.foto};
 }
@@ -15696,6 +15694,37 @@ document.addEventListener('click', (e)=>{
 <script id="home-design-neon-js-0540">
 document.addEventListener('click',function(e){const b=e.target.closest('[data-home-target]');if(!b)return;const t=document.getElementById(b.dataset.homeTarget);if(t)t.click();});
 document.getElementById('homeSideMenu')?.addEventListener('click',()=>document.getElementById('btnMenu')?.click());
+</script>
+
+<script id="thor-teste-revogacao-codigo">
+(function(){
+  let busy=false;
+  async function verificarBloqueioCodigo(){
+    if(busy||localStorage.getItem('thor_teste_teste_login_ok_v1')!=='1')return;
+    const conta=localStorage.getItem('thor_teste_teste_hash_atual');
+    const codigo=conta&&localStorage.getItem('thor_teste_codigo_conta_'+conta);
+    if(!codigo)return;
+    busy=true;
+    try{
+      const r=await fetch('https://api.github.com/repos/siranildo518-coder/Thor-Teste/contents/cadastros-liberados.json?ref=main&_='+Date.now(),{cache:'no-store'});
+      if(!r.ok)throw Error('GitHub '+r.status);
+      const json=await r.json();
+      const data=json.encoding==='base64'?JSON.parse(decodeURIComponent(escape(atob(json.content.replace(/\s/g,''))))):json;
+      const item=(data.liberacoes||[]).find(x=>x.hash===codigo);
+      if(!item||item.ativo===false){
+        localStorage.removeItem('thor_teste_teste_login_ok_v1');
+        localStorage.removeItem('thor_teste_teste_hash_atual');
+        alert('Seu codigo foi bloqueado. Entre em contato com o administrador.');
+        location.reload();
+      }
+    }catch(e){console.warn('Falha na verificacao de bloqueio do Thor Teste',e);}
+    finally{busy=false;}
+  }
+  setInterval(verificarBloqueioCodigo,20000);
+  window.addEventListener('online',verificarBloqueioCodigo);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)verificarBloqueioCodigo();});
+  setTimeout(verificarBloqueioCodigo,2000);
+})();
 </script>
 </body>
 </html>
