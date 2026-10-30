@@ -362,8 +362,11 @@
       "hash": "e06fa5211002f269864b85a4f5bac15f8f1bb775c7f1ada319e60a34d7828ee7",
       "compatHash": "vgqttg",
       "criadoEm": "2026-10-30T23:52:44.740Z",
-      "expiraEm": "2026-10-31T23:52:44.740Z",
-      "ativo": true
+      "expiraEm": "2026-10-31T23:57:30.719Z",
+      "ativo": true,
+      "usado": false,
+      "utilizado": false,
+      "reativadoEm": "2026-10-30T23:57:30.719Z"
     }
   ]
 }
