@@ -11788,11 +11788,9 @@ document.getElementById('menuAtualizar')?.addEventListener('click', async functi
   destravarTendencia();
   if(icone) icone.classList.remove('girando');
 
-  setTimeout(()=>{
-    const u = new URL(location.href);
-    u.searchParams.set('_thor_update', Date.now().toString());
-    location.replace(u.toString());
-  }, 120);
+  // Atualização do menu não deve reiniciar a página nem interromper a sessão.
+  // Os arquivos novos serão usados na próxima abertura normal do aplicativo.
+  btnAtualizar.title = 'Atualização verificada. A nova versão será usada na próxima abertura.';
 });
 document.getElementById('tendenciaVoltar').addEventListener('click', ()=>{
   document.getElementById('overlayTendencia').classList.remove('show');});
@@ -13297,7 +13295,7 @@ if('serviceWorker' in navigator){
       location.reload();
     }
 
-    navigator.serviceWorker.addEventListener('controllerchange', recarregarUmaVez);
+    // Não recarregar automaticamente ao trocar service worker: preserva a sessão aberta.
 
     navigator.serviceWorker.register(`./sw.js?v=${encodeURIComponent(APP_VERSAO_ATUAL)}`, { updateViaCache:'none' }).then(registration=>{
       // verifica o sw.js imediatamente ao abrir o aplicativo
