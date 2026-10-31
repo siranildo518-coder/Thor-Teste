@@ -400,6 +400,13 @@
       "usado": false,
       "utilizado": false,
       "reativadoEm": "2026-10-31T08:38:00.903Z"
+    },
+    {
+      "hash": "300dd415c72c66f71f8e5f651b801b4755ee3d0045d3106500af4f44819517bf",
+      "compatHash": "1yhtvxh",
+      "criadoEm": "2026-10-31T09:05:45.537Z",
+      "expiraEm": "2026-11-01T09:05:45.537Z",
+      "ativo": true
     }
   ]
 }
