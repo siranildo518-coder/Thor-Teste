@@ -350,7 +350,8 @@ function comprimirFoto(dataUrl, maxLado){
 }
 
 function loginJaValidado(){
-  if(obterContextoAcesso() !== 'app') return false;
+  // Preserva a sessão após atualizar a página tanto no APK/PWA quanto no navegador.
+  // A validação de bloqueio e vínculo de aparelho continua sendo feita separadamente.
   try{ return localStorage.getItem(LOGIN_STORAGE_KEY) === '1' && !!localStorage.getItem('thor_teste_teste_hash_atual'); }catch(e){ return false; }
 }
 
