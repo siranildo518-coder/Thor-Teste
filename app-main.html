@@ -209,7 +209,7 @@ const CONTAS_EXTRAS_KEY = 'thor_teste_teste_contas_extras_v1'; // contas criadas
 // O app consulta o último commit que alterou o index.html deste repositório.
 // Se o SHA remoto mudar desde a última versão vista neste aparelho,
 // o botão "Atualizar" do menu lateral fica destacado automaticamente.
-const APP_VERSAO_ATUAL = 'thor-teste-c85'; // força atualização imediata do service worker
+const APP_VERSAO_ATUAL = 'thor-teste-c90-bloqueio'; // força atualização imediata do service worker
 const APP_VERSAO_VISTA_KEY = 'thor_teste_teste_versao_vista'; // mantido por compatibilidade
 const GITHUB_REPO = 'siranildo518-coder/Thor-Teste';
 const GITHUB_ARQUIVOS = ['index.html','app-main.html'];
@@ -15727,7 +15727,7 @@ document.getElementById('homeSideMenu')?.addEventListener('click',()=>document.g
     if(!conta)return;
     ocupado=true;
     try{
-      const resp=await fetch('https://raw.githubusercontent.com/siranildo518-coder/Thor-Teste/main/cadastros-liberados.json?controle='+Date.now(),{cache:'no-store'});
+      const resp=await fetch('https://api.github.com/repos/siranildo518-coder/Thor-Teste/contents/cadastros-liberados.json?ref=main&controle='+Date.now(),{cache:'no-store',headers:{'Accept':'application/vnd.github.raw+json'}});
       if(!resp.ok)throw Error('HTTP '+resp.status);
       const dados=await resp.json();
       if(!Array.isArray(dados.liberacoes))throw Error('Lista invalida');
