@@ -389,6 +389,13 @@
       "expiraEm": "2026-11-01T02:36:44.594Z",
       "ativo": true,
       "cliente": "Marcos"
+    },
+    {
+      "hash": "55b63823af7be134f481e574ca94bd70b97988e7847b78c15515715c362d29cb",
+      "compatHash": "1u94xut",
+      "criadoEm": "2026-10-31T02:40:45.838Z",
+      "expiraEm": "2026-11-01T02:40:45.838Z",
+      "ativo": true
     }
   ]
 }
