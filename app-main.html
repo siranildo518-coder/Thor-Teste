@@ -15716,6 +15716,11 @@ document.getElementById('homeSideMenu')?.addEventListener('click',()=>document.g
 (function(){
   let ocupado=false;
   const prefixo='thor_teste_';
+  function encerrarPorBloqueio(){
+    localStorage.removeItem(prefixo+'teste_login_ok_v1');
+    localStorage.removeItem(prefixo+'teste_hash_atual');
+    location.reload();
+  }
   async function consultar(){
     if(ocupado||localStorage.getItem(prefixo+'teste_login_ok_v1')!=='1')return;
     const conta=localStorage.getItem(prefixo+'teste_hash_atual');
@@ -15727,6 +15732,22 @@ document.getElementById('homeSideMenu')?.addEventListener('click',()=>document.g
       const dados=await resp.json();
       if(!Array.isArray(dados.liberacoes))throw Error('Lista invalida');
       let codigo=localStorage.getItem('thor_teste_codigo_conta_'+conta);
+      // Mesmo quando o código já está em cache, confira se a conta foi bloqueada.
+      // Assim o bloqueio remoto não depende da recuperação do vínculo.
+      if(typeof carregarFirebase==='function'){
+        try{
+          await carregarFirebase();
+          const snap=await dbFirestore.collection('teste_contas_ativadas').doc(conta).get();
+          if(snap.exists){
+            const registro=snap.data()||{};
+            if(registro.bloqueado===true||registro.ativo===false){encerrarPorBloqueio();return;}
+            if(!codigo&&registro.codigoCadastroHash){
+              codigo=registro.codigoCadastroHash;
+              localStorage.setItem('thor_teste_codigo_conta_'+conta,codigo);
+            }
+          }
+        }catch(e){console.warn('Consulta de bloqueio da conta indisponivel',e);}
+      }
       // Recupera o vinculo do Firestore para cadastros anteriores ou outro aparelho.
       if(!codigo&&typeof carregarFirebase==='function'){
         try{
@@ -15737,9 +15758,7 @@ document.getElementById('homeSideMenu')?.addEventListener('click',()=>document.g
             codigo=registro.codigoCadastroHash||'';
             if(codigo)localStorage.setItem('thor_teste_codigo_conta_'+conta,codigo);
             if(registro.bloqueado===true||registro.ativo===false){
-              localStorage.removeItem(prefixo+'teste_login_ok_v1');
-              localStorage.removeItem(prefixo+'teste_hash_atual');
-              location.reload();return;
+              encerrarPorBloqueio();return;
             }
           }
         }catch(e){console.warn('Vinculo de codigo indisponivel',e);}
@@ -15762,14 +15781,12 @@ document.getElementById('homeSideMenu')?.addEventListener('click',()=>document.g
       if(!codigo)return;
       const item=dados.liberacoes.find(x=>x.hash===codigo||x.compatHash===codigo);
       if(!item||item.ativo===false||item.bloqueado===true){
-        localStorage.removeItem(prefixo+'teste_login_ok_v1');
-        localStorage.removeItem(prefixo+'teste_hash_atual');
-        location.reload();
+        encerrarPorBloqueio();return;
       }
     }catch(e){console.warn('Verificacao de codigo indisponivel',e);}
     finally{ocupado=false;}
   }
-  setInterval(consultar,10000);
+  setInterval(consultar,3000);
   window.addEventListener('online',consultar);
   window.addEventListener('focus',consultar);
   document.addEventListener('visibilitychange',function(){if(!document.hidden)consultar();});
