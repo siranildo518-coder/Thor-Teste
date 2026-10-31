@@ -64,7 +64,7 @@ self.addEventListener('activate',event=>{
     await Promise.all(keys.filter(k=>k.startsWith(CACHE_PREFIX)&&k!==CACHE_NAME).map(k=>caches.delete(k)));
     await self.clients.claim();
     const clients=await self.clients.matchAll({type:'window',includeUncontrolled:true});
-    clients.forEach(c=>c.postMessage({type:'THOR_UPDATED',version:'THOR Teste C85',refresh:'c90-bloqueio-sessao'}));
+    clients.forEach(c=>c.postMessage({type:'THOR_UPDATED',version:'THOR Teste C85',refresh:'c92-sem-foto'}));
   })());
 });
 
@@ -86,7 +86,7 @@ self.addEventListener('fetch',event=>{
   const chave=chaveCache(req);
 
   // O Gerador sempre busca primeiro a versão atual para não esconder novas funções.
-  if(['/gerador.html','/index.html','/index-core-thor7.html','/app-main.html','/cadastro-foto-c74.js'].some(p=>u.pathname.endsWith(p)) || req.mode==='navigate'){
+  if(['/gerador.html','/index.html','/index-core-thor7.html','/app-main.html'].some(p=>u.pathname.endsWith(p)) || req.mode==='navigate'){
     event.respondWith((async()=>{
       try{
         const fresh=await respostaAtualizada(req);
