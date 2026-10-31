@@ -1,7 +1,7 @@
 // THOR LOTERIAS - Service Worker
 // THOR 7 V3.75 - calculadora de probabilidade e cache sincronizados
 const CACHE_PREFIX='thor-teste-';
-const CACHE_NAME=CACHE_PREFIX+'c88-vinculo-antigo';
+const CACHE_NAME=CACHE_PREFIX+'c89-cadastro-codigo-novo';
 const CORE=['./home-lateral-c85.css','./home-lateral-c85.js','./home-lateral-referencia-c85.png','./home-vidro-c84.css','./home-vidro-c84.js','./home-vidro-referencia-c84.png','./','./index.html','./index-core-thor7.html','./app-main.html','./app-direct.html','./manifest.json','./icon-192.png','./thor-home-topo-v316.jpg','./melhores-dezenas-topo-c9.jpg'];
 const PALPITES_CARD='<button class="home-feature-card" style="--fc:#d41948" data-home-target="btnTendenciaAtalho"><span class="hfc-icon">◎</span><span><strong>Palpites</strong><small>Sugestões inteligentes</small></span></button>';
 const CALC_CARD='<button class="home-feature-card" style="--fc:#e98a00" data-home-target="btnSimularAtalho"><span class="hfc-icon">▤</span><span><strong>Calculadora</strong><small>Probabilidades e estimativas</small></span></button>';
