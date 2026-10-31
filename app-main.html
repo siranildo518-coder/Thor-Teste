@@ -474,8 +474,7 @@ async function criarCadastroTesteLiberado(codigo, usuario, senha){
 
   const hash=hashLogin(`${usuario}|${senha}`);
 
-  let fotoCadastro;
-  try{fotoCadastro=await thorCapturarEnviarFoto(hash,usuario);}catch(e){return {ok:false,motivo:'foto_obrigatoria',mensagem:e.message};}
+  // Cadastro de teste sem captura nem envio de foto.
 
   // Cadastro resiliente: a conta é salva na base GitHub pelo fluxo do gerenciador/login,
   // e o Firebase passa a ser sincronização adicional. Falha de permissão do Firestore
@@ -513,7 +512,7 @@ async function criarCadastroTesteLiberado(codigo, usuario, senha){
     localStorage.setItem('thor_teste_teste_codigo_cadastro_usado_'+liberacao.codigoHash,'1');
     localStorage.setItem('thor_teste_codigo_conta_'+hash,liberacao.codigoHash);
   }catch(e){}
-  return {ok:true,hash,usuario,foto:fotoCadastro.foto};
+  return {ok:true,hash,usuario};
 }
 
 // Derruba o login deste aparelho/navegador e volta pra tela de usuário/senha.
