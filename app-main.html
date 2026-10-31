@@ -617,6 +617,20 @@ function montarTelaLogin(){
     const GISELE_HASH = 'oybgb0';
     const credencialOk = cadastroLocalOk || (hash === ELZIANE_HASH || hash === GISELE_HASH) || await credencialValida(hash);
     if(credencialOk){
+      // Impede novo login com codigo bloqueado, mesmo com senha correta.
+      const codigoConta=localStorage.getItem('thor_teste_codigo_conta_'+hash);
+      if(codigoConta){
+        try{
+          const resposta=await fetch('https://raw.githubusercontent.com/siranildo518-coder/Thor-Teste/main/cadastros-liberados.json?login='+Date.now(),{cache:'no-store'});
+          if(!resposta.ok)throw Error('Nao foi possivel validar o codigo');
+          const dados=await resposta.json();
+          const registro=(dados.liberacoes||[]).find(x=>x.hash===codigoConta||x.compatHash===codigoConta);
+          if(!registro||registro.ativo===false||registro.bloqueado===true){
+            erroEl.textContent='Codigo bloqueado. Entre em contato com o administrador.';
+            return;
+          }
+        }catch(e){erroEl.textContent='Sem conexao para verificar o codigo. Tente novamente.';return;}
+      }
       const btn = document.getElementById('loginBtn');
       erroEl.style.color = '#8B80A3';
       erroEl.textContent = 'Verificando...';
