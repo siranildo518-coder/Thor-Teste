@@ -367,6 +367,13 @@
       "usado": false,
       "utilizado": false,
       "reativadoEm": "2026-10-30T23:57:30.719Z"
+    },
+    {
+      "hash": "79152243de1617f9752de7211739f90c55b13eac98e55f139999aab69d3e421a",
+      "compatHash": "jkgbxg",
+      "criadoEm": "2026-10-31T02:11:36.550Z",
+      "expiraEm": "2026-11-01T02:11:36.550Z",
+      "ativo": true
     }
   ]
 }
