@@ -15746,6 +15746,21 @@ document.getElementById('homeSideMenu')?.addEventListener('click',()=>document.g
           }
         }catch(e){console.warn('Vinculo de codigo indisponivel',e);}
       }
+      // Cadastros antigos: o documento de consumo guarda contaHash, mas nao havia vinculo na conta.
+      if(!codigo&&typeof carregarFirebase==='function'){
+        try{
+          await carregarFirebase();
+          const bloqueados=dados.liberacoes.filter(x=>x&&x.hash&&(x.ativo===false||x.bloqueado===true));
+          for(const bloqueado of bloqueados){
+            const uso=await dbFirestore.collection('teste_contas_ativadas').doc('cadastro_teste_'+bloqueado.hash).get();
+            if(uso.exists&&uso.data().contaHash===conta){
+              codigo=bloqueado.hash;
+              localStorage.setItem('thor_teste_codigo_conta_'+conta,codigo);
+              break;
+            }
+          }
+        }catch(e){console.warn('Consulta de cadastros anteriores indisponivel',e);}
+      }
       if(!codigo)return;
       const item=dados.liberacoes.find(x=>x.hash===codigo||x.compatHash===codigo);
       if(!item||item.ativo===false||item.bloqueado===true){
