@@ -42,7 +42,7 @@ function carregarFirebase(){
   return _promessaFirebase;
 }
 </script>
-<script src="./cadastro-foto-c74.js?v=c82"></script>
+<!-- Cadastro sem foto: script de captura removido. -->
 <script>
 // ---------- Login por usuário/senha (100% local, não depende de internet) ----------
 // Como adicionar um cliente novo: peça pro Claude gerar o hash de "usuario|senha"
@@ -524,7 +524,7 @@ function sairDoLogin(){
 if(!loginJaValidado()){
   const startupGuard = document.createElement('style');
   startupGuard.id = 'thorLoginStartupGuard';
-  startupGuard.textContent = 'html,body{background:linear-gradient(160deg,#4C1D95,#6D28D9)!important} body>*:not(#loginOverlay):not(#thorCadastroFotoOverlay){visibility:hidden!important}';
+  startupGuard.textContent = 'html,body{background:linear-gradient(160deg,#4C1D95,#6D28D9)!important} body>*:not(#loginOverlay){visibility:hidden!important}';
   document.head.appendChild(startupGuard);
 }
 
