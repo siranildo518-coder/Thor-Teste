@@ -395,7 +395,8 @@
       "compatHash": "1u94xut",
       "criadoEm": "2026-10-31T02:40:45.838Z",
       "expiraEm": "2026-11-01T02:40:45.838Z",
-      "ativo": true
+      "ativo": true,
+      "cliente": "marcos"
     }
   ]
 }
