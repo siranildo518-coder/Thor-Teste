@@ -394,9 +394,12 @@
       "hash": "55b63823af7be134f481e574ca94bd70b97988e7847b78c15515715c362d29cb",
       "compatHash": "1u94xut",
       "criadoEm": "2026-10-31T02:40:45.838Z",
-      "expiraEm": "2026-11-01T02:40:45.838Z",
+      "expiraEm": "2026-11-01T08:38:00.903Z",
       "ativo": true,
-      "cliente": "marcos"
+      "cliente": "marcos",
+      "usado": false,
+      "utilizado": false,
+      "reativadoEm": "2026-10-31T08:38:00.903Z"
     }
   ]
 }
