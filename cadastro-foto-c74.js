@@ -1,11 +1,11 @@
-/* Thor-Teste C82: foto obrigatória, câmera frontal e confirmação do servidor. */
+/* Thor-Teste C90: foto obrigatória, câmera frontal e confirmação do servidor. */
 async function thorCapturarEnviarFoto(contaHash, usuario) {
   if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia) throw new Error('Abra o Thor-Teste por HTTPS e permita o acesso à câmera.');
   return new Promise((resolve, reject) => {
     const box = document.createElement('dialog');
     box.id='thorCadastroFotoOverlay';
     box.style.cssText='position:fixed;inset:0;z-index:2147483647;margin:0;border:0;box-sizing:border-box;width:100vw;height:100dvh;max-width:none;max-height:none;background:#241438;overflow:auto;padding:18px;display:grid;place-items:center;color:#222';
-    box.innerHTML='<section style="background:white;border-radius:16px;padding:18px;max-width:350px;width:100%;box-sizing:border-box"><h2 style="margin:0 0 8px">Foto do cadastro</h2><p>Mostre seu rosto inteiro, com boa iluminação.</p><video autoplay playsinline muted style="width:100%;max-height:300px;border-radius:12px;transform:scaleX(-1)"></video><img alt="Foto que será enviada" hidden style="width:100%;max-height:300px;object-fit:contain;border-radius:12px"><p role="status"></p><div style="display:flex;flex-wrap:wrap;gap:8px"><button data-action="capture" disabled>Tirar foto</button><button data-action="retake" hidden>Tirar novamente</button><button data-action="send" hidden>Enviar foto</button></div><small style="display:block;margin-top:12px">Thor-Teste C82</small></section>';
+    box.innerHTML='<section style="background:white;border-radius:16px;padding:18px;max-width:350px;width:100%;box-sizing:border-box"><h2 style="margin:0 0 8px">Foto do cadastro</h2><p>Mostre seu rosto inteiro, com boa iluminação.</p><video autoplay playsinline muted style="width:100%;max-height:300px;border-radius:12px;transform:scaleX(-1)"></video><img alt="Foto que será enviada" hidden style="width:100%;max-height:300px;object-fit:contain;border-radius:12px"><p role="status"></p><div style="display:flex;flex-wrap:wrap;gap:8px"><button data-action="capture" disabled>Tirar foto</button><button data-action="retake" hidden>Tirar novamente</button><button data-action="send" hidden>Enviar foto</button></div><small style="display:block;margin-top:12px">Thor-Teste C90</small></section>';
     box.querySelectorAll('button').forEach(b=>b.style.cssText='padding:12px;border-radius:9px;border:1px solid #ddd;background:#5b21b6;color:white');
     document.body.append(box);
     if(typeof box.showModal==='function')box.showModal();
@@ -56,7 +56,7 @@ async function thorSalvarFotoTeste(contaHash,usuario,foto){
       thorFotoAuth={uid:a.localId,token:a.idToken,expires:Date.now()+Number(a.expiresIn)*1000-60000};
     }
     const url='https://firestore.googleapis.com/v1/projects/'+firebaseConfig.projectId+'/databases/(default)/documents/fotos_cadastro_teste/'+thorFotoAuth.uid;
-    const fields={contaHash:{stringValue:contaHash},usuario:{stringValue:usuario},foto:{stringValue:foto},consentimento:{booleanValue:true},enviadoEm:{timestampValue:new Date().toISOString()},ambiente:{stringValue:'Thor-Teste C74'}};
+    const fields={contaHash:{stringValue:contaHash},usuario:{stringValue:usuario},foto:{stringValue:foto},consentimento:{booleanValue:true},enviadoEm:{timestampValue:new Date().toISOString()},ambiente:{stringValue:'Thor-Teste C90'}};
     const headers={'Content-Type':'application/json',Authorization:'Bearer '+thorFotoAuth.token};
     await thorFotoRequest(url,{method:'PATCH',headers,body:JSON.stringify({fields})});
     const saved=await thorFotoRequest(url,{headers,cache:'no-store'});
@@ -64,6 +64,7 @@ async function thorSalvarFotoTeste(contaHash,usuario,foto){
     return {foto,documento:thorFotoAuth.uid};
   }catch(e){
     if(/PERMISSION_DENIED|OPERATION_NOT_ALLOWED|insufficient permissions|Missing or insufficient/i.test(e.message))throw new Error('O envio de fotos ainda precisa ser habilitado no Firebase pelo administrador. O cadastro permanece bloqueado.');
-    throw new Error('Não foi possível confirmar o envio online. Verifique a internet e toque em Enviar foto novamente.');
+    console.error('Falha real ao confirmar foto no Firebase:',e);
+    throw new Error('Falha na confirmação da foto: '+String(e.message||'erro de rede')+'. Verifique a conexão e tente novamente.');
   }
 }
