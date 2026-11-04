@@ -1,0 +1,20 @@
+name: Matriz Turbo - Firefox remoto
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  testar-firefox:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Instalar Playwright
+        run: |
+          python3 -m pip install playwright
+          python3 -m playwright install --with-deps firefox
+      - name: Abrir Lotobanca no Firefox remoto
+        env:
+          LOTOBANCA_LOGIN: ${{ secrets.LOTOBANCA_LOGIN }}
+          LOTOBANCA_SENHA: ${{ secrets.LOTOBANCA_SENHA }}
+        run: python3 thor-turbo/matriz-firefox-remoto.py
