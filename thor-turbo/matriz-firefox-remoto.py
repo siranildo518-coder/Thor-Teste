@@ -65,7 +65,24 @@ def main():
             print("Falhas por motivo:", dict(Counter(reason[:90] for _, reason in request_failures)))
             print("Respostas HTTP >=400:", dict(Counter(str(status) for status, _ in bad_responses)))
             print("Dominios HTTP >=400:", dict(Counter(host for _, host in bad_responses)))
-            print("Credenciais utilizadas: NAO")
+            cpf = os.getenv("LOTOBANCA_LOGIN", "").strip()
+            senha = os.getenv("LOTOBANCA_SENHA", "")
+            if cpf and senha:
+                print("Tentativa de login: INICIADA")
+                # Coordenadas verificadas na captura da tela Flutter 1280x720.
+                # Nao imprimir valores nem capturar imagens apos preencher credenciais.
+                page.mouse.click(970, 306)
+                page.keyboard.insert_text(cpf)
+                page.mouse.click(970, 395)
+                page.keyboard.insert_text(senha)
+                page.mouse.click(980, 500)
+                page.wait_for_timeout(8000)
+                print("Tentativa de login: ENVIADA")
+                print("Dominio apos tentativa:", urlparse(page.url).hostname)
+                print("Flutter presente apos tentativa:", page.locator("flutter-view").count() > 0)
+                print("Observacao: login nao confirmado; necessita verificacao da sessao.")
+            else:
+                print("Tentativa de login: IGNORADA (secrets ausentes)")
             print("Resultados existentes: NAO ALTERADOS")
         except Exception as exc:
             print("Diagnostico interrompido:", type(exc).__name__)
