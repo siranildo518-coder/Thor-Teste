@@ -1,5 +1,6 @@
 """Diagnostico da renderizacao, sem registrar dados pessoais nem conteudo da pagina."""
 import os
+import importlib.util
 from pathlib import Path
 from collections import Counter
 from urllib.parse import urlparse
@@ -125,6 +126,7 @@ def main():
         result_responses = []
         matriz85_responses = []
         api_diagnostics = []
+        payloads_validos = []
         post_login_traffic = []
         page.on("pageerror", lambda err: js_errors.append(str(err)))
         page.on("requestfailed", lambda req: request_failures.append((urlparse(req.url).hostname or "?", req.failure or "falha")))
@@ -180,6 +182,8 @@ def main():
                     diagnostic["formato"] = type(payload).__name__
                 diagnostic["estrutura_result"] = diagnosticar_result(payload)
                 diagnostic["registros_validos"] = contar_registros_matriz85(payload)
+                if resp.status == 200 and diagnostic["registros_validos"] > 0:
+                    payloads_validos.append(payload)
                 record["validos_matriz85"] = contar_registros_matriz85(payload)
                 record["json"] = isinstance(payload, (list, dict))
                 if isinstance(payload, list):
@@ -327,7 +331,13 @@ def main():
                     print("Leitura confirmada: NAO -", type(exc).__name__)
             else:
                 print("Tentativa de login: IGNORADA (secrets ausentes)")
-            print("Resultados existentes: NAO ALTERADOS")
+            if payloads_validos:
+                spec = importlib.util.spec_from_file_location("extrator_turbo", "thor-turbo/atualizar-resultados-remoto.py")
+                modulo = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(modulo)
+                modulo.atualizar(payloads_validos)
+            else:
+                print("Resultados existentes: NAO ALTERADOS - sem concursos validos")
         except Exception as exc:
             print("Diagnostico interrompido:", type(exc).__name__)
         finally:
