@@ -1,0 +1,1 @@
+THOR Turbo: integração da fonte de resultados em preparação. A atualização automática ainda não está ativa.
