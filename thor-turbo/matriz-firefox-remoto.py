@@ -21,6 +21,12 @@ def inspect(page, label):
     print("Body filhos:", page.locator("body > *").count())
     print("Body tags:", dict(Counter(page.locator("body > *").evaluate_all("(els) => els.map(e => e.tagName.toLowerCase())"))))
     print("Estado documento:", page.evaluate("document.readyState"))
+    print("Flutter views:", page.locator("flutter-view").count())
+    print("Semantics hosts:", page.locator("flt-semantics-host").count())
+    print("Canvas:", page.locator("canvas").count())
+    print("Botoes acessiveis:", page.get_by_role("button").count())
+    print("Inputs acessiveis:", page.get_by_role("textbox").count())
+    print("Viewport:", page.viewport_size)
 
 def main():
     with sync_playwright() as p:
