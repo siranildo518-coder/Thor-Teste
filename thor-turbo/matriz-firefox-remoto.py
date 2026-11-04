@@ -37,9 +37,12 @@ def main():
         js_errors = []
         request_failures = []
         bad_responses = []
+        auth_requests = []
         page.on("pageerror", lambda err: js_errors.append(str(err)))
         page.on("requestfailed", lambda req: request_failures.append((urlparse(req.url).hostname or "?", req.failure or "falha")))
         page.on("response", lambda resp: bad_responses.append((resp.status, urlparse(resp.url).hostname or "?")) if resp.status >= 400 else None)
+        # Registrar apenas metadados de requisicoes POST, nunca URL, corpo, cookies ou tokens.
+        page.on("response", lambda resp: auth_requests.append(resp.status) if resp.request.method == "POST" and urlparse(resp.url).hostname in ("turbo.lotobanca.com", "api.lotobanca.com") else None)
         try:
             response = page.goto(SITE, wait_until="domcontentloaded", timeout=45000)
             print("Firefox iniciou: SIM")
@@ -69,6 +72,7 @@ def main():
             senha = os.getenv("LOTOBANCA_SENHA", "")
             if cpf and senha:
                 print("Tentativa de login: INICIADA")
+                posts_antes = len(auth_requests)
                 # Coordenadas verificadas na captura da tela Flutter 1280x720.
                 # Nao imprimir valores nem capturar imagens apos preencher credenciais.
                 page.mouse.click(970, 306)
@@ -78,6 +82,10 @@ def main():
                 page.mouse.click(980, 500)
                 page.wait_for_timeout(8000)
                 print("Tentativa de login: ENVIADA")
+                print("POSTs Lotobanca apos clique:", len(auth_requests) - posts_antes)
+                print("Status HTTP dos POSTs:", auth_requests[posts_antes:])
+                print("Indicador de autenticacao:", "INDETERMINADO - confirmar acesso protegido")
+                # Nenhum conteudo autenticado ou credencial e gravado em artefatos.
                 print("Dominio apos tentativa:", urlparse(page.url).hostname)
                 print("Flutter presente apos tentativa:", page.locator("flutter-view").count() > 0)
                 print("Observacao: login nao confirmado; necessita verificacao da sessao.")
