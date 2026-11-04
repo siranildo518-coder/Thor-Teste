@@ -38,11 +38,28 @@ def main():
         request_failures = []
         bad_responses = []
         auth_requests = []
+        auth_signals = []
         page.on("pageerror", lambda err: js_errors.append(str(err)))
         page.on("requestfailed", lambda req: request_failures.append((urlparse(req.url).hostname or "?", req.failure or "falha")))
         page.on("response", lambda resp: bad_responses.append((resp.status, urlparse(resp.url).hostname or "?")) if resp.status >= 400 else None)
         # Registrar apenas metadados de requisicoes POST, nunca URL, corpo, cookies ou tokens.
         page.on("response", lambda resp: auth_requests.append(resp.status) if resp.request.method == "POST" and urlparse(resp.url).hostname in ("turbo.lotobanca.com", "api.lotobanca.com") else None)
+        def check_auth_response(resp):
+            if resp.request.method != "POST" or urlparse(resp.url).hostname not in ("turbo.lotobanca.com", "api.lotobanca.com"):
+                return
+            try:
+                data = resp.json()
+                if not isinstance(data, dict):
+                    return
+                if isinstance(data.get("sessionToken"), str) and data["sessionToken"]:
+                    auth_signals.append("SESSION_TOKEN")
+                if data.get("success") is True:
+                    auth_signals.append("SUCCESS_TRUE")
+                if data.get("success") is False or data.get("error") or data.get("errors"):
+                    auth_signals.append("ERROR_REPORTED")
+            except Exception:
+                pass
+        page.on("response", check_auth_response)
         try:
             response = page.goto(SITE, wait_until="domcontentloaded", timeout=45000)
             print("Firefox iniciou: SIM")
@@ -73,6 +90,7 @@ def main():
             if cpf and senha:
                 print("Tentativa de login: INICIADA")
                 posts_antes = len(auth_requests)
+                sinais_antes = len(auth_signals)
                 # Coordenadas verificadas na captura da tela Flutter 1280x720.
                 # Nao imprimir valores nem capturar imagens apos preencher credenciais.
                 page.mouse.click(970, 306)
@@ -84,7 +102,14 @@ def main():
                 print("Tentativa de login: ENVIADA")
                 print("POSTs Lotobanca apos clique:", len(auth_requests) - posts_antes)
                 print("Status HTTP dos POSTs:", auth_requests[posts_antes:])
-                print("Indicador de autenticacao:", "INDETERMINADO - confirmar acesso protegido")
+                novos_sinais = auth_signals[sinais_antes:]
+                print("Sinais de autenticacao:", dict(Counter(novos_sinais)))
+                if "SESSION_TOKEN" in novos_sinais:
+                    print("Indicador de autenticacao: TOKEN DE SESSAO RECEBIDO")
+                elif "ERROR_REPORTED" in novos_sinais:
+                    print("Indicador de autenticacao: RESPOSTA COM ERRO - verificar login")
+                else:
+                    print("Indicador de autenticacao: INDETERMINADO - sem comprovacao de sessao")
                 # Nenhum conteudo autenticado ou credencial e gravado em artefatos.
                 print("Dominio apos tentativa:", urlparse(page.url).hostname)
                 print("Flutter presente apos tentativa:", page.locator("flutter-view").count() > 0)
