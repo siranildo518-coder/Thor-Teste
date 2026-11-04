@@ -39,6 +39,7 @@ def main():
         bad_responses = []
         auth_requests = []
         auth_signals = []
+        result_responses = []
         page.on("pageerror", lambda err: js_errors.append(str(err)))
         page.on("requestfailed", lambda req: request_failures.append((urlparse(req.url).hostname or "?", req.failure or "falha")))
         page.on("response", lambda resp: bad_responses.append((resp.status, urlparse(resp.url).hostname or "?")) if resp.status >= 400 else None)
@@ -60,6 +61,30 @@ def main():
             except Exception:
                 pass
         page.on("response", check_auth_response)
+        def check_results_response(resp):
+            # Apenas observar trafego autorizado do proprio navegador.
+            # Nao reproduzir chamadas, nem imprimir URL, dados ou credenciais.
+            host = urlparse(resp.url).hostname or ""
+            path = urlparse(resp.url).path.lower()
+            if host not in ("turbo.lotobanca.com", "api.lotobanca.com"):
+                return
+            if "sorteio" not in path and "resultado" not in path:
+                return
+            if resp.request.resource_type == "document":
+                return
+            record = {"status": resp.status, "method": resp.request.method}
+            try:
+                payload = resp.json()
+                record["json"] = isinstance(payload, (list, dict))
+                if isinstance(payload, list):
+                    record["itens"] = len(payload)
+                elif isinstance(payload, dict):
+                    record["itens"] = max((len(v) for v in payload.values() if isinstance(v, list)), default=0)
+            except Exception:
+                record["json"] = False
+                record["itens"] = 0
+            result_responses.append(record)
+        page.on("response", check_results_response)
         try:
             response = page.goto(SITE, wait_until="domcontentloaded", timeout=45000)
             print("Firefox iniciou: SIM")
@@ -113,7 +138,20 @@ def main():
                 # Nenhum conteudo autenticado ou credencial e gravado em artefatos.
                 print("Dominio apos tentativa:", urlparse(page.url).hostname)
                 print("Flutter presente apos tentativa:", page.locator("flutter-view").count() > 0)
-                print("Observacao: login nao confirmado; necessita verificacao da sessao.")
+                print("Observacao: token recebido nao prova acesso a resultados.")
+                print("Etapa: verificar leitura dos sorteios pela sessao atual")
+                antes_resultados = len(result_responses)
+                try:
+                    page.goto(SITE, wait_until="domcontentloaded", timeout=20000)
+                    page.wait_for_timeout(7000)
+                    novos = result_responses[antes_resultados:]
+                    print("Respostas de resultados observadas:", len(novos))
+                    print("Status de resultados:", dict(Counter(str(item["status"]) for item in novos)))
+                    print("Respostas JSON de resultados:", sum(1 for item in novos if item["json"]))
+                    print("Maior lista de sorteios observada:", max((item["itens"] for item in novos), default=0))
+                    print("Leitura confirmada:", "SIM" if any(item["status"] == 200 and item["json"] and item["itens"] > 0 for item in novos) else "NAO - diagnostico pendente")
+                except Exception as exc:
+                    print("Leitura confirmada: NAO -", type(exc).__name__)
             else:
                 print("Tentativa de login: IGNORADA (secrets ausentes)")
             print("Resultados existentes: NAO ALTERADOS")
