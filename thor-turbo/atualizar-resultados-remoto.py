@@ -93,7 +93,7 @@ def atualizar(payloads):
         return False
     atual["records"] = sorted(unidos.values(), key=lambda r: (str(r.get("scheduledAt", "")), str(r.get("modalidade", "")), int(r.get("sorteio", 1))), reverse=True)
     atual["dataExportacao"] = datetime.now(timezone.utc).isoformat(timespec="milliseconds").replace("+00:00", "Z")
-    ARQUIVO.write_text(json.dumps(atual, ensure_ascii=False, separators=(",", ":")) + "\\n", encoding="utf-8")
+    ARQUIVO.write_text(json.dumps(atual, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
     print("Atualizacao: novos concursos adicionados:", acrescentados)
     print("Historico total:", len(atual["records"]))
     return True
