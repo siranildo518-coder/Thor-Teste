@@ -81,6 +81,38 @@ def main():
                     record["itens"] = len(payload)
                 elif isinstance(payload, dict):
                     record["itens"] = max((len(v) for v in payload.values() if isinstance(v, list)), default=0)
+                # Diagnostico apenas estrutural, sem exibir valores, chaves
+                # arbitrarias ou qualquer dado pessoal.
+                if isinstance(payload, dict):
+                    record["raiz"] = "objeto"
+                    record["campos_raiz"] = len(payload)
+                    record["tipos_raiz"] = dict(Counter(
+                        "lista" if isinstance(v, list) else
+                        "objeto" if isinstance(v, dict) else
+                        "texto" if isinstance(v, str) else
+                        "numero" if isinstance(v, (int, float)) else
+                        "outro"
+                        for v in payload.values()
+                    ))
+                    record["listas_raiz"] = sorted(
+                        (len(v) for v in payload.values() if isinstance(v, list)),
+                        reverse=True
+                    )[:5]
+                    record["objetos_raiz"] = sum(isinstance(v, dict) for v in payload.values())
+                    record["listas_aninhadas"] = sorted(
+                        (len(nested) for v in payload.values() if isinstance(v, dict)
+                         for nested in v.values() if isinstance(nested, list)),
+                        reverse=True
+                    )[:5]
+                elif isinstance(payload, list):
+                    record["raiz"] = "lista"
+                    record["campos_raiz"] = 0
+                    record["tipos_raiz"] = {}
+                    record["listas_raiz"] = [len(payload)]
+                    record["objetos_raiz"] = 0
+                    record["listas_aninhadas"] = []
+                else:
+                    record["raiz"] = "outro"
             except Exception:
                 record["json"] = False
                 record["itens"] = 0
@@ -160,6 +192,15 @@ def main():
                     print("Status de resultados:", dict(Counter(str(item["status"]) for item in novos)))
                     print("Respostas JSON de resultados:", sum(1 for item in novos if item["json"]))
                     print("Maior lista de sorteios observada:", max((item["itens"] for item in novos), default=0))
+                    for idx, item in enumerate(novos[:3], 1):
+                        print("Estrutura resposta", idx, ":", {
+                            "raiz": item.get("raiz", "nao-json"),
+                            "campos_raiz": item.get("campos_raiz", 0),
+                            "tipos_raiz": item.get("tipos_raiz", {}),
+                            "listas_raiz": item.get("listas_raiz", []),
+                            "objetos_raiz": item.get("objetos_raiz", 0),
+                            "listas_aninhadas": item.get("listas_aninhadas", []),
+                        })
                     print("Leitura confirmada:", "SIM" if any(item["status"] == 200 and item["json"] and item["itens"] > 0 for item in novos) else "NAO - diagnostico pendente")
                     trafego = post_login_traffic[antes_trafego:]
                     print("Chamadas XHR/fetch apos navegacao:", len(trafego))
