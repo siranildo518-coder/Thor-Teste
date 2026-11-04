@@ -94,6 +94,7 @@ def main():
         auth_signals = []
         result_responses = []
         matriz85_responses = []
+        api_diagnostics = []
         post_login_traffic = []
         page.on("pageerror", lambda err: js_errors.append(str(err)))
         page.on("requestfailed", lambda req: request_failures.append((urlparse(req.url).hostname or "?", req.failure or "falha")))
@@ -128,8 +129,26 @@ def main():
             if resp.request.resource_type == "document":
                 return
             record = {"status": resp.status, "method": resp.request.method}
+            # Identificar falha HTTP e formato sem imprimir corpo, chaves
+            # livres, URL, token ou qualquer dado da conta.
+            diagnostic = {"http": resp.status, "metodo": resp.request.method,
+                          "tipo_conteudo": "json" if "json" in (resp.headers.get("content-type") or "").lower() else "outro",
+                          "campos_esperados": [], "registros": 0}
+            api_diagnostics.append(diagnostic)
             try:
                 payload = resp.json()
+                expected = ("results", "result", "data", "items", "sorteios", "lotteryName",
+                            "lotteryKey", "sorteioNumber", "resultNumbers", "scheduledAt",
+                            "error", "code", "message")
+                if isinstance(payload, dict):
+                    diagnostic["campos_esperados"] = [key for key in expected if key in payload]
+                    diagnostic["formato"] = "objeto"
+                elif isinstance(payload, list):
+                    diagnostic["formato"] = "lista"
+                    diagnostic["registros"] = len(payload)
+                else:
+                    diagnostic["formato"] = type(payload).__name__
+                diagnostic["registros_validos"] = contar_registros_matriz85(payload)
                 record["validos_matriz85"] = contar_registros_matriz85(payload)
                 record["json"] = isinstance(payload, (list, dict))
                 if isinstance(payload, list):
@@ -169,6 +188,7 @@ def main():
                 else:
                     record["raiz"] = "outro"
             except Exception:
+                diagnostic["formato"] = "nao-json-ou-indisponivel"
                 record["json"] = False
                 record["itens"] = 0
             result_responses.append(record)
@@ -248,6 +268,10 @@ def main():
                     print("API identificada pela Matriz 8.5:", API_MATRIZ85)
                     print("Respostas da API apos navegacao:", len(novos))
                     print("Respostas da API desde abertura:", len(matriz85_responses))
+                    print("Diagnostico API Matriz 8.5 (sem dados privados):", api_diagnostics[:8])
+                    print("Status HTTP API Matriz 8.5:", dict(Counter(str(x["http"]) for x in api_diagnostics)))
+                    print("HTTP 502 na API de sorteios:", sum(x["http"] == 502 for x in api_diagnostics))
+                    print("API sem registros validos:", not any(x.get("registros_validos", 0) > 0 for x in api_diagnostics))
                     print("Concursos validos conforme Matriz 8.5:", max((x.get("validos_matriz85", 0) for x in matriz85_responses), default=0))
                     print("Respostas de resultados observadas:", len(novos))
                     print("Status de resultados:", dict(Counter(str(item["status"]) for item in novos)))
