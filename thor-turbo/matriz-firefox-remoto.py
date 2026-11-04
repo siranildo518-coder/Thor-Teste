@@ -40,6 +40,7 @@ def main():
         auth_requests = []
         auth_signals = []
         result_responses = []
+        post_login_traffic = []
         page.on("pageerror", lambda err: js_errors.append(str(err)))
         page.on("requestfailed", lambda req: request_failures.append((urlparse(req.url).hostname or "?", req.failure or "falha")))
         page.on("response", lambda resp: bad_responses.append((resp.status, urlparse(resp.url).hostname or "?")) if resp.status >= 400 else None)
@@ -85,6 +86,15 @@ def main():
                 record["itens"] = 0
             result_responses.append(record)
         page.on("response", check_results_response)
+        def traffic_summary(resp):
+            host = urlparse(resp.url).hostname or ""
+            if host not in ("turbo.lotobanca.com", "api.lotobanca.com"):
+                return
+            if resp.request.resource_type not in ("fetch", "xhr"):
+                return
+            # Guardar somente metadados: sem URLs, parametros, headers, cookies ou payloads.
+            post_login_traffic.append((resp.request.method, resp.status, host, resp.request.resource_type))
+        page.on("response", traffic_summary)
         try:
             response = page.goto(SITE, wait_until="domcontentloaded", timeout=45000)
             print("Firefox iniciou: SIM")
@@ -141,6 +151,7 @@ def main():
                 print("Observacao: token recebido nao prova acesso a resultados.")
                 print("Etapa: verificar leitura dos sorteios pela sessao atual")
                 antes_resultados = len(result_responses)
+                antes_trafego = len(post_login_traffic)
                 try:
                     page.goto(SITE, wait_until="domcontentloaded", timeout=20000)
                     page.wait_for_timeout(7000)
@@ -150,6 +161,11 @@ def main():
                     print("Respostas JSON de resultados:", sum(1 for item in novos if item["json"]))
                     print("Maior lista de sorteios observada:", max((item["itens"] for item in novos), default=0))
                     print("Leitura confirmada:", "SIM" if any(item["status"] == 200 and item["json"] and item["itens"] > 0 for item in novos) else "NAO - diagnostico pendente")
+                    trafego = post_login_traffic[antes_trafego:]
+                    print("Chamadas XHR/fetch apos navegacao:", len(trafego))
+                    print("Chamadas por metodo e status:", dict(Counter(f"{method} HTTP {status}" for method, status, _, _ in trafego)))
+                    print("Chamadas por dominio:", dict(Counter(host for _, _, host, _ in trafego)))
+                    print("Chamadas por tipo:", dict(Counter(kind for _, _, _, kind in trafego)))
                 except Exception as exc:
                     print("Leitura confirmada: NAO -", type(exc).__name__)
             else:
