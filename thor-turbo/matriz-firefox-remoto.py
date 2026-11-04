@@ -60,6 +60,36 @@ def contar_registros_matriz85(payload):
     walk(payload)
     return len(validos)
 
+def diagnosticar_result(payload):
+    """Somente formato, contagens e nomes permitidos; nunca valores da resposta."""
+    tipos = {dict: "objeto", list: "lista", str: "texto", int: "numero",
+             float: "numero", bool: "booleano", type(None): "nulo"}
+    def tipo(v):
+        return tipos.get(type(v), "outro")
+    if not isinstance(payload, dict) or "result" not in payload:
+        return {"campo_result": "ausente"}
+    value = payload["result"]
+    info = {"campo_result": "presente", "tipo": tipo(value)}
+    if isinstance(value, list):
+        info["quantidade"] = len(value)
+        info["tipos_itens"] = dict(Counter(tipo(x) for x in value[:100]))
+        if value and isinstance(value[0], dict):
+            permitidos = ("lotteryName", "lotteryKey", "sorteioNumber",
+                          "resultNumbers", "scheduledAt", "data", "items", "results")
+            info["campos_primeiro_item"] = [k for k in permitidos if k in value[0]]
+    elif isinstance(value, dict):
+        permitidos = ("lotteryName", "lotteryKey", "sorteioNumber",
+                      "resultNumbers", "scheduledAt", "data", "items", "results",
+                      "sorteios", "error", "code", "message")
+        info["campos_reconhecidos"] = [k for k in permitidos if k in value]
+        info["total_campos"] = len(value)
+        info["tipos_valores"] = dict(Counter(tipo(v) for v in value.values()))
+        info["tamanhos_listas"] = sorted((len(v) for v in value.values() if isinstance(v, list)), reverse=True)[:5]
+    elif isinstance(value, str):
+        info["texto_vazio"] = not bool(value.strip())
+        info["comprimento_texto"] = len(value)
+    return info
+
 def inspect(page, label):
     print("Etapa:", label)
     print("Dominio final:", urlparse(page.url).hostname)
@@ -148,6 +178,7 @@ def main():
                     diagnostic["registros"] = len(payload)
                 else:
                     diagnostic["formato"] = type(payload).__name__
+                diagnostic["estrutura_result"] = diagnosticar_result(payload)
                 diagnostic["registros_validos"] = contar_registros_matriz85(payload)
                 record["validos_matriz85"] = contar_registros_matriz85(payload)
                 record["json"] = isinstance(payload, (list, dict))
