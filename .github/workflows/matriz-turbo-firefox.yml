@@ -20,3 +20,11 @@ jobs:
           LOTOBANCA_LOGIN: ${{ secrets.LOTOBANCA_LOGIN }}
           LOTOBANCA_SENHA: ${{ secrets.LOTOBANCA_SENHA }}
         run: python3 thor-turbo/matriz-firefox-remoto.py
+      - name: Guardar captura diagnostica da tela sem login
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tela-lotobanca-sem-login
+          path: diagnostico/tela-lotobanca.png
+          if-no-files-found: ignore
+          retention-days: 1
