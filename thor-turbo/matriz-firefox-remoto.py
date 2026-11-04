@@ -7,6 +7,59 @@ from playwright.sync_api import sync_playwright
 
 SITE = "https://turbo.lotobanca.com/loto-turbo/resultados"
 
+API_MATRIZ85 = "loto-turbo-listar-sorteios"
+TAMANHOS_MATRIZ85 = {
+    "Lotomania Turbo": (20, 0, 100),
+    "Lotofácil Turbo": (15, 1, 25),
+    "Mega-Sena Turbo": (6, 1, 60),
+    "Quina Turbo": (5, 1, 80),
+    "Dia de Sorte Turbo": (7, 1, 31),
+    "Dupla Sena Turbo": (6, 1, 50),
+}
+
+def contar_registros_matriz85(payload):
+    """Replica a validacao essencial da Matriz 8.5, sem salvar ou expor dezenas."""
+    import unicodedata
+    def normalizar(v):
+        return "".join(c for c in unicodedata.normalize("NFD", str(v or ""))
+                       if unicodedata.category(c) != "Mn").lower()
+    visitados = set()
+    validos = set()
+    def walk(node, depth=0):
+        if depth > 18 or not isinstance(node, (dict, list)) or id(node) in visitados:
+            return
+        visitados.add(id(node))
+        if isinstance(node, list):
+            for v in node[:3000]:
+                walk(v, depth + 1)
+            return
+        nome_raw = normalizar(node.get("lotteryName") or node.get("lotteryKey"))
+        nome = next((n for n in TAMANHOS_MATRIZ85 if normalizar(n) in nome_raw), None)
+        if nome:
+            tamanho, minimo, maximo = TAMANHOS_MATRIZ85[nome]
+            dezenas = node.get("resultNumbers")
+            if isinstance(dezenas, str):
+                import re
+                dezenas = re.findall(r"\\d{1,3}", dezenas) if re.fullmatch(r"[\\d\\s,;|.\\-]+", dezenas) else None
+            if isinstance(dezenas, list) and len(dezenas) == tamanho:
+                try:
+                    nums = [int(x) for x in dezenas]
+                    concurso = str(node.get("sorteioNumber") or "")
+                    if (all(str(x).strip().isdigit() for x in dezenas)
+                            and len(set(nums)) == tamanho
+                            and all(minimo <= n <= maximo for n in nums)
+                            and concurso.isdigit()
+                            and node.get("scheduledAt")):
+                        validos.add((nome, concurso))
+                except (ValueError, TypeError):
+                    pass
+        for k, v in node.items():
+            if any(x in k.lower() for x in ("senha", "token", "auth", "session", "user", "cpf", "email", "telefone", "wallet", "saldo")):
+                continue
+            walk(v, depth + 1)
+    walk(payload)
+    return len(validos)
+
 def inspect(page, label):
     print("Etapa:", label)
     print("Dominio final:", urlparse(page.url).hostname)
@@ -40,6 +93,7 @@ def main():
         auth_requests = []
         auth_signals = []
         result_responses = []
+        matriz85_responses = []
         post_login_traffic = []
         page.on("pageerror", lambda err: js_errors.append(str(err)))
         page.on("requestfailed", lambda req: request_failures.append((urlparse(req.url).hostname or "?", req.failure or "falha")))
@@ -69,13 +123,14 @@ def main():
             path = urlparse(resp.url).path.lower()
             if host not in ("turbo.lotobanca.com", "api.lotobanca.com"):
                 return
-            if "sorteio" not in path and "resultado" not in path:
+            if API_MATRIZ85 not in path:
                 return
             if resp.request.resource_type == "document":
                 return
             record = {"status": resp.status, "method": resp.request.method}
             try:
                 payload = resp.json()
+                record["validos_matriz85"] = contar_registros_matriz85(payload)
                 record["json"] = isinstance(payload, (list, dict))
                 if isinstance(payload, list):
                     record["itens"] = len(payload)
@@ -117,6 +172,7 @@ def main():
                 record["json"] = False
                 record["itens"] = 0
             result_responses.append(record)
+            matriz85_responses.append(record)
         page.on("response", check_results_response)
         def traffic_summary(resp):
             host = urlparse(resp.url).hostname or ""
@@ -183,11 +239,16 @@ def main():
                 print("Observacao: token recebido nao prova acesso a resultados.")
                 print("Etapa: verificar leitura dos sorteios pela sessao atual")
                 antes_resultados = len(result_responses)
+                antes_matriz = len(matriz85_responses)
                 antes_trafego = len(post_login_traffic)
                 try:
                     page.goto(SITE, wait_until="domcontentloaded", timeout=20000)
                     page.wait_for_timeout(7000)
                     novos = result_responses[antes_resultados:]
+                    print("API identificada pela Matriz 8.5:", API_MATRIZ85)
+                    print("Respostas da API apos navegacao:", len(novos))
+                    print("Respostas da API desde abertura:", len(matriz85_responses))
+                    print("Concursos validos conforme Matriz 8.5:", max((x.get("validos_matriz85", 0) for x in matriz85_responses), default=0))
                     print("Respostas de resultados observadas:", len(novos))
                     print("Status de resultados:", dict(Counter(str(item["status"]) for item in novos)))
                     print("Respostas JSON de resultados:", sum(1 for item in novos if item["json"]))
@@ -201,7 +262,7 @@ def main():
                             "objetos_raiz": item.get("objetos_raiz", 0),
                             "listas_aninhadas": item.get("listas_aninhadas", []),
                         })
-                    print("Leitura confirmada:", "SIM" if any(item["status"] == 200 and item["json"] and item["itens"] > 0 for item in novos) else "NAO - diagnostico pendente")
+                    print("Leitura confirmada:", "SIM" if any(item["status"] == 200 and item.get("validos_matriz85", 0) > 0 for item in matriz85_responses) else "NAO - diagnostico pendente")
                     trafego = post_login_traffic[antes_trafego:]
                     print("Chamadas XHR/fetch apos navegacao:", len(trafego))
                     print("Chamadas por metodo e status:", dict(Counter(f"{method} HTTP {status}" for method, status, _, _ in trafego)))
