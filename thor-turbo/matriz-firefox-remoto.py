@@ -1,5 +1,6 @@
 """Diagnostico da renderizacao, sem registrar dados pessoais nem conteudo da pagina."""
 import os
+from pathlib import Path
 from collections import Counter
 from urllib.parse import urlparse
 from playwright.sync_api import sync_playwright
@@ -48,6 +49,14 @@ def main():
             inspect(page, "apos 5 segundos")
             page.wait_for_timeout(7000)
             inspect(page, "apos 12 segundos")
+            print("Botoes acessiveis:", page.get_by_role("button").count())
+            for index in range(min(page.get_by_role("button").count(), 5)):
+                button = page.get_by_role("button").nth(index)
+                print("Botao acessivel", index + 1, "visivel:", button.is_visible())
+            # Captura somente a pagina deslogada, antes de qualquer uso de credenciais.
+            Path("diagnostico").mkdir(exist_ok=True)
+            page.screenshot(path="diagnostico/tela-lotobanca.png", full_page=False, timeout=10000)
+            print("Captura de tela sem login: salva como artefato")
             print("Erros JavaScript:", len(js_errors))
             # Categorias de erro, nunca imprimir mensagens completas nem URLs.
             print("Tipos de erro JS:", dict(Counter(e.split(":")[0][:50] for e in js_errors)))
