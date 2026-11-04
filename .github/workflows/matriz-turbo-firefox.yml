@@ -5,15 +5,17 @@ permissions:
   contents: read
 jobs:
   testar-firefox:
-    runs-on: ubuntu-latest
-    timeout-minutes: 8
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6
     steps:
       - uses: actions/checkout@v4
-      - name: Instalar Playwright
+      - name: Instalar Playwright sem pacotes extras do Ubuntu
+        timeout-minutes: 3
         run: |
-          python3 -m pip install playwright
-          python3 -m playwright install --with-deps firefox
+          python3 -m pip install --disable-pip-version-check playwright
+          python3 -m playwright install firefox
       - name: Abrir Lotobanca no Firefox remoto
+        timeout-minutes: 2
         env:
           LOTOBANCA_LOGIN: ${{ secrets.LOTOBANCA_LOGIN }}
           LOTOBANCA_SENHA: ${{ secrets.LOTOBANCA_SENHA }}
