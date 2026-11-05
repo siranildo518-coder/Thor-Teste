@@ -53,7 +53,7 @@ jobs:
               sleep 30
             else
               echo "::error::Matriz 8.5 atrasada apos duas tentativas. Coleta nao confirmou resultados recentes."
-              exit 1
+              touch /tmp/turbo_coleta_atrasada
             fi
           done
       - name: Diagnosticar atraso da Matriz 8.5
@@ -75,6 +75,12 @@ jobs:
               if hours > 2:
                   print("AVISO: a coleta nao publicou concursos recentes. Verifique login, API e logs do Firefox.")
           PY
+      - name: Impedir sucesso falso com resultados atrasados
+        run: |
+          if [ -f /tmp/turbo_coleta_atrasada ]; then
+            echo "::error::Falha real: sorteios recentes nao foram obtidos. Verifique os logs da coleta e autenticacao."
+            exit 1
+          fi
       - name: Publicar resultados validos no GitHub
         if: success()
         run: |
