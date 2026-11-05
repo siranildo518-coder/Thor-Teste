@@ -11,20 +11,39 @@ concurrency:
 jobs:
   testar-firefox:
     runs-on: ubuntu-24.04
-    timeout-minutes: 6
+    timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
       - name: Instalar Playwright sem pacotes extras do Ubuntu
-        timeout-minutes: 3
+        timeout-minutes: 5
         run: |
           python3 -m pip install --disable-pip-version-check playwright
           python3 -m playwright install firefox
       - name: Abrir Lotobanca no Firefox remoto
-        timeout-minutes: 2
+        timeout-minutes: 5
         env:
           LOTOBANCA_LOGIN: ${{ secrets.LOTOBANCA_LOGIN }}
           LOTOBANCA_SENHA: ${{ secrets.LOTOBANCA_SENHA }}
         run: python3 thor-turbo/matriz-firefox-remoto.py
+      - name: Diagnosticar atraso da Matriz 8.5
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import json
+          from datetime import datetime, timezone
+          from pathlib import Path
+          p = Path("thor-turbo/resultados.json")
+          data = json.loads(p.read_text(encoding="utf-8"))
+          rows = data.get("records", [])
+          latest = max((r.get("scheduledAt", "") for r in rows), default="")
+          print("Registros:", len(rows), "Ultimo sorteio:", latest)
+          if latest:
+              dt = datetime.fromisoformat(latest.replace("Z", "+00:00"))
+              hours = (datetime.now(timezone.utc) - dt).total_seconds() / 3600
+              print(f"Atraso do resultado mais recente: {hours:.1f} hora(s)")
+              if hours > 2:
+                  print("AVISO: a coleta nao publicou concursos recentes. Verifique login, API e logs do Firefox.")
+          PY
       - name: Publicar resultados validos no GitHub
         if: success()
         run: |
