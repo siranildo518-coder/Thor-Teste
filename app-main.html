@@ -16251,3 +16251,24 @@ renderAtraso = function(linhas, numeroUltimo, concursosAnalisados){
 };
 </script>
 
+
+<script id="thor-turbo-home-visible-v2">
+(function(){
+  const URL='https://turbo.lotobanca.com/loto-turbo/resultados';
+  function install(){
+    if(document.getElementById('thorTurboHomeVisible'))return;
+    const cards=[...document.querySelectorAll('button,a')].filter(el=>el.textContent && /Melhores dezenas|Desdobrador|Rastreador de Tendência/i.test(el.textContent) && el.getBoundingClientRect().width>90);
+    const anchor=cards.find(el=>/Melhores dezenas/i.test(el.textContent))||cards.find(el=>/Desdobrador/i.test(el.textContent));
+    if(!anchor)return;
+    const card=document.createElement('a');card.id='thorTurboHomeVisible';card.href=URL;card.target='_blank';card.rel='noopener noreferrer';card.setAttribute('aria-label','Tor Loterias Turbo - abrir resultados');
+    card.style.cssText='display:flex;align-items:center;gap:10px;min-height:76px;padding:12px;border:1px solid #d7b65b;border-radius:15px;background:linear-gradient(135deg,#06192d,#07101e);color:#fff;text-decoration:none;box-sizing:border-box;font:700 14px Arial,sans-serif;';
+    card.innerHTML='<span style="display:grid;place-items:center;width:40px;height:40px;border:1px solid #d7b65b;border-radius:10px;font-size:23px">⚡</span><span><strong>Tor Loterias Turbo</strong><small style="display:block;font-size:11px;font-weight:400;margin-top:5px">Abrir resultados da Lotobanca</small></span>';
+    const parent=anchor.parentElement;
+    if(parent){parent.appendChild(card);}
+  }
+  let pending=false;
+  const observer=new MutationObserver(()=>{if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;install();});});
+  const start=()=>{install();observer.observe(document.body,{childList:true,subtree:true});};
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
+})();
+</script>
