@@ -2,7 +2,7 @@ name: Matriz Turbo - Firefox remoto
 on:
   workflow_dispatch:
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: '3-59/5 * * * *'
 permissions:
   contents: write
 concurrency:
