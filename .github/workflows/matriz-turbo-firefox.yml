@@ -11,7 +11,7 @@ concurrency:
 jobs:
   testar-firefox:
     runs-on: ubuntu-24.04
-    timeout-minutes: 12
+    timeout-minutes: 18
     steps:
       - uses: actions/checkout@v4
       - name: Instalar Playwright sem pacotes extras do Ubuntu
@@ -20,11 +20,41 @@ jobs:
           python3 -m pip install --disable-pip-version-check playwright
           python3 -m playwright install firefox
       - name: Abrir Lotobanca no Firefox remoto
-        timeout-minutes: 5
+        timeout-minutes: 11
         env:
           LOTOBANCA_LOGIN: ${{ secrets.LOTOBANCA_LOGIN }}
           LOTOBANCA_SENHA: ${{ secrets.LOTOBANCA_SENHA }}
-        run: python3 thor-turbo/matriz-firefox-remoto.py
+        run: |
+          for tentativa in 1 2; do
+            echo "Coleta Matriz 8.5 - tentativa $tentativa/2"
+            python3 thor-turbo/matriz-firefox-remoto.py || echo "::warning::Falha na coleta $tentativa"
+            if python3 - <<'PY'
+          import json
+          from datetime import datetime, timezone, timedelta
+          from pathlib import Path
+          rows = json.loads(Path("thor-turbo/resultados.json").read_text(encoding="utf-8")).get("records", [])
+          datas = [r.get("scheduledAt", "") for r in rows]
+          latest = max(datas, default="")
+          if not latest:
+              raise SystemExit(1)
+          last = datetime.fromisoformat(latest.replace("Z", "+00:00"))
+          now = datetime.now(timezone.utc)
+          # Dar 20 minutos para o sorteio horario ficar disponivel na origem.
+          expected = now.replace(minute=0, second=0, microsecond=0) - timedelta(minutes=40)
+          print("Ultimo sorteio:", latest, "Limite esperado:", expected.isoformat())
+          raise SystemExit(0 if last >= expected else 1)
+          PY
+            then
+              echo "Matriz 8.5 dentro da janela de atualizacao."
+              break
+            fi
+            if [ "$tentativa" -eq 1 ]; then
+              echo "::warning::Resultado atrasado; nova tentativa em 30 segundos."
+              sleep 30
+            else
+              echo "::warning::Matriz 8.5 ainda atrasada apos duas tentativas. Verifique a origem e os logs."
+            fi
+          done
       - name: Diagnosticar atraso da Matriz 8.5
         if: always()
         run: |
