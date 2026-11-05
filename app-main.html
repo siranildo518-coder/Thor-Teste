@@ -3781,7 +3781,7 @@ document.addEventListener('selectstart', e=>{
 
 
 <div class="home-feature-grid" id="homeFeatureGrid">
-<a class="home-feature-card" id="btnTorLoteriasTurbo" href="https://turbo.lotobanca.com/loto-turbo/resultados" target="_blank" rel="noopener noreferrer" style="--fc:#d4a017;text-decoration:none;color:inherit;display:flex;align-items:center"><span class="hfc-icon">⚡</span><span><strong>Tor Loterias Turbo</strong><small>Abrir resultados da Lotobanca</small></span></a>
+<a class="home-feature-card" id="btnTorLoteriasTurbo" href="./thor-turbo/matriz.html" rel="noopener noreferrer" style="--fc:#d4a017;text-decoration:none;color:inherit;display:flex;align-items:center"><span class="hfc-icon">⚡</span><span><strong>Tor Loterias Turbo</strong><small>Abrir Matriz 8.5</small></span></a>
 <button class="home-feature-card" style="--fc:#7b20d8" data-home-target="btnTendenciaAtalho"><span class="hfc-icon">▥</span><span><strong>Análise</strong><small>Estatísticas e frequências</small></span></button>
 <button class="home-feature-card" style="--fc:#087cff" data-home-target="btnFechamentoAtalho"><span class="hfc-icon">⚙</span><span><strong>Combinações</strong><small>Gere jogos com filtros avançados</small></span></button>
 <button class="home-feature-card" style="--fc:#00a66a" data-home-target="btnJogosSalvosAtalho2"><span class="hfc-icon">▶</span><span><strong>Jogos</strong><small>Gerencie seus jogos e resultados</small></span></button>
@@ -15795,15 +15795,15 @@ document.getElementById('homeSideMenu')?.addEventListener('click',()=>document.g
 </script>
 <script id="thor-turbo-home-visible-v2">
 (function(){
-  const URL='https://turbo.lotobanca.com/loto-turbo/resultados';
+  const URL='./thor-turbo/matriz.html';
   function install(){
     if(document.getElementById('thorTurboHomeVisible'))return;
     const cards=[...document.querySelectorAll('button,a')].filter(el=>el.textContent && /Melhores dezenas|Desdobrador|Rastreador de Tendência/i.test(el.textContent) && el.getBoundingClientRect().width>90);
     const anchor=cards.find(el=>/Melhores dezenas/i.test(el.textContent))||cards.find(el=>/Desdobrador/i.test(el.textContent));
     if(!anchor)return;
-    const card=document.createElement('a');card.id='thorTurboHomeVisible';card.href=URL;card.target='_blank';card.rel='noopener noreferrer';card.setAttribute('aria-label','Tor Loterias Turbo - abrir resultados');
+    const card=document.createElement('a');card.id='thorTurboHomeVisible';card.href=URL;card.removeAttribute('target');card.setAttribute('aria-label','Tor Loterias Turbo - abrir resultados');
     card.style.cssText='display:flex;align-items:center;gap:10px;min-height:76px;padding:12px;border:1px solid #d7b65b;border-radius:15px;background:linear-gradient(135deg,#06192d,#07101e);color:#fff;text-decoration:none;box-sizing:border-box;font:700 14px Arial,sans-serif;';
-    card.innerHTML='<span style="display:grid;place-items:center;width:40px;height:40px;border:1px solid #d7b65b;border-radius:10px;font-size:23px">⚡</span><span><strong>Tor Loterias Turbo</strong><small style="display:block;font-size:11px;font-weight:400;margin-top:5px">Abrir resultados da Lotobanca</small></span>';
+    card.innerHTML='<span style="display:grid;place-items:center;width:40px;height:40px;border:1px solid #d7b65b;border-radius:10px;font-size:23px">⚡</span><span><strong>Tor Loterias Turbo</strong><small style="display:block;font-size:11px;font-weight:400;margin-top:5px">Abrir Matriz 8.5</small></span>';
     const parent=anchor.parentElement;
     if(parent){parent.appendChild(card);}
   }
