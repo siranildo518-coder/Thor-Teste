@@ -184,6 +184,14 @@ def main():
                 diagnostic["registros_validos"] = contar_registros_matriz85(payload)
                 if resp.status == 200 and diagnostic["registros_validos"] > 0:
                     payloads_validos.append(payload)
+                    spec = importlib.util.spec_from_file_location("extrator_turbo", "thor-turbo/atualizar-resultados-remoto.py")
+                    extrator = importlib.util.module_from_spec(spec)
+                    spec.loader.exec_module(extrator)
+                    encontrados = extrator.extrair(payload)
+                    if encontrados:
+                        recente = max(encontrados, key=lambda x: x["scheduledAt"])
+                        diagnostic["ultimo_sorteio_api"] = {"concurso": recente["concurso"], "data": recente["data"], "horario": recente["horario"]}
+                        print("Ultimo sorteio retornado pela API:", diagnostic["ultimo_sorteio_api"])
                 record["validos_matriz85"] = contar_registros_matriz85(payload)
                 record["json"] = isinstance(payload, (list, dict))
                 if isinstance(payload, list):
@@ -299,6 +307,8 @@ def main():
                 try:
                     page.goto(SITE, wait_until="domcontentloaded", timeout=20000)
                     page.wait_for_timeout(7000)
+                    page.reload(wait_until="domcontentloaded", timeout=20000)
+                    page.wait_for_timeout(5000)
                     novos = result_responses[antes_resultados:]
                     print("API identificada pela Matriz 8.5:", API_MATRIZ85)
                     print("Respostas da API apos navegacao:", len(novos))
