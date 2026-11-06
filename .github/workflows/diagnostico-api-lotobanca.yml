@@ -1,0 +1,31 @@
+name: Diagnostico API Lotobanca (sem credenciais)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  testar-api:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Testar POST sem login e sem alterar resultados
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import urllib.request, urllib.error, socket
+          url = "https://api.lotobanca.com/parse/functions/loto-turbo-listar-sorteios"
+          req = urllib.request.Request(url, data=b"{}", method="POST", headers={"Content-Type":"application/json", "Accept":"application/json", "User-Agent":"ThorTurbo-Diagnostico/1.0"})
+          try:
+              with urllib.request.urlopen(req, timeout=20) as resp:
+                  print("HTTP:", resp.status)
+                  print("Content-Type:", resp.headers.get("Content-Type", "nao informado"))
+                  print("Resposta recebida: SIM (conteudo omitido por seguranca)")
+                  print("ATENCAO: HTTP 200 nao comprova que os resultados foram retornados.")
+          except urllib.error.HTTPError as e:
+              print("HTTP:", e.code)
+              print("A API respondeu, mas recusou ou nao processou esta requisicao sem credenciais.")
+          except (urllib.error.URLError, TimeoutError, socket.timeout) as e:
+              print("Falha de rede/DNS/tempo:", type(e).__name__)
+          except Exception as e:
+              print("Falha inesperada:", type(e).__name__)
+          PY
