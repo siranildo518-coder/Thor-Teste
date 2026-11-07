@@ -1,7 +1,5 @@
 name: Tor Turbo - sincronizar resultados
 on:
-  schedule:
-    - cron: '*/5 * * * *'
   workflow_dispatch:
 permissions:
   contents: write

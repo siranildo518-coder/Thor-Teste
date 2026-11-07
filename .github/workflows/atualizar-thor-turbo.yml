@@ -2,6 +2,11 @@ name: Atualizar resultados Thor Turbo
 on:
   schedule:
     - cron: '*/5 * * * *'
+  push:
+    branches: [main]
+    paths:
+      - 'thor-turbo/coleta-direta.py'
+      - '.github/workflows/atualizar-thor-turbo.yml'
   workflow_dispatch:
 permissions:
   contents: write
@@ -16,8 +21,9 @@ jobs:
       - uses: actions/checkout@v4
       - name: Consultar API Lotobanca e preservar base
         env:
-          LOTO_TURBO_COOKIE: ${{ secrets.LOTO_TURBO_COOKIE }}
-        run: python3 thor-turbo/atualizar_resultados.py
+          LB_USER: ${{ secrets.LOTOBANCA_LOGIN }}
+          LB_PASS: ${{ secrets.LOTOBANCA_SENHA }}
+        run: python3 thor-turbo/coleta-direta.py
       - name: Publicar apenas quando houver resultados novos
         run: |
           if ! git diff --quiet -- thor-turbo/resultados.json; then
