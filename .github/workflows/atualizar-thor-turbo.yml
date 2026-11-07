@@ -6,6 +6,7 @@ on:
     branches: [main]
     paths:
       - 'thor-turbo/coleta-direta.py'
+      - 'thor-turbo/pedido-coleta.txt'
       - '.github/workflows/atualizar-thor-turbo.yml'
   workflow_dispatch:
 permissions:
