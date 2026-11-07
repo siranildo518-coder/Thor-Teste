@@ -16,17 +16,59 @@ concurrency:
 jobs:
   atualizar:
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+      - name: Verificar pedidos do botão Atualizar
+        id: sinal
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          tag=alerta-matriz-v1
+          if ! gh release view "$tag" >/dev/null 2>&1; then
+            printf 'Tor Turbo\n' > "$RUNNER_TEMP/atualizar.txt"
+            gh release create "$tag" "$RUNNER_TEMP/atualizar.txt" --prerelease --latest=false --target "$GITHUB_SHA" --title "Sinal do botão Atualizar" --notes "Pedidos de consulta da Matriz no Firefox remoto."
+          fi
+          count=$(gh api "repos/$GITHUB_REPOSITORY/releases/tags/$tag" --jq '.assets[] | select(.name=="atualizar.txt") | .download_count')
+          [[ "$count" =~ ^[0-9]+$ ]]
+          last=0
+          if test -f thor-turbo/alerta-matriz.json; then last=$(jq -er .atendidos thor-turbo/alerta-matriz.json); fi
+          echo "Pedidos registrados: $count; atendidos: $last"
+          echo "count=$count" >> "$GITHUB_OUTPUT"
+          if (( count > last )); then echo "pendente=true" >> "$GITHUB_OUTPUT"; fi
+      - name: Consultar Matriz no Firefox do GitHub
+        id: firefox
+        if: steps.sinal.outputs.pendente == 'true'
+        continue-on-error: true
+        timeout-minutes: 8
+        env:
+          LOTOBANCA_LOGIN: ${{ secrets.LOTOBANCA_LOGIN }}
+          LOTOBANCA_SENHA: ${{ secrets.LOTOBANCA_SENHA }}
+        run: |
+          python3 -m pip install --disable-pip-version-check playwright
+          python3 -m playwright install firefox
+          python3 thor-turbo/matriz-firefox-remoto.py | tee "$RUNNER_TEMP/matriz.log"
+          grep -q 'Leitura confirmada: SIM' "$RUNNER_TEMP/matriz.log"
+      - name: Recuperar base publicada antes da validação pela API
+        if: steps.sinal.outputs.pendente == 'true'
+        run: git restore -- thor-turbo/resultados.json
       - name: Consultar API Lotobanca e preservar base
         env:
           LB_USER: ${{ secrets.LOTOBANCA_LOGIN }}
           LB_PASS: ${{ secrets.LOTOBANCA_SENHA }}
         run: python3 thor-turbo/coleta-direta.py
-      - name: Publicar apenas quando houver resultados novos
+      - name: Registrar atendimento após conferir a API
+        if: steps.sinal.outputs.pendente == 'true'
+        env:
+          COUNT: ${{ steps.sinal.outputs.count }}
+          FIREFOX: ${{ steps.firefox.outcome }}
         run: |
-          if ! git diff --quiet -- thor-turbo/resultados.json; then
+          jq -n --argjson n "$COUNT" --arg f "$FIREFOX" --arg t "$(date -u +%FT%TZ)" '{atendidos:$n,firefox:$f,conferidoEm:$t}' > thor-turbo/alerta-matriz.json
+          git add thor-turbo/alerta-matriz.json
+      - name: Publicar dados e confirmação
+        run: |
+          if ! git diff --quiet HEAD -- thor-turbo/resultados.json thor-turbo/alerta-matriz.json; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add thor-turbo/resultados.json
