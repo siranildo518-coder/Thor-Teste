@@ -1,0 +1,59 @@
+name: Testar resultados Lotobanca
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/testar-lotobanca-direto.yml'
+permissions: {}
+jobs:
+  consultar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Consultar sorteios e verificar dezenas
+        shell: python
+        run: |
+          import json, os, re, sys
+          from urllib.request import Request, urlopen
+          from urllib.error import HTTPError, URLError
+          
+          api = "https://api.lotobanca.com/parse/functions/loto-turbo-listar-sorteios"
+          headers = {"Content-Type": "text/plain; charset=utf-8",
+                     "X-Parse-Application-Id": "ZYSP5Z9DjE2YdSuWEQeMwhqw2JcErt",
+                     "X-Parse-Client-Key": "HeQgDhK5dCTuLDsuU5ExaCkt2546wE",
+                     "Origin": "https://turbo.lotobanca.com"}
+          tests = [
+              ("Conferidos", {"status":"CONFERIDO", "limit":100, "isVisible":True}),
+              ("Lotofácil ao vivo", {"lotteryKey":"lototurbo_lotofacil", "limit":100}),
+              ("Últimos visíveis", {"isVisible":True, "limit":100}),
+          ]
+          found = False
+          for label, params in tests:
+              try:
+                  request = Request(api, json.dumps(params).encode(), headers)
+                  with urlopen(request, timeout=20) as response:
+                      payload = json.load(response)
+                  draws = payload["result"]["sorteios"]
+                  if not isinstance(draws, list):
+                      raise ValueError("formato inesperado")
+                  matches = []
+                  for draw in draws:
+                      numbers = draw.get("resultNumbers")
+                      if (draw.get("status") == "CONFERIDO" and str(draw.get("sorteioNumber", "")).isdigit()
+                          and draw.get("lotteryKey") and isinstance(numbers, list) and numbers
+                          and all(re.fullmatch(r"[0-9]{1,2}", str(n)) for n in numbers)):
+                          matches.append(draw)
+                  print(f"{label}: {len(draws)} registros, {len(matches)} resultados conferidos")
+                  if matches:
+                      draw = max(matches, key=lambda d: str(d.get("scheduledAt", "")))
+                      print(json.dumps({k:draw.get(k) for k in ("lotteryKey","sorteioNumber","scheduledAt","resultNumbers","resultNumbers2")}, ensure_ascii=True))
+                      found = True
+              except HTTPError as err:
+                  try:
+                      body = json.loads(err.read(4096))
+                      msg = str(body.get("error",""))[:180]
+                  except ValueError:
+                      msg = ""
+                  print(f"{label}: HTTP {err.code} {msg}")
+              except (URLError, TimeoutError, ValueError, KeyError, TypeError) as err:
+                  print(f"{label}: {type(err).__name__}: {err}")
+          sys.exit(0 if found else 1)
