@@ -1,7 +1,7 @@
 name: Atualizar resultados Thor Turbo
 on:
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: '2-59/5 * * * *'
   push:
     branches: [main]
     paths:
@@ -19,6 +19,22 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Consultar API Lotobanca e preservar base
+        env:
+          LB_USER: ${{ secrets.LOTOBANCA_LOGIN }}
+          LB_PASS: ${{ secrets.LOTOBANCA_SENHA }}
+        run: python3 thor-turbo/coleta-direta.py
+      - name: Publicar resultados assim que a API responder
+        run: |
+          if ! git diff --quiet -- thor-turbo/resultados.json; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add thor-turbo/resultados.json
+            git commit -m "Thor Turbo: publicar concursos conferidos pela API"
+            git push origin HEAD:main
+          fi
       - name: Verificar pedidos do botão Atualizar
         id: sinal
         continue-on-error: true
@@ -51,14 +67,9 @@ jobs:
           python3 -m playwright install firefox
           python3 thor-turbo/matriz-firefox-remoto.py | tee "$RUNNER_TEMP/matriz.log"
           grep -q 'Leitura confirmada: SIM' "$RUNNER_TEMP/matriz.log"
-      - name: Recuperar base publicada antes da validação pela API
+      - name: Restaurar a base já publicada pela API
         if: steps.sinal.outputs.pendente == 'true'
         run: git restore -- thor-turbo/resultados.json
-      - name: Consultar API Lotobanca e preservar base
-        env:
-          LB_USER: ${{ secrets.LOTOBANCA_LOGIN }}
-          LB_PASS: ${{ secrets.LOTOBANCA_SENHA }}
-        run: python3 thor-turbo/coleta-direta.py
       - name: Registrar atendimento após conferir a API
         if: steps.sinal.outputs.pendente == 'true'
         env:
