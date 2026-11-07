@@ -30,7 +30,11 @@ jobs:
             printf 'Tor Turbo\n' > "$RUNNER_TEMP/atualizar.txt"
             gh release create "$tag" "$RUNNER_TEMP/atualizar.txt" --prerelease --latest=false --target "$GITHUB_SHA" --title "Sinal do botão Atualizar" --notes "Pedidos de consulta da Matriz no Firefox remoto."
           fi
-          count=$(gh api "repos/$GITHUB_REPOSITORY/releases/tags/$tag" --jq '.assets[] | select(.name=="atualizar.txt") | .download_count')
+          # Ao instalar uma alteração, testar o mesmo sinal público usado pelo HTML.
+          if [[ "$GITHUB_EVENT_NAME" == push ]]; then
+            curl -fsSL --max-time 20 "https://github.com/$GITHUB_REPOSITORY/releases/download/$tag/atualizar.txt?v=$GITHUB_RUN_ID" | grep -qx 'Tor Turbo'
+          fi
+          count=$(gh api "repos/$GITHUB_REPOSITORY/releases/tags/$tag?v=$GITHUB_RUN_ID" --jq '.assets[] | select(.name=="atualizar.txt") | .download_count')
           [[ "$count" =~ ^[0-9]+$ ]]
           last=0
           if test -f thor-turbo/alerta-matriz.json; then last=$(jq -er .atendidos thor-turbo/alerta-matriz.json); fi
