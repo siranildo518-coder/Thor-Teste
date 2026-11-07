@@ -32,7 +32,19 @@ jobs:
           fi
           # Ao instalar uma alteração, testar o mesmo sinal público usado pelo HTML.
           if [[ "$GITHUB_EVENT_NAME" == push ]]; then
-            curl -fsSL --max-time 20 "https://github.com/$GITHUB_REPOSITORY/releases/download/$tag/atualizar.txt?v=$GITHUB_RUN_ID" | grep -qx 'Tor Turbo'
+            cat > "$RUNNER_TEMP/teste-alerta.html" <<'HTML'
+          <body>pendente<script>
+          fetch('https://github.com/siranildo518-coder/Thor-Teste/releases/download/alerta-matriz-v1/atualizar.txt?v='+Date.now(),{mode:'no-cors',credentials:'omit',cache:'no-store'}).then(()=>document.body.textContent='sinal-enviado').catch(()=>document.body.textContent='falhou');
+          </script>
+          HTML
+            google-chrome --headless --disable-gpu --no-sandbox --disable-dev-shm-usage --virtual-time-budget=20000 --dump-dom "file://$RUNNER_TEMP/teste-alerta.html" > "$RUNNER_TEMP/retorno.html"
+            grep -q '<body>sinal-enviado</body>' "$RUNNER_TEMP/retorno.html"
+            # O contador público pode levar algum tempo para refletir o download.
+            for tentativa in {1..8}; do
+              count=$(gh api "repos/$GITHUB_REPOSITORY/releases/tags/$tag?v=$GITHUB_RUN_ID-$tentativa" --jq '.assets[] | select(.name=="atualizar.txt") | .download_count')
+              if [[ "$count" =~ ^[1-9][0-9]*$ ]]; then break; fi
+              sleep 15
+            done
           fi
           count=$(gh api "repos/$GITHUB_REPOSITORY/releases/tags/$tag?v=$GITHUB_RUN_ID" --jq '.assets[] | select(.name=="atualizar.txt") | .download_count')
           [[ "$count" =~ ^[0-9]+$ ]]
