@@ -10,6 +10,8 @@ jobs:
     timeout-minutes: 3
     steps:
       - name: Consultar sorteios e verificar dezenas
+        id: publico
+        continue-on-error: true
         shell: python
         run: |
           import json, os, re, sys
@@ -57,3 +59,59 @@ jobs:
               except (URLError, TimeoutError, ValueError, KeyError, TypeError) as err:
                   print(f"{label}: {type(err).__name__}: {err}")
           sys.exit(0 if found else 1)
+      - name: Consultar com a conta configurada
+        if: steps.publico.outcome == 'failure'
+        shell: python
+        env:
+          LB_USER: ${{ secrets.LOTOBANCA_LOGIN }}
+          LB_PASS: ${{ secrets.LOTOBANCA_SENHA }}
+          LB_TOKEN: ${{ secrets.LOTOBANCA_AUTH_TOKEN }}
+        run: |
+          import json, os, re, sys
+          from urllib.request import Request, build_opener, HTTPRedirectHandler
+          from urllib.error import HTTPError
+          
+          class DirectOnly(HTTPRedirectHandler):
+              def redirect_request(self, *args):
+                  return None
+          
+          opener = build_opener(DirectOnly())
+          headers = {"Content-Type":"application/json", "X-Parse-Revocable-Session":"1",
+                     "X-Parse-Application-Id":"ZYSP5Z9DjE2YdSuWEQeMwhqw2JcErt",
+                     "X-Parse-Client-Key":"HeQgDhK5dCTuLDsuU5ExaCkt2546wE"}
+          def call(path, data):
+              req = Request("https://api.lotobanca.com/parse/" + path, json.dumps(data).encode(), headers)
+              with opener.open(req, timeout=20) as response:
+                  return json.load(response)
+          
+          user = os.environ.get("LB_USER", "").strip()
+          password = os.environ.get("LB_PASS", "")
+          token = os.environ.get("LB_TOKEN", "").strip()
+          if token.startswith("r:"):
+              headers["X-Parse-Session-Token"] = token
+          elif user and password:
+              if re.fullmatch(r"[\d. -]+", user):
+                  user = re.sub(r"\D", "", user)
+              try:
+                  token = call("login", {"username":user, "password":password}).get("sessionToken")
+              except HTTPError as e:
+                  sys.exit(f"Login direto recusado: HTTP {e.code}")
+              if not token:
+                  sys.exit("Login sem sessão")
+              headers["X-Parse-Session-Token"] = token
+              print("Sessão recebida")
+          elif token:
+              headers["Authorization"] = token
+          else:
+              sys.exit("Login e senha ou token indisponíveis no repositório")
+          headers["Content-Type"] = "text/plain; charset=utf-8"
+          try:
+              rows = call("functions/loto-turbo-listar-sorteios", {"status":"CONFERIDO","isVisible":True,"limit":100})["result"]["sorteios"]
+          except HTTPError as e:
+              sys.exit(f"Consulta autenticada recusada: HTTP {e.code}")
+          valid = [r for r in rows if r.get("status") == "CONFERIDO" and r.get("lotteryKey") and str(r.get("sorteioNumber","")).isdigit() and isinstance(r.get("resultNumbers"),list) and r["resultNumbers"] and all(re.fullmatch(r"[0-9]{1,2}",str(n)) for n in r["resultNumbers"])]
+          if not valid:
+              sys.exit("Nenhum resultado conferido com dezenas")
+          for key in sorted({r["lotteryKey"] for r in valid}):
+              row = max((r for r in valid if r["lotteryKey"] == key),key=lambda r:str(r.get("scheduledAt","")))
+              print(json.dumps({k:row.get(k) for k in ("lotteryKey","sorteioNumber","scheduledAt","resultNumbers","resultNumbers2")},ensure_ascii=True))
