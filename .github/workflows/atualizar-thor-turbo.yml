@@ -77,8 +77,19 @@ jobs:
               break
             fi
             agora=$(date +%s)
+            # A partir de 10 minutos da hora, investigar automaticamente o atraso.
+            minuto=$(date +%M)
+            if (( 10#$minuto >= 10 )); then
+              echo "::warning::ATRASO SUPERIOR A 10 MINUTOS: diagnóstico automático iniciado para ${pendentes[*]}."
+              echo "::group::Diagnóstico de atraso Tor Turbo"
+              echo "Horários pendentes: ${pendentes[*]}"
+              echo "Registros disponíveis na base:"
+              jq -r '[.records[] | (.data + " " + .horario)] | unique | sort | reverse | .[:8] | .[]' "$base" || true
+              echo "Consulta à fonte será repetida em 60 segundos, sem intervenção do usuário."
+              echo "::endgroup::"
+            fi
             if (( agora - inicio_geral >= 240 )); then
-              echo "::warning::Ainda existem $restantes horários incompletos; nova execução agendada continuará a coleta."
+              echo "::warning::Ainda existem $restantes horários incompletos; a próxima execução agendada continuará a coleta."
               break
             fi
             espera=$((inicio + 60 - agora))
