@@ -77,8 +77,8 @@ jobs:
               break
             fi
             agora=$(date +%s)
-            if (( agora - inicio_geral >= 180 )); then
-              echo "::warning::Ainda existem $restantes horários incompletos; liberando a fila para a próxima coleta em cinco minutos."
+            if (( agora - inicio_geral >= 240 )); then
+              echo "::warning::Ainda existem $restantes horários incompletos; nova execução agendada continuará a coleta."
               break
             fi
             espera=$((inicio + 60 - agora))
