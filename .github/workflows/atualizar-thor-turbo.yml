@@ -30,10 +30,9 @@ jobs:
         run: |
           set -euo pipefail
           base=thor-turbo/resultados.json
-          alvo=$(date '+%F %H:00')
-          fim=$(date -d "$alvo" +%s)
-          fim=$((fim + 3600))
+          # Priorizar resultados pendentes das últimas três horas, mesmo após virar a hora.
           completo() {
+            local alvo="$1"
             jq -e --arg alvo "$alvo" '
               [.records[] | select((.data + " " + .horario) == $alvo)] as $hora |
               (["Mega-Sena Turbo","Quina Turbo","Lotofácil Turbo","Lotomania Turbo","Dia de Sorte Turbo"]
@@ -44,9 +43,21 @@ jobs:
           }
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          inicio_geral=$(date +%s)
+          # Em caso de atraso da API, manter a tentativa durante esta execução.
           while true; do
             inicio=$(date +%s)
-            if [[ "$GITHUB_EVENT_NAME" == schedule ]] && completo; then break; fi
+            git pull --rebase origin main
+            pendentes=()
+            for atraso in 3 2 1 0; do
+              alvo=$(date -d "$atraso hours ago" '+%F %H:00')
+              if ! completo "$alvo"; then pendentes+=("$alvo"); fi
+            done
+            if (( ${#pendentes[@]} == 0 )); then
+              echo "Todos os resultados das últimas quatro horas estão completos."
+              break
+            fi
+            echo "::notice::Aguardando resultados: ${pendentes[*]}"
             if python3 thor-turbo/coleta-direta.py; then
               if ! git diff --quiet -- "$base"; then
                 git add "$base"
@@ -54,13 +65,20 @@ jobs:
                 git pull --rebase origin main
                 git push origin HEAD:main
               fi
-              if completo; then break; fi
-            elif [[ "$GITHUB_EVENT_NAME" != schedule && "$GITHUB_EVENT_NAME" != push ]]; then
-              exit 1
+            else
+              echo "::warning::Falha na consulta à API; nova tentativa em 60 segundos."
+            fi
+            restantes=0
+            for alvo in "${pendentes[@]}"; do
+              if ! completo "$alvo"; then restantes=$((restantes + 1)); fi
+            done
+            if (( restantes == 0 )); then
+              echo "Todos os resultados pendentes foram publicados."
+              break
             fi
             agora=$(date +%s)
-            if (( agora >= fim || inicio + 60 >= fim )); then
-              echo "::error::Resultados incompletos para $alvo"
+            if (( agora - inicio_geral >= 3300 )); then
+              echo "::error::Ainda existem $restantes horários incompletos; próximo agendamento tentará novamente."
               exit 1
             fi
             espera=$((inicio + 60 - agora))
