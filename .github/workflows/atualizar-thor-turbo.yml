@@ -7,6 +7,7 @@ on:
     paths:
       - 'thor-turbo/coleta-direta.py'
       - 'thor-turbo/pedido-coleta.txt'
+      - 'thor-turbo/resultados.json'
       - '.github/workflows/atualizar-thor-turbo.yml'
   workflow_dispatch:
 permissions:
