@@ -1,13 +1,12 @@
 name: Atualizar resultados Thor Turbo
 on:
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: '5-59/5 * * * *'
   push:
     branches: [main]
     paths:
       - 'thor-turbo/coleta-direta.py'
       - 'thor-turbo/pedido-coleta.txt'
-      - 'thor-turbo/resultados.json'
       - '.github/workflows/atualizar-thor-turbo.yml'
   workflow_dispatch:
 permissions:
@@ -31,9 +30,10 @@ jobs:
         run: |
           set -euo pipefail
           base=thor-turbo/resultados.json
-          # Priorizar resultados pendentes das últimas três horas, mesmo após virar a hora.
+          alvo=$(date '+%F %H:00')
+          fim=$(date -d "$alvo" +%s)
+          fim=$((fim + 3600))
           completo() {
-            local alvo="$1"
             jq -e --arg alvo "$alvo" '
               [.records[] | select((.data + " " + .horario) == $alvo)] as $hora |
               (["Mega-Sena Turbo","Quina Turbo","Lotofácil Turbo","Lotomania Turbo","Dia de Sorte Turbo"]
@@ -44,95 +44,28 @@ jobs:
           }
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          inicio_geral=$(date +%s)
-          # Em caso de atraso da API, manter a tentativa durante esta execução.
           while true; do
             inicio=$(date +%s)
-            git pull --rebase origin main
-            pendentes=()
-            for atraso in 3 2 1 0; do
-              alvo=$(date -d "$atraso hours ago" '+%F %H:00')
-              if ! completo "$alvo"; then pendentes+=("$alvo"); fi
-            done
-            if (( ${#pendentes[@]} == 0 )); then
-              echo "Todos os resultados das últimas quatro horas estão completos."
-              break
-            fi
-            echo "::notice::Aguardando resultados: ${pendentes[*]}"
+            if [[ "$GITHUB_EVENT_NAME" == schedule ]] && completo; then break; fi
             if python3 thor-turbo/coleta-direta.py; then
               if ! git diff --quiet -- "$base"; then
                 git add "$base"
                 git commit -m "Thor Turbo: publicar concursos conferidos pela API"
-                for tentativa_push in 1 2 3 4 5; do
-                  git pull --rebase origin main
-                  if git push origin HEAD:main; then break; fi
-                  if (( tentativa_push == 5 )); then echo "::error::Falha ao publicar resultados após 5 tentativas"; exit 1; fi
-                  sleep 3
-                done
+                git pull --rebase origin main
+                git push origin HEAD:main
               fi
-            else
-              echo "::warning::Falha na consulta à API; nova tentativa em 60 segundos."
-            fi
-            restantes=0
-            for alvo in "${pendentes[@]}"; do
-              if ! completo "$alvo"; then restantes=$((restantes + 1)); fi
-            done
-            if (( restantes == 0 )); then
-              echo "Todos os resultados pendentes foram publicados."
-              break
+              if completo; then break; fi
+            elif [[ "$GITHUB_EVENT_NAME" != schedule && "$GITHUB_EVENT_NAME" != push ]]; then
+              exit 1
             fi
             agora=$(date +%s)
-            # A partir de 10 minutos da hora, investigar automaticamente o atraso.
-            minuto=$(date +%M)
-            if (( 10#$minuto >= 10 )); then
-              echo "::warning::ATRASO SUPERIOR A 10 MINUTOS: diagnóstico automático iniciado para ${pendentes[*]}."
-              echo "::group::Diagnóstico de atraso Tor Turbo"
-              echo "Horários pendentes: ${pendentes[*]}"
-              echo "Registros disponíveis na base:"
-              jq -r '[.records[] | (.data + " " + .horario)] | unique | sort | reverse | .[:8] | .[]' "$base" || true
-              echo "Consulta à fonte será repetida em 60 segundos, sem intervenção do usuário."
-              echo "::endgroup::"
-            fi
-            if (( agora - inicio_geral >= 240 )); then
-              echo "::warning::Ainda existem $restantes horários incompletos; a próxima execução agendada continuará a coleta."
-              break
+            if (( agora >= fim || inicio + 60 >= fim )); then
+              echo "::error::Resultados incompletos para $alvo"
+              exit 1
             fi
             espera=$((inicio + 60 - agora))
             if (( espera > 0 )); then sleep "$espera"; fi
           done
-      - name: Registrar estado horário do alerta no GitHub
-        if: always()
-        env:
-          TZ: America/Sao_Paulo
-        run: |
-          set -euo pipefail
-          base=thor-turbo/resultados.json
-          status=thor-turbo/status-atualizacao.json
-          alvo=$(date '+%F %H:00')
-          if jq -e --arg alvo "$alvo" '
-            [.records[] | select((.data + " " + .horario) == $alvo)] as $hora |
-            (["Mega-Sena Turbo","Quina Turbo","Lotofácil Turbo","Lotomania Turbo","Dia de Sorte Turbo"] - [$hora[].modalidade] | length == 0) and
-            ([$hora[] | select(.modalidade == "Dupla Sena Turbo")] | group_by(.concurso) | any(map(.sorteio // 1) | unique == [1,2]))
-          ' "$base" >/dev/null; then
-            situacao=atualizado
-            mensagem="Resultado das $(date '+%H')h atualizado"
-          else
-            situacao=aguardando
-            mensagem="Alerta enviado; aguardando resultado das $(date '+%H')h"
-          fi
-          jq -n --arg hora "$alvo" --arg situacao "$situacao" --arg mensagem "$mensagem" --arg verificado "$(date -Iseconds)" '{hora:$hora,alerta:"enviado",situacao:$situacao,mensagem:$mensagem,verificadoEm:$verificado}' > "$status"
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add "$status"
-          if ! git diff --cached --quiet; then
-            git commit -m "Thor Turbo: registrar alerta e status da hora"
-            for tentativa_push in 1 2 3 4 5; do
-              git pull --rebase origin main
-              if git push origin HEAD:main; then break; fi
-              if (( tentativa_push == 5 )); then echo "::error::Conflito persistente ao publicar"; exit 1; fi
-              sleep 3
-            done
-          fi
       - name: Verificar pedidos do botão Atualizar
         id: sinal
         continue-on-error: true
@@ -181,14 +114,7 @@ jobs:
           if ! git diff --quiet HEAD -- thor-turbo/resultados.json thor-turbo/alerta-matriz.json; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add thor-turbo/resultados.json thor-turbo/alerta-matriz.json
-            if ! git diff --cached --quiet; then
-              git commit -m "Thor Turbo: atualizar resultados automaticamente"
-              for tentativa_push in 1 2 3 4 5; do
-                git pull --rebase origin main
-                if git push origin HEAD:main; then break; fi
-                if (( tentativa_push == 5 )); then echo "::error::Falha ao publicar dados após 5 tentativas"; exit 1; fi
-                sleep 3
-              done
-            fi
+            git add thor-turbo/resultados.json
+            git commit -m "Thor Turbo: atualizar resultados automaticamente"
+            git push
           fi
