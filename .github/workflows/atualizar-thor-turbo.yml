@@ -7,6 +7,7 @@ on:
     paths:
       - 'thor-turbo/coleta-direta.py'
       - 'thor-turbo/pedido-coleta.txt'
+      - 'thor-turbo/matriz-firefox-remoto.py'
       - '.github/workflows/atualizar-thor-turbo.yml'
   workflow_dispatch:
 permissions:
@@ -22,50 +23,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: main
-      - name: Consultar e publicar os resultados da hora
+      - name: Coletar pela API diretamente
+        id: direta
+        continue-on-error: true
         env:
           LB_USER: ${{ secrets.LOTOBANCA_LOGIN }}
           LB_PASS: ${{ secrets.LOTOBANCA_SENHA }}
-          TZ: America/Sao_Paulo
-        run: |
-          set -euo pipefail
-          base=thor-turbo/resultados.json
-          alvo=$(date '+%F %H:00')
-          fim=$(date -d "$alvo" +%s)
-          fim=$((fim + 3600))
-          completo() {
-            jq -e --arg alvo "$alvo" '
-              [.records[] | select((.data + " " + .horario) == $alvo)] as $hora |
-              (["Mega-Sena Turbo","Quina Turbo","Lotofácil Turbo","Lotomania Turbo","Dia de Sorte Turbo"]
-                - [$hora[].modalidade] | length == 0) and
-              ([$hora[] | select(.modalidade == "Dupla Sena Turbo")] | group_by(.concurso) |
-                any(map(.sorteio // 1) | unique == [1,2]))
-            ' "$base" >/dev/null
-          }
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          while true; do
-            inicio=$(date +%s)
-            if [[ "$GITHUB_EVENT_NAME" == schedule ]] && completo; then break; fi
-            if python3 thor-turbo/coleta-direta.py; then
-              if ! git diff --quiet -- "$base"; then
-                git add "$base"
-                git commit -m "Thor Turbo: publicar concursos conferidos pela API"
-                git pull --rebase origin main
-                git push origin HEAD:main
-              fi
-              if completo; then break; fi
-            elif [[ "$GITHUB_EVENT_NAME" != schedule && "$GITHUB_EVENT_NAME" != push ]]; then
-              exit 1
-            fi
-            agora=$(date +%s)
-            if (( agora >= fim || inicio + 60 >= fim )); then
-              echo "::error::Resultados incompletos para $alvo"
-              exit 1
-            fi
-            espera=$((inicio + 60 - agora))
-            if (( espera > 0 )); then sleep "$espera"; fi
-          done
+        run: python3 thor-turbo/coleta-direta.py
       - name: Verificar pedidos do botão Atualizar
         id: sinal
         continue-on-error: true
@@ -87,7 +51,6 @@ jobs:
           if (( count > last )); then echo "pendente=true" >> "$GITHUB_OUTPUT"; fi
       - name: Consultar Matriz no Firefox do GitHub
         id: firefox
-        if: steps.sinal.outputs.pendente == 'true'
         continue-on-error: true
         timeout-minutes: 8
         env:
@@ -98,9 +61,6 @@ jobs:
           python3 -m playwright install firefox
           python3 thor-turbo/matriz-firefox-remoto.py | tee "$RUNNER_TEMP/matriz.log"
           grep -q 'Leitura confirmada: SIM' "$RUNNER_TEMP/matriz.log"
-      - name: Restaurar a base já publicada pela API
-        if: steps.sinal.outputs.pendente == 'true'
-        run: git restore -- thor-turbo/resultados.json
       - name: Registrar atendimento após conferir a API
         if: steps.sinal.outputs.pendente == 'true'
         env:
@@ -109,12 +69,20 @@ jobs:
         run: |
           jq -n --argjson n "$COUNT" --arg f "$FIREFOX" --arg t "$(date -u +%FT%TZ)" '{atendidos:$n,firefox:$f,conferidoEm:$t}' > thor-turbo/alerta-matriz.json
           git add thor-turbo/alerta-matriz.json
-      - name: Publicar dados e confirmação
+      - name: Publicar resultados coletados pelo Firefox ou API
         run: |
-          if ! git diff --quiet HEAD -- thor-turbo/resultados.json thor-turbo/alerta-matriz.json; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add thor-turbo/resultados.json
-            git commit -m "Thor Turbo: atualizar resultados automaticamente"
-            git push
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add thor-turbo/resultados.json thor-turbo/alerta-matriz.json
+          if git diff --cached --quiet; then
+            echo "Nenhum resultado novo encontrado nas fontes consultadas"
+            exit 0
           fi
+          git commit -m "Thor Turbo: publicar coleta automatica do Firefox e API"
+          for tentativa in 1 2 3 4 5; do
+            if git pull --rebase origin main && git push origin HEAD:main; then exit 0; fi
+            sleep 3
+          done
+          echo "::error::Nao foi possivel publicar a coleta no GitHub"
+          exit 1
