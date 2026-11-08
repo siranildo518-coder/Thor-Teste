@@ -113,10 +113,54 @@ def inspect(page, label):
     print("Inputs acessiveis:", page.get_by_role("textbox").count())
     print("Viewport:", page.viewport_size)
 
+
+# Executado antes dos scripts da pagina, como @run-at document-start da Matriz 8.5.
+# Captura a resposta original e repete a mesma requisicao sem guardar credenciais.
+MATRIZ_INIT = r"""
+(() => {
+ const match = u => { try { return new URL(u, location.href).pathname.includes('loto-turbo-listar-sorteios') } catch { return false } };
+ const originalFetch = window.fetch;
+ let template = null;
+ window.__thorMatriz = {calls:0, responses:0, refresh:async () => {
+   if (!template) return false;
+   const response = await originalFetch.call(window, template.clone());
+   window.__thorMatriz.responses++;
+   return response.ok;
+ }};
+ window.fetch = function(input, init) {
+   try {
+     const req = new Request(input, init);
+     if (match(req.url)) { template=req.clone(); window.__thorMatriz.calls++; }
+   } catch {}
+   return originalFetch.apply(this, arguments);
+ };
+ const proto=XMLHttpRequest.prototype, open=proto.open, send=proto.send, header=proto.setRequestHeader;
+ proto.open=function(method,url) {
+   this.__thorRequest=match(url)?{method,url:new URL(url,location.href).href,headers:{}}:null;
+   return open.apply(this,arguments);
+ };
+ proto.setRequestHeader=function(k,v) {
+   if(this.__thorRequest)this.__thorRequest.headers[k]=v;
+   return header.apply(this,arguments);
+ };
+ proto.send=function(body) {
+   if(this.__thorRequest) {
+     try {
+       const x=this.__thorRequest;
+       template=new Request(x.url,{method:x.method,headers:x.headers,body:/^(GET|HEAD)$/i.test(x.method)?undefined:body,credentials:'include'});
+       window.__thorMatriz.calls++;
+     } catch {}
+   }
+   return send.apply(this,arguments);
+ };
+})();
+"""
+
 def main():
     with sync_playwright() as p:
         browser = p.firefox.launch(headless=True)
         context = browser.new_context(locale="pt-BR")
+        context.add_init_script(script=MATRIZ_INIT)
         page = context.new_page()
         js_errors = []
         request_failures = []
