@@ -25,7 +25,7 @@ $('status').className='status'+(stale?' warn':'');
 $('status').innerHTML='<strong>'+(stale?'⚠️ Base possivelmente atrasada':'Base carregada')+'</strong><div>'+(newest?'Último registro na base: '+safe(newest.modalidade)+' · concurso '+safe(newest.concurso)+' · '+safe(newest.data)+' '+safe(newest.horario):'Ainda não há concursos')+'</div><div>'+records.length+' registros · Consulta: '+new Date(lastFetch).toLocaleTimeString('pt-BR')+'</div>'+(stale?'<div>Os concursos exibidos podem não ser os mais recentes. Confira o site oficial.</div>':'');
 }
 const ALERT_CACHE_KEY='thor-turbo-alerta-horario-v1';
-function validAlert(j){return j&&/^\\d{4}-\\d{2}-\\d{2} \\d{2}:00$/.test(j.hora)&&j.alerta==='enviado'&&['atualizado','aguardando'].includes(j.situacao);}
+function validAlert(j){return j&&/^\d{4}-\d{2}-\d{2} \d{2}:00$/.test(j.hora)&&j.alerta==='enviado'&&['atualizado','aguardando'].includes(j.situacao);}
 function showAlert(j,offline=false){
  const box=$('alertaHora');
  box.className='status'+(j.situacao==='aguardando'||offline?' warn':'');
