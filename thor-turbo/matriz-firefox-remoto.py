@@ -353,6 +353,19 @@ def main():
                     page.wait_for_timeout(7000)
                     page.reload(wait_until="domcontentloaded", timeout=20000)
                     page.wait_for_timeout(5000)
+                    # Repetir a consulta original capturada pela Matriz virtual.
+                    # A resposta passa pelo listener de rede e pelo extrator existentes.
+                    try:
+                        estado = page.evaluate("window.__thorMatriz ? {calls:window.__thorMatriz.calls, responses:window.__thorMatriz.responses} : null")
+                        print("Matriz virtual: chamadas capturadas:", estado)
+                        if estado and estado["calls"] > 0:
+                            repetida = page.evaluate("window.__thorMatriz.refresh()")
+                            page.wait_for_timeout(1500)
+                            print("Matriz virtual: repeticao da consulta:", "SIM" if repetida else "NAO")
+                        else:
+                            print("Matriz virtual: nenhuma requisicao original para repetir")
+                    except Exception as exc:
+                        print("Matriz virtual: falha ao repetir consulta:", type(exc).__name__)
                     novos = result_responses[antes_resultados:]
                     print("API identificada pela Matriz 8.5:", API_MATRIZ85)
                     print("Respostas da API apos navegacao:", len(novos))
