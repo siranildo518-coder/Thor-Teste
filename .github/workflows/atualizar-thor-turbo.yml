@@ -84,6 +84,35 @@ jobs:
             espera=$((inicio + 60 - agora))
             if (( espera > 0 )); then sleep "$espera"; fi
           done
+      - name: Registrar estado horário do alerta no GitHub
+        if: always()
+        env:
+          TZ: America/Sao_Paulo
+        run: |
+          set -euo pipefail
+          base=thor-turbo/resultados.json
+          status=thor-turbo/status-atualizacao.json
+          alvo=$(date '+%F %H:00')
+          if jq -e --arg alvo "$alvo" '
+            [.records[] | select((.data + " " + .horario) == $alvo)] as $hora |
+            (["Mega-Sena Turbo","Quina Turbo","Lotofácil Turbo","Lotomania Turbo","Dia de Sorte Turbo"] - [$hora[].modalidade] | length == 0) and
+            ([$hora[] | select(.modalidade == "Dupla Sena Turbo")] | group_by(.concurso) | any(map(.sorteio // 1) | unique == [1,2]))
+          ' "$base" >/dev/null; then
+            situacao=atualizado
+            mensagem="Resultado das $(date '+%H')h atualizado"
+          else
+            situacao=aguardando
+            mensagem="Alerta enviado; aguardando resultado das $(date '+%H')h"
+          fi
+          jq -n --arg hora "$alvo" --arg situacao "$situacao" --arg mensagem "$mensagem" --arg verificado "$(date -Iseconds)" '{hora:$hora,alerta:"enviado",situacao:$situacao,mensagem:$mensagem,verificadoEm:$verificado}' > "$status"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$status"
+          if ! git diff --cached --quiet; then
+            git commit -m "Thor Turbo: registrar alerta e status da hora"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
       - name: Verificar pedidos do botão Atualizar
         id: sinal
         continue-on-error: true
