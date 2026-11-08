@@ -63,8 +63,12 @@ jobs:
               if ! git diff --quiet -- "$base"; then
                 git add "$base"
                 git commit -m "Thor Turbo: publicar concursos conferidos pela API"
-                git pull --rebase origin main
-                git push origin HEAD:main
+                for tentativa_push in 1 2 3 4 5; do
+                  git pull --rebase origin main
+                  if git push origin HEAD:main; then break; fi
+                  if (( tentativa_push == 5 )); then echo "::error::Falha ao publicar resultados após 5 tentativas"; exit 1; fi
+                  sleep 3
+                done
               fi
             else
               echo "::warning::Falha na consulta à API; nova tentativa em 60 segundos."
@@ -177,7 +181,14 @@ jobs:
           if ! git diff --quiet HEAD -- thor-turbo/resultados.json thor-turbo/alerta-matriz.json; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add thor-turbo/resultados.json
-            git commit -m "Thor Turbo: atualizar resultados automaticamente"
-            git push
+            git add thor-turbo/resultados.json thor-turbo/alerta-matriz.json
+            if ! git diff --cached --quiet; then
+              git commit -m "Thor Turbo: atualizar resultados automaticamente"
+              for tentativa_push in 1 2 3 4 5; do
+                git pull --rebase origin main
+                if git push origin HEAD:main; then break; fi
+                if (( tentativa_push == 5 )); then echo "::error::Falha ao publicar dados após 5 tentativas"; exit 1; fi
+                sleep 3
+              done
+            fi
           fi
