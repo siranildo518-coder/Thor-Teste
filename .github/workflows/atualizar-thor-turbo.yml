@@ -101,6 +101,35 @@ jobs:
             exit 1
           fi
           echo "Consulta executada; atualidade dos resultados sera validada no final."
+      - name: Repetir consulta Chromium se a hora continuar atrasada
+        if: steps.chromium.outcome == 'success'
+        env:
+          LOTOBANCA_LOGIN: ${{ secrets.LOTOBANCA_LOGIN }}
+          LOTOBANCA_SENHA: ${{ secrets.LOTOBANCA_SENHA }}
+        run: |
+          set -euo pipefail
+          for tentativa in 1 2; do
+            if python3 - <<'PY'
+          import json, datetime
+          from zoneinfo import ZoneInfo
+          now=datetime.datetime.now(ZoneInfo('America/Sao_Paulo'))
+          target=now.replace(minute=0,second=0,microsecond=0)
+          if now.minute<5: target-=datetime.timedelta(hours=1)
+          with open('thor-turbo/resultados.json',encoding='utf-8') as f: rows=json.load(f).get('records',[])
+          dates=[]
+          for r in rows:
+              try: dates.append(datetime.datetime.fromisoformat(str(r['scheduledAt']).replace('Z','+00:00')).astimezone(ZoneInfo('America/Sao_Paulo')))
+              except (KeyError,TypeError,ValueError): pass
+          raise SystemExit(0 if dates and max(dates)>=target else 1)
+          PY
+            then
+              echo "Concurso da hora ja presente: sem nova tentativa"
+              break
+            fi
+            echo "::warning::Resultado atrasado; nova tentativa Chromium $tentativa em 60 segundos"
+            sleep 60
+            python3 thor-turbo/matriz-chromium-remoto.py || echo "::warning::Tentativa Chromium falhou; proxima verificacao continuara"
+          done
       - name: Publicar resultados coletados pelo Chromium ou API
         if: steps.direta.outcome == 'success' || steps.chromium.outcome == 'success'
         run: |
