@@ -100,7 +100,7 @@ jobs:
             echo "::error::FALHA REAL: nem API direta nem Chromium remoto confirmaram resultados. Verifique credenciais LOTOBANCA_LOGIN/LOTOBANCA_SENHA e logs das etapas."
             exit 1
           fi
-          echo "Coleta confirmada por pelo menos uma fonte."
+          echo "Consulta executada; atualidade dos resultados sera validada no final."
       - name: Publicar resultados coletados pelo Chromium ou API
         if: steps.direta.outcome == 'success' || steps.chromium.outcome == 'success'
         run: |
@@ -119,3 +119,32 @@ jobs:
           done
           echo "::error::Nao foi possivel publicar a coleta no GitHub"
           exit 1
+
+      - name: Reprovar resultados atrasados mesmo com API HTTP 200
+        if: always() && (steps.direta.outcome == 'success' || steps.chromium.outcome == 'success')
+        run: |
+          python3 - <<'PY'
+          import json, datetime, sys
+          from zoneinfo import ZoneInfo
+          with open('thor-turbo/resultados.json', encoding='utf-8') as f:
+              records=json.load(f).get('records', [])
+          now=datetime.datetime.now(ZoneInfo('America/Sao_Paulo'))
+          # O ultimo horario de sorteio esperado e a hora cheia, com tolerancia de 5 minutos.
+          target=now.replace(minute=0, second=0, microsecond=0)
+          if now.minute < 5:
+              target-=datetime.timedelta(hours=1)
+          dates=[]
+          for r in records:
+              try:
+                  d=datetime.datetime.fromisoformat(str(r['scheduledAt']).replace('Z','+00:00')).astimezone(ZoneInfo('America/Sao_Paulo'))
+                  dates.append(d)
+              except (KeyError,ValueError,TypeError):
+                  pass
+          latest=max(dates) if dates else None
+          print('Hora esperada (Brasilia):',target.isoformat())
+          print('Ultimo resultado no JSON:',latest.isoformat() if latest else 'nenhum')
+          if latest is None or latest < target:
+              print('::error::RESULTADO ATRASADO: coleta executou mas nao publicou concurso da hora esperada')
+              sys.exit(1)
+          print('Resultado da hora confirmado no JSON')
+          PY
