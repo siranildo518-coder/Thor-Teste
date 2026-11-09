@@ -53,7 +53,18 @@ def main():
     user = os.environ["LB_USER"].strip()
     if re.fullmatch(r"[\d. -]+", user):
         user = re.sub(r"\D", "", user)
-    login = post("login", {"username": user, "password": os.environ["LB_PASS"]})
+    # Parse REST /login utiliza GET com parametros na query string.
+    # O envio por POST nao corresponde ao endpoint de autenticacao Parse.
+    from urllib.parse import urlencode
+    senha = os.environ["LB_PASS"]
+    parametros = urlencode({"username": user, "password": senha})
+    req = Request("https://api.lotobanca.com/parse/login?" + parametros,
+                  headers={k: v for k, v in headers.items() if k != "Content-Type"},
+                  method="GET")
+    with opener.open(req, timeout=25) as resposta:
+        login = json.load(resposta)
+    if not login.get("sessionToken"):
+        raise RuntimeError("Login da Matriz 8.5 nao retornou sessao valida")
     headers["X-Parse-Session-Token"] = login["sessionToken"]
     headers["Content-Type"] = "text/plain; charset=utf-8"
     base = json.loads(BASE.read_text(encoding="utf-8"))
