@@ -1,3 +1,3 @@
-2026-11-09T05:00:00-03:00
-Tentativa: 2026-11-09T05:12:00-03:00
-Reexecutar coleta automatica de todas as modalidades e validar Firefox remoto apos correcao de aliases.
+2026-11-09T06:00:00-03:00
+Teste solicitado: conferir resultado das 06:00 de Brasilia em todas as seis modalidades.
+Executar coleta independente do botao Enviar, registrar resultados reais e nao fabricar concursos.
