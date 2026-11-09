@@ -32,7 +32,15 @@ def extrair(payload):
                 walk(x, depth+1)
             return
         nome_bruto = norm(node.get("lotteryName") or node.get("lotteryKey"))
-        nome = next((n for n in MODALIDADES if norm(n) in nome_bruto), None)
+        aliases = {
+            "lototurbo_lotomania": "Lotomania Turbo",
+            "lototurbo_lotofacil": "Lotofácil Turbo",
+            "lototurbo_megasena": "Mega-Sena Turbo",
+            "lototurbo_quina": "Quina Turbo",
+            "lototurbo_diadesorte": "Dia de Sorte Turbo",
+            "lototurbo_duplasena": "Dupla Sena Turbo",
+        }
+        nome = aliases.get(nome_bruto) or next((n for n in MODALIDADES if norm(n) in nome_bruto), None)
         if nome:
             qtd, minimo, maximo = MODALIDADES[nome]
             dezenas = node.get("resultNumbers")
