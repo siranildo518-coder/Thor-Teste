@@ -89,7 +89,20 @@ jobs:
           if [[ "$DIRETA" != "success" && "$FIREFOX" != "success" ]]; then
             echo "::warning::API e Firefox falharam; a coleta nao foi confirmada."
           fi
+      - name: Exigir coleta confirmada antes de considerar execucao concluida
+        if: always()
+        env:
+          DIRETA: ${{ steps.direta.outcome }}
+          FIREFOX: ${{ steps.firefox.outcome }}
+        run: |
+          set -euo pipefail
+          if [[ "$DIRETA" != "success" && "$FIREFOX" != "success" ]]; then
+            echo "::error::FALHA REAL: nem API direta nem Firefox remoto confirmaram resultados. Verifique credenciais LOTOBANCA_LOGIN/LOTOBANCA_SENHA e logs das etapas."
+            exit 1
+          fi
+          echo "Coleta confirmada por pelo menos uma fonte."
       - name: Publicar resultados coletados pelo Firefox ou API
+        if: steps.direta.outcome == 'success' || steps.firefox.outcome == 'success'
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
