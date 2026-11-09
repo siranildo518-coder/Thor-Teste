@@ -1,0 +1,47 @@
+name: Testar Matriz 8.5 Chromium
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'thor-turbo/matriz-chromium-remoto.py'
+      - '.github/workflows/testar-matriz-chromium.yml'
+permissions:
+  contents: write
+concurrency:
+  group: thor-turbo-resultados
+  cancel-in-progress: false
+jobs:
+  testar-chromium:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Instalar Chromium e Playwright
+        run: |
+          python3 -m pip install --disable-pip-version-check playwright
+          python3 -m playwright install --with-deps chromium
+      - name: Executar Matriz 8.5 no Chromium
+        env:
+          LOTOBANCA_LOGIN: ${{ secrets.LOTOBANCA_LOGIN }}
+          LOTOBANCA_SENHA: ${{ secrets.LOTOBANCA_SENHA }}
+        run: |
+          set -o pipefail
+          python3 thor-turbo/matriz-chromium-remoto.py | tee "$RUNNER_TEMP/matriz-chromium.log"
+          grep -q 'Leitura confirmada: SIM' "$RUNNER_TEMP/matriz-chromium.log"
+      - name: Publicar somente resultados novos
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add thor-turbo/resultados.json
+          if git diff --cached --quiet; then
+            echo "Matriz Chromium consultada; sem resultados novos."
+            exit 0
+          fi
+          git commit -m "Thor Turbo: coleta da Matriz 8.5 Chromium"
+          for tentativa in 1 2 3 4 5; do
+            if git pull --rebase origin main && git push origin HEAD:main; then exit 0; fi
+            sleep 3
+          done
+          exit 1
