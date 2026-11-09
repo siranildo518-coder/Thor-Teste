@@ -8,7 +8,7 @@ on:
     paths:
       - 'thor-turbo/coleta-direta.py'
       - 'thor-turbo/pedido-coleta.txt'
-      - 'thor-turbo/matriz-firefox-remoto.py'
+      - 'thor-turbo/matriz-chromium-remoto.py'
       - '.github/workflows/atualizar-thor-turbo.yml'
   workflow_dispatch:
 permissions:
@@ -48,7 +48,7 @@ jobs:
           tag=alerta-matriz-v1
           if ! gh release view "$tag" >/dev/null 2>&1; then
             printf 'Tor Turbo\n' > "$RUNNER_TEMP/atualizar.txt"
-            gh release create "$tag" "$RUNNER_TEMP/atualizar.txt" --prerelease --latest=false --target "$GITHUB_SHA" --title "Sinal do botão Atualizar" --notes "Pedidos de consulta da Matriz no Firefox remoto."
+            gh release create "$tag" "$RUNNER_TEMP/atualizar.txt" --prerelease --latest=false --target "$GITHUB_SHA" --title "Sinal do botão Atualizar" --notes "Pedidos de consulta da Matriz no Chromium remoto."
           fi
           count=$(gh api "repos/$GITHUB_REPOSITORY/releases/tags/$tag?v=$GITHUB_RUN_ID" --jq '.assets[] | select(.name=="atualizar.txt") | .download_count')
           [[ "$count" =~ ^[0-9]+$ ]]
@@ -57,8 +57,8 @@ jobs:
           echo "Pedidos registrados: $count; atendidos: $last"
           echo "count=$count" >> "$GITHUB_OUTPUT"
           if (( count > last )); then echo "pendente=true" >> "$GITHUB_OUTPUT"; fi
-      - name: Consultar Matriz no Firefox do GitHub
-        id: firefox
+      - name: Consultar Matriz no Chromium do GitHub
+        id: chromium
         continue-on-error: true
         timeout-minutes: 8
         env:
@@ -66,43 +66,43 @@ jobs:
           LOTOBANCA_SENHA: ${{ secrets.LOTOBANCA_SENHA }}
         run: |
           python3 -m pip install --disable-pip-version-check playwright
-          python3 -m playwright install firefox
+          python3 -m playwright install --with-deps chromium
           set -o pipefail
-          python3 thor-turbo/matriz-firefox-remoto.py | tee "$RUNNER_TEMP/matriz.log"
+          python3 thor-turbo/matriz-chromium-remoto.py | tee "$RUNNER_TEMP/matriz.log"
           grep -q 'Leitura confirmada: SIM' "$RUNNER_TEMP/matriz.log"
       - name: Registrar atendimento após conferir a API
         if: steps.sinal.outputs.pendente == 'true'
         env:
           COUNT: ${{ steps.sinal.outputs.count }}
-          FIREFOX: ${{ steps.firefox.outcome }}
+          FIREFOX: ${{ steps.chromium.outcome }}
         run: |
-          jq -n --argjson n "$COUNT" --arg f "$FIREFOX" --arg t "$(date -u +%FT%TZ)" '{atendidos:$n,firefox:$f,conferidoEm:$t}' > thor-turbo/alerta-matriz.json
+          jq -n --argjson n "$COUNT" --arg f "$FIREFOX" --arg t "$(date -u +%FT%TZ)" '{atendidos:$n,chromium:$f,conferidoEm:$t}' > thor-turbo/alerta-matriz.json
           git add thor-turbo/alerta-matriz.json
       - name: Mostrar diagnostico da coleta automatica
         if: always()
         env:
           DIRETA: ${{ steps.direta.outcome }}
-          FIREFOX: ${{ steps.firefox.outcome }}
+          FIREFOX: ${{ steps.chromium.outcome }}
         run: |
           echo "Resultado API direta: $DIRETA"
-          echo "Resultado Firefox remoto: $FIREFOX"
+          echo "Resultado Chromium remoto: $FIREFOX"
           if [[ "$DIRETA" != "success" && "$FIREFOX" != "success" ]]; then
-            echo "::warning::API e Firefox falharam; a coleta nao foi confirmada."
+            echo "::warning::API e Chromium falharam; a coleta nao foi confirmada."
           fi
       - name: Exigir coleta confirmada antes de considerar execucao concluida
         if: always()
         env:
           DIRETA: ${{ steps.direta.outcome }}
-          FIREFOX: ${{ steps.firefox.outcome }}
+          FIREFOX: ${{ steps.chromium.outcome }}
         run: |
           set -euo pipefail
           if [[ "$DIRETA" != "success" && "$FIREFOX" != "success" ]]; then
-            echo "::error::FALHA REAL: nem API direta nem Firefox remoto confirmaram resultados. Verifique credenciais LOTOBANCA_LOGIN/LOTOBANCA_SENHA e logs das etapas."
+            echo "::error::FALHA REAL: nem API direta nem Chromium remoto confirmaram resultados. Verifique credenciais LOTOBANCA_LOGIN/LOTOBANCA_SENHA e logs das etapas."
             exit 1
           fi
           echo "Coleta confirmada por pelo menos uma fonte."
-      - name: Publicar resultados coletados pelo Firefox ou API
-        if: steps.direta.outcome == 'success' || steps.firefox.outcome == 'success'
+      - name: Publicar resultados coletados pelo Chromium ou API
+        if: steps.direta.outcome == 'success' || steps.chromium.outcome == 'success'
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
@@ -112,7 +112,7 @@ jobs:
             echo "Nenhum resultado novo encontrado nas fontes consultadas"
             exit 0
           fi
-          git commit -m "Thor Turbo: publicar coleta automatica do Firefox e API"
+          git commit -m "Thor Turbo: publicar coleta automatica do Chromium e API"
           for tentativa in 1 2 3 4 5; do
             if git pull --rebase origin main && git push origin HEAD:main; then exit 0; fi
             sleep 3
