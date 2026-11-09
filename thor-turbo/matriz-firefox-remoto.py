@@ -35,7 +35,15 @@ def contar_registros_matriz85(payload):
                 walk(v, depth + 1)
             return
         nome_raw = normalizar(node.get("lotteryName") or node.get("lotteryKey"))
-        nome = next((n for n in TAMANHOS_MATRIZ85 if normalizar(n) in nome_raw), None)
+        aliases = {
+            "lototurbo_lotomania": "Lotomania Turbo",
+            "lototurbo_lotofacil": "Lotofácil Turbo",
+            "lototurbo_megasena": "Mega-Sena Turbo",
+            "lototurbo_quina": "Quina Turbo",
+            "lototurbo_diadesorte": "Dia de Sorte Turbo",
+            "lototurbo_duplasena": "Dupla Sena Turbo",
+        }
+        nome = aliases.get(nome_raw) or next((n for n in TAMANHOS_MATRIZ85 if normalizar(n) in nome_raw), None)
         if nome:
             tamanho, minimo, maximo = TAMANHOS_MATRIZ85[nome]
             dezenas = node.get("resultNumbers")
