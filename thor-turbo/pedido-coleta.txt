@@ -1,3 +1,1 @@
-2026-11-09T06:00:00-03:00
-Teste solicitado: conferir resultado das 06:00 de Brasilia em todas as seis modalidades.
-Executar coleta independente do botao Enviar, registrar resultados reais e nao fabricar concursos.
+Fiscalizacao 2026-11-09 19:05 America/Sao_Paulo: resultado das 19h ainda ausente; acionar coleta Chromium/API.
