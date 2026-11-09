@@ -23,13 +23,13 @@ class Direto(HTTPRedirectHandler):
         return None
 
 
-def validar(bolas, quantidade, maximo):
+def validar(bolas, quantidade, maximo, minimo=1):
     if not isinstance(bolas, list) or len(bolas) != quantidade:
         raise ValueError("Quantidade de dezenas inesperada")
     if not all(re.fullmatch(r"[0-9]{1,3}", str(n)) for n in bolas):
         raise ValueError("Dezena inválida")
     numeros = list(map(int, bolas))
-    if len(set(numeros)) != quantidade or not all(1 <= n <= maximo for n in numeros):
+    if len(set(numeros)) != quantidade or not all(minimo <= n <= maximo for n in numeros):
         raise ValueError("Dezenas repetidas ou fora da faixa")
     return numeros
 
@@ -89,7 +89,7 @@ def main():
                 for indice, bolas in enumerate(grupos, 1):
                     row = dict(modalidade=nome, concurso=concurso, data=local.strftime("%Y-%m-%d"),
                                horario=local.strftime("%H:%M"), scheduledAt=s["scheduledAt"],
-                               dezenas=validar(bolas, qtd, maximo))
+                               dezenas=validar(bolas, qtd, maximo, 0 if slug == "lotomania" else 1))
                     if indice == 2:
                         row["sorteio"] = indice
                     key = chave(row)
