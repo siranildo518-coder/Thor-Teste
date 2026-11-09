@@ -43,12 +43,17 @@ def extrair(payload):
         nome = aliases.get(nome_bruto) or next((n for n in MODALIDADES if norm(n) in nome_bruto), None)
         if nome:
             qtd, minimo, maximo = MODALIDADES[nome]
-            dezenas = node.get("resultNumbers")
-            if isinstance(dezenas, str) and re.fullmatch(r"[0-9\\s,;|.\\-]+", dezenas):
-                dezenas = re.findall(r"\\d{1,3}", dezenas)
             numero = str(node.get("sorteioNumber") or "")
             agendado = node.get("scheduledAt")
-            if isinstance(dezenas, list) and len(dezenas) == qtd and numero.isdigit() and isinstance(agendado, str):
+            grupos = [(1, node.get("resultNumbers"))]
+            if nome == "Dupla Sena Turbo":
+                grupos.append((2, node.get("resultNumbers2")))
+            for indice, dezenas in grupos:
+                if isinstance(dezenas, str) and re.fullmatch(r"[0-9\\s,;|.\\-]+", dezenas):
+                    dezenas = re.findall(r"\\d{1,3}", dezenas)
+                if not (isinstance(dezenas, list) and len(dezenas) == qtd
+                        and numero.isdigit() and isinstance(agendado, str)):
+                    continue
                 try:
                     nums = [int(x) for x in dezenas]
                     dt = datetime.fromisoformat(agendado.replace("Z", "+00:00"))
@@ -64,7 +69,9 @@ def extrair(payload):
                             "dezenas": nums,
                             "scheduledAt": agendado,
                         }
-                        chave = (nome, numero, agendado)
+                        if indice == 2:
+                            registro["sorteio"] = 2
+                        chave = (nome, numero, agendado, indice)
                         saida[chave] = registro
                 except (TypeError, ValueError, OverflowError):
                     pass
