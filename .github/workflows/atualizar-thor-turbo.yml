@@ -24,6 +24,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: main
+      - name: Acionar alerta automatico sem abrir o aplicativo
+        run: |
+          echo "ALERTA AUTOMATICO THOR TURBO"
+          echo "Acionado pelo GitHub Actions, independente do app e do botao Enviar."
+          echo "Horario UTC: $(date -u +%FT%TZ)"
+          echo "Evento: ${{ github.event_name }}"
+          echo "Iniciando consulta dos sorteios publicados na Lotobanca."
       - name: Coletar pela API diretamente
         id: direta
         continue-on-error: true
