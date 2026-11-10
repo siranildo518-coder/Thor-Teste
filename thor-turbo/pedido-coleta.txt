@@ -1,1 +1,1 @@
-Thor Turbo - solicitação de coleta 2026-11-10 04:00:25 America/Sao_Paulo - execução horária 04h. Acionar coleta imediatamente e validar resultados.json.
+Thor Turbo | 2026-11-10 05:05:53 America/Sao_Paulo | É hora de atualizar. Executar coleta agora.
