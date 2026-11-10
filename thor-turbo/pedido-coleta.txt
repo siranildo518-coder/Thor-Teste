@@ -1,1 +1,1 @@
-Thor Turbo - ordem de coleta 2026-11-10 03:09:35 America/Sao_Paulo. É hora de atualizar. Acionar coleta imediatamente e validar resultados.
+Thor Turbo - solicitação de coleta 2026-11-10 04:00:25 America/Sao_Paulo - execução horária 04h. Acionar coleta imediatamente e validar resultados.json.
