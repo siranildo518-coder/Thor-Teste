@@ -1,1 +1,1 @@
-Fiscalizacao 2026-11-09 22h America/Sao_Paulo: resultado das 22h ausente apos minuto 05; executar coleta Chromium/API e validar resultados.json.
+TESTE REAL DE ACIONAMENTO CHATGPT - 2026-11-09 22h Brasilia - executar agora coleta Thor Turbo e validar resultados.json.
