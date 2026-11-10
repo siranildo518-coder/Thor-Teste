@@ -1,4 +1,3 @@
-Solicitação de coleta Thor Turbo
-Data/hora Brasília: 2026-11-10 16:07:06 -03:00
-Execução: 2026-11-10T16:07:06-03:00
-Ação: É hora de atualizar os resultados das 16h.
+É hora de atualizar
+Solicitação: 2026-11-10 17:09:29 America/Sao_Paulo
+Coleta: resultados Thor Turbo das 17h
