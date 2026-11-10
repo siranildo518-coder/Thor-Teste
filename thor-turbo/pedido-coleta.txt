@@ -1,1 +1,1 @@
-Fiscalizacao 2026-11-09 21:13 America/Sao_Paulo: resultado das 21h ausente; executar coleta Chromium/API e validar resultados.json.
+Fiscalizacao 2026-11-09 22h America/Sao_Paulo: resultado das 22h ausente apos minuto 05; executar coleta Chromium/API e validar resultados.json.
