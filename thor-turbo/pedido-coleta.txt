@@ -1,1 +1,1 @@
-ACIONAMENTO AUTOMATICO CHATGPT - 2026-11-10 02:07:52 America/Sao_Paulo - executar imediatamente coleta Thor Turbo da hora 02h, Chromium/API, validar resultados.json. Solicitacao unica 20261110-020752.
+Thor Turbo - ordem de coleta 2026-11-10 03:09:35 America/Sao_Paulo. É hora de atualizar. Acionar coleta imediatamente e validar resultados.
