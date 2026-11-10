@@ -1,4 +1,4 @@
-THOR TURBO - PEDIDO DE COLETA
-Data/hora Brasilia: 2026-11-10 15:08:52 -03:00
-Solicitacao unica: coleta-20261110-150852-BRT
-Acao: E hora de atualizar os resultados das 15h.
+Solicitação de coleta Thor Turbo
+Data/hora Brasília: 2026-11-10 16:07:06 -03:00
+Execução: 2026-11-10T16:07:06-03:00
+Ação: É hora de atualizar os resultados das 16h.
