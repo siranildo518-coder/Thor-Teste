@@ -1,1 +1,3 @@
-Thor Turbo | 2026-11-10 06:05:00 America/Sao_Paulo | É hora de atualizar. Executar coleta agora. Solicitação 20261110-0605.
+É hora de atualizar
+Data/hora Brasília: 2026-11-10 07:07:19 -03:00
+Solicitação: Thor Turbo coleta das 07h, execução 2026-11-10T07:07:19-03:00
