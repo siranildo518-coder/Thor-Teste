@@ -1,4 +1,4 @@
-É hora de atualizar
-Data/hora Brasília: 2026-11-10 14:04:58 -03:00
-Solicitação: coleta Thor Turbo das 14h
-Identificador: 20261110-140458-BRT
+THOR TURBO - PEDIDO DE COLETA
+Data/hora Brasilia: 2026-11-10 15:08:52 -03:00
+Solicitacao unica: coleta-20261110-150852-BRT
+Acao: E hora de atualizar os resultados das 15h.
