@@ -1,3 +1,4 @@
 É hora de atualizar
-Solicitação: 2026-11-11 13:09:27 America/Sao_Paulo
-Coleta: 2026-11-11 13h Brasília
+Solicitação de coleta Thor Turbo
+Brasília: 2026-11-11T14:04:18-03:00
+Execução: 2026-11-11-14h04m18s-BRT
