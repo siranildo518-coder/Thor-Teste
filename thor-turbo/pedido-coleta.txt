@@ -1,2 +1,3 @@
-2026-11-11T18:00:00-03:00
-Tentativa: 2026-11-11T18:01:09-03:00
+É hora de atualizar
+Solicitação única: 2026-11-11 18:06:34 America/Sao_Paulo
+Coleta Thor Turbo: 18h de Brasília
