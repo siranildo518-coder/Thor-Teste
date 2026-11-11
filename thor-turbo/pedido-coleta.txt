@@ -1,4 +1,3 @@
 É hora de atualizar
-Data/hora Brasília: 2026-11-11 01:05:45 -03:00
-Coleta solicitada: 01h de 11/11/2026
-Identificador: thor-turbo-20261111-010545-BRT
+Solicitação: 2026-11-11 02:09:33 America/Sao_Paulo
+Coleta: 02h de Brasília
