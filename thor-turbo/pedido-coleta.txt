@@ -1,4 +1,4 @@
 É hora de atualizar
 Solicitação de coleta Thor Turbo
-Brasília: 2026-11-11T15:04:32-03:00
-Execução: 2026-11-11-15h04m32s-BRT
+Data/hora Brasília: 2026-11-11 16:01:25 -03:00
+Identificador: thor-turbo-20261111T160125-0300
