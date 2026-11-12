@@ -1,2 +1,4 @@
-2026-11-12T09:00:00-03:00
-Tentativa: 2026-11-12T09:01:58-03:00
+Solicitacao de coleta Thor Turbo
+Data/hora Brasilia: 2026-11-12T09:02:08-03:00
+Identificador: coleta-20261112-090208-BRT
+Acao: E hora de atualizar
