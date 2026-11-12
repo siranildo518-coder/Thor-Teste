@@ -1,3 +1,2 @@
-É hora de atualizar
-Solicitação: 2026-11-12 11:09:06 America/Sao_Paulo
-Coleta: 11h de Brasília
+2026-11-12T12:00:00-03:00
+Tentativa: 2026-11-12T12:00:56-03:00
