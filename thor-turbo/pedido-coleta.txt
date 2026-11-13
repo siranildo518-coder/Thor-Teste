@@ -1,3 +1,3 @@
 É hora de atualizar
-Hora-alvo: 2026-11-13T09:00:00-03:00
-Tentativa: 2026-11-13T12:01:52Z
+Solicitação de coleta: 2026-11-13 09:09:30 America/Sao_Paulo
+Identificador: thor-turbo-20261113-090930-BRT
