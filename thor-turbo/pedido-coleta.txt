@@ -1,3 +1,3 @@
-É hora de atualizar Thor Turbo.
-Solicitação única: 2026-11-13T08:02:06-03:00
-Coleta dos resultados das 08h de Brasília.
+É hora de atualizar
+Hora-alvo: 2026-11-13T09:00:00-03:00
+Tentativa: 2026-11-13T12:01:52Z
