@@ -1,3 +1,1 @@
-É hora de atualizar
-Hora-alvo: 2026-11-13T03:00:00-03:00
-Tentativa: 2026-11-13T06:00:38Z
+É hora de atualizar. Coleta Thor Turbo solicitada em 2026-11-13 03:06:24 America/Sao_Paulo. Solicitação única: 20261113T030624-0300.
