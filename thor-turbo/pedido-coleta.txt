@@ -1,4 +1,3 @@
 É hora de atualizar
-Hora-alvo: 2026-11-13T19:00:00-03:00
-Solicitação: 2026-11-13T19:02:02-03:00
-Identificador: coleta-20261113-190202-BRT
+Hora-alvo: 2026-11-13T20:00:00-03:00
+Tentativa: 2026-11-13T23:02:40Z
