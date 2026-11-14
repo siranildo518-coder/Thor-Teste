@@ -1,3 +1,4 @@
 É hora de atualizar
-Solicitação de coleta: 2026-11-14 16:07:57 America/Sao_Paulo
-Identificador: 20261114T160757-0300
+Hora-alvo: 2026-11-14T17:00:00-03:00
+Tentativa: 2026-11-14T20:00:14.312Z
+Origem: acionador horário Thor Turbo
