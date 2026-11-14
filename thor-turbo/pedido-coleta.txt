@@ -1,3 +1,4 @@
 É hora de atualizar
-Solicitação: 2026-11-14 01:03:33 America/Sao_Paulo
-Coleta Thor Turbo: 2026-11-14 01h Brasília
+Hora-alvo: 2026-11-14T02:00:00-03:00
+Tentativa: 2026-11-14T05:00:18.149Z
+Origem: acionador horário Thor Turbo
