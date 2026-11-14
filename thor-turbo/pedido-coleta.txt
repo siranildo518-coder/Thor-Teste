@@ -1,3 +1,4 @@
 É hora de atualizar
-Solicitação de coleta Thor Turbo: 2026-11-14 06:09:52 America/Sao_Paulo
-Execução: 2026-11-14T06:09:52-03:00
+Hora-alvo: 2026-11-14T07:00:00-03:00
+Tentativa: 2026-11-14T10:05:10.873Z
+Origem: acionador horário Thor Turbo
