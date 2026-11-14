@@ -1,2 +1,4 @@
-É hora de atualizar. Coleta Thor Turbo solicitada em 2026-11-14 04:05:18 America/Sao_Paulo.
-Identificador: thor-turbo-20261114-040518-BRT
+É hora de atualizar
+Hora-alvo: 2026-11-14T05:00:00-03:00
+Tentativa: 2026-11-14T08:00:19.371Z
+Origem: acionador horário Thor Turbo
