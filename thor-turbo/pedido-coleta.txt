@@ -1,4 +1,3 @@
-É hora de atualizar
-Hora-alvo: 2026-11-14T17:00:00-03:00
-Tentativa: 2026-11-14T20:00:14.312Z
-Origem: acionador horário Thor Turbo
+É hora de atualizar — Thor Turbo
+Solicitação de coleta: 2026-11-14 17:04:34 America/Sao_Paulo
+Execução: 2026-11-14T17:04:34-03:00
