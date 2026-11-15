@@ -1,3 +1,3 @@
-É hora de atualizar — Thor Turbo
-Hora-alvo: 2026-11-15T09:00:00-03:00
-Tentativa: 2026-11-15T09:01:12-03:00
+É hora de atualizar
+Solicitação: 2026-11-15T09:06:17-03:00
+Coleta Thor Turbo: 2026-11-15 09h Brasília
