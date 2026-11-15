@@ -1,4 +1,1 @@
-É hora de atualizar
-Hora-alvo: 2026-11-15T00:00:00-03:00
-Tentativa: 2026-11-15T03:00:16.436Z
-Origem: acionador horário Thor Turbo
+Acionamento Thor Turbo pelo ChatGPT: 15/11/2026, 00:05:17 (America/Sao_Paulo). Solicitação única: coletar agora resultados da hora e atualizar thor-turbo/resultados.json quando disponíveis.
