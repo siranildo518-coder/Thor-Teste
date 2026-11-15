@@ -1,1 +1,4 @@
-Thor Turbo — É hora de atualizar. Solicitação única de coleta: 14/11/2026, 23:06:55 (America/Sao_Paulo). Executar coleta dos resultados da hora e validar resultados.json. Identificador: 2026-11-15T02:06:55.553Z.
+É hora de atualizar
+Hora-alvo: 2026-11-15T00:00:00-03:00
+Tentativa: 2026-11-15T03:00:16.436Z
+Origem: acionador horário Thor Turbo
