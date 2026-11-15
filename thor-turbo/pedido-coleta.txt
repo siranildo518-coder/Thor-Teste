@@ -1,1 +1,1 @@
-Acionamento Thor Turbo pelo ChatGPT: 15/11/2026, 00:05:17 (America/Sao_Paulo). Solicitação única: coletar agora resultados da hora e atualizar thor-turbo/resultados.json quando disponíveis.
+Acionamento Thor Turbo pelo ChatGPT: 15/11/2026, 01:02:34 (America/Sao_Paulo). Solicitação única: executar agora a coleta dos resultados da hora 01h e atualizar thor-turbo/resultados.json quando disponíveis.
