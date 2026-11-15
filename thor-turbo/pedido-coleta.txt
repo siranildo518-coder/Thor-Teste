@@ -1,4 +1,3 @@
-É hora de atualizar
-Execução Brasília: 2026-11-15 03:08:57
-Hora-alvo: 2026-11-15 03h
-Origem: acionador horário Thor Turbo
+É hora de atualizar — Thor Turbo
+Solicitação de coleta: 2026-11-15 04:04:59 America/Sao_Paulo
+Identificador: thor-turbo-20261115-040459-BRT
