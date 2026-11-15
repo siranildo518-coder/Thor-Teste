@@ -1,3 +1,3 @@
 É hora de atualizar — Thor Turbo
-Solicitação de coleta: 2026-11-15 08:02:57 America/Sao_Paulo
-Execução: 20261115-080257-BRT
+Hora-alvo: 2026-11-15T09:00:00-03:00
+Tentativa: 2026-11-15T09:01:12-03:00
