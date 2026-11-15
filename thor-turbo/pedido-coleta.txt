@@ -1,4 +1,3 @@
-É hora de atualizar
-Hora-alvo: 2026-11-15T07:00:00-03:00
-Solicitação: 2026-11-15T07:06:56-03:00
-Origem: Fiscalizar Thor Turbo às 05
+É hora de atualizar — Thor Turbo
+Solicitação de coleta: 2026-11-15 08:02:57 America/Sao_Paulo
+Execução: 20261115-080257-BRT
