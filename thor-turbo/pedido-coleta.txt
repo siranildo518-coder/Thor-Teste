@@ -1,3 +1,2 @@
 É hora de atualizar
-Hora-alvo: 2026-11-16T11:00:00-03:00
-Solicitação única: 2026-11-16T11:12:15-03:00
+Solicitação de coleta Thor Turbo: 2026-11-16T12:42:14-03:00
