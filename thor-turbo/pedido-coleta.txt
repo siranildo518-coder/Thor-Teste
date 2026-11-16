@@ -1,3 +1,4 @@
 É hora de atualizar
-Solicitação de coleta Thor Turbo: 2026-11-15 21:08:03 America/Sao_Paulo
-Identificador: 20261115T210803-0300
+Hora-alvo: 2026-11-15T22:00:00-03:00
+Tentativa: 2026-11-15T22:02:00-03:00
+Coleta Thor Turbo: 2026-11-15 22h (Brasília)
