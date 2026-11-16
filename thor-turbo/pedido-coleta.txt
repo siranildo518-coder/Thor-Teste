@@ -1,4 +1,5 @@
 É hora de atualizar
 Solicitação de coleta Thor Turbo
-Data/hora Brasília: 2026-11-16 18:05:18 -03:00
-Identificador: coleta-20261116T180518-0300
+Hora-alvo ISO: 2026-11-16T19:00:00-03:00
+Tentativa ISO: 2026-11-16T19:03:08-03:00
+Identificador: coleta-20261116T190308-0300
