@@ -1,3 +1,4 @@
-É hora de atualizar — Thor Turbo
-Solicitação de coleta: 2026-11-17 04:08:21 America/Sao_Paulo
-Identificador: thor-turbo-20261117T040821-0300
+É hora de atualizar Thor Turbo.
+Hora-alvo ISO: 2026-11-17T05:00:00-03:00
+Tentativa ISO: 2026-11-17T05:07:30-03:00
+Identificador: thor-turbo-20261117-050730-BRT
