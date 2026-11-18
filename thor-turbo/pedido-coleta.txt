@@ -1,3 +1,3 @@
 É hora de atualizar Thor Turbo.
-Hora-alvo Brasília: 2026-11-17T23:00:00-03:00
-Solicitação única desta execução: 2026-11-17T23:03:21-03:00
+Solicitação de coleta: 2026-11-18 00:03:27 America/Sao_Paulo
+Identificador: thor-turbo-20261118T000327-0300
