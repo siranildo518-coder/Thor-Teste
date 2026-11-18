@@ -1,3 +1,2 @@
-É hora de atualizar Thor Turbo.
-Hora-alvo ISO: 2026-11-18T06:00:00-03:00
-Tentativa ISO: 2026-11-18T06:08:13-03:00
+É hora de atualizar — Thor Turbo
+Solicitação de coleta: 2026-11-18 07:01:19 America/Sao_Paulo
