@@ -1,3 +1,2 @@
-É hora de atualizar Thor Turbo.
-Solicitação de coleta: 2026-11-18 13:03:20 America/Sao_Paulo
-Identificador único: 20261118T130320-0300-run11
+É hora de atualizar — Thor Turbo
+Solicitação única: 2026-11-18 14:00:02 America/Sao_Paulo
