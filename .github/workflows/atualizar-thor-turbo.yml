@@ -116,14 +116,27 @@ jobs:
           target=now.replace(minute=0,second=0,microsecond=0)
           if now.minute<5: target-=datetime.timedelta(hours=1)
           with open('thor-turbo/resultados.json',encoding='utf-8') as f: rows=json.load(f).get('records',[])
-          dates=[]
-          for r in rows:
-              try: dates.append(datetime.datetime.fromisoformat(str(r['scheduledAt']).replace('Z','+00:00')).astimezone(ZoneInfo('America/Sao_Paulo')))
-              except (KeyError,TypeError,ValueError): pass
-          raise SystemExit(0 if dates and max(dates)>=target else 1)
+          expected={'Dia de Sorte Turbo':7,'Lotomania Turbo':20,'Lotofácil Turbo':15,'Mega-Sena Turbo':6,'Quina Turbo':5,'Dupla Sena Turbo':6}
+          required={(name,1) for name in expected}|{('Dupla Sena Turbo',2)}
+          found=set()
+          for row in rows:
+              name=row.get('modalidade')
+              numbers=row.get('dezenas')
+              if name not in expected or not isinstance(numbers,list) or len(numbers)!=expected[name]:
+                  continue
+              try:
+                  scheduled=datetime.datetime.fromisoformat(str(row['scheduledAt']).replace('Z','+00:00')).astimezone(target.tzinfo)
+              except (KeyError,TypeError,ValueError):
+                  scheduled=None
+              if scheduled==target or (row.get('data')==target.date().isoformat() and row.get('horario')==target.strftime('%H:%M')):
+                  found.add((name,2 if name=='Dupla Sena Turbo' and str(row.get('sorteio'))=='2' else 1))
+          missing=required-found
+          if missing:
+              print('Pendentes para',target.isoformat(),':',sorted(missing))
+          raise SystemExit(bool(missing))
           PY
             then
-              echo "Concurso da hora ja presente: sem nova tentativa"
+              echo "Seis modalidades e os dois sorteios da Dupla Sena presentes"
               break
             fi
             echo "::warning::Resultado atrasado; nova tentativa Chromium $tentativa em 60 segundos"
@@ -149,11 +162,11 @@ jobs:
           echo "::error::Nao foi possivel publicar a coleta no GitHub"
           exit 1
 
-      - name: Reprovar resultados atrasados mesmo com API HTTP 200
+      - name: Validar todas as modalidades da hora
         if: always() && (steps.direta.outcome == 'success' || steps.chromium.outcome == 'success')
         run: |
           python3 - <<'PY'
-          import json, datetime, sys
+          import json, datetime
           from zoneinfo import ZoneInfo
           with open('thor-turbo/resultados.json', encoding='utf-8') as f:
               records=json.load(f).get('records', [])
@@ -162,18 +175,22 @@ jobs:
           target=now.replace(minute=0, second=0, microsecond=0)
           if now.minute < 5:
               target-=datetime.timedelta(hours=1)
-          dates=[]
-          for r in records:
+          expected={'Dia de Sorte Turbo':7,'Lotomania Turbo':20,'Lotofácil Turbo':15,'Mega-Sena Turbo':6,'Quina Turbo':5,'Dupla Sena Turbo':6}
+          required={(name,1) for name in expected}|{('Dupla Sena Turbo',2)}
+          found=set()
+          for row in records:
+              name=row.get('modalidade')
+              numbers=row.get('dezenas')
+              if name not in expected or not isinstance(numbers,list) or len(numbers)!=expected[name]:
+                  continue
               try:
-                  d=datetime.datetime.fromisoformat(str(r['scheduledAt']).replace('Z','+00:00')).astimezone(ZoneInfo('America/Sao_Paulo'))
-                  dates.append(d)
-              except (KeyError,ValueError,TypeError):
-                  pass
-          latest=max(dates) if dates else None
-          print('Hora esperada (Brasilia):',target.isoformat())
-          print('Ultimo resultado no JSON:',latest.isoformat() if latest else 'nenhum')
-          if latest is None or latest < target:
-              print('::error::RESULTADO ATRASADO: coleta executou mas nao publicou concurso da hora esperada')
-              sys.exit(1)
-          print('Resultado da hora confirmado no JSON')
+                  scheduled=datetime.datetime.fromisoformat(str(row['scheduledAt']).replace('Z','+00:00')).astimezone(target.tzinfo)
+              except (KeyError,TypeError,ValueError):
+                  scheduled=None
+              if scheduled==target or (row.get('data')==target.date().isoformat() and row.get('horario')==target.strftime('%H:%M')):
+                  found.add((name,2 if name=='Dupla Sena Turbo' and str(row.get('sorteio'))=='2' else 1))
+          missing=required-found
+          if missing:
+              print('Pendentes para',target.isoformat(),':',sorted(missing))
+          raise SystemExit(bool(missing))
           PY
