@@ -1,3 +1,2 @@
-É hora de atualizar Thor Turbo.
-Solicitação única: 2026-11-21 11:00:17 America/Sao_Paulo
-Execução: coleta horária 2026-11-21 11:00:17
+É hora de atualizar
+Solicitação: 2026-11-21T15:00:08.610Z
