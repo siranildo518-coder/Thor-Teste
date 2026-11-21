@@ -1,2 +1,3 @@
 É hora de atualizar
-Solicitação: 2026-11-21T05:00:06.690Z
+Solicitação: 2026-11-21 02:01:58 America/Sao_Paulo (UTC-03:00)
+Identificador: thor-turbo-coleta-20261121-020158-BRT
