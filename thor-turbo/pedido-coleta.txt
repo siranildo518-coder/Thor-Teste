@@ -1,2 +1,4 @@
 É hora de atualizar
-Solicitação: 2026-11-21T21:00:04.197Z
+Solicitação de coleta Thor Turbo
+Brasília: 2026-11-21 18:05:54 -03:00
+Identificador: thor-turbo-20261121T180554-0300
