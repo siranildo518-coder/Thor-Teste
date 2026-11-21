@@ -1,4 +1,2 @@
 É hora de atualizar
-Solicitação de coleta Thor Turbo
-Data/hora Brasília: 2026-11-21 01:02:55 America/Sao_Paulo
-Execução: fiscalizar-thor-turbo-20261121-01-20261121010255
+Solicitação: 2026-11-21T05:00:06.690Z
