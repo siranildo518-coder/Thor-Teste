@@ -1,3 +1,2 @@
-É hora de atualizar — Thor Turbo
-Solicitação de coleta: 2026-11-21 00:06:21 America/Sao_Paulo (Brasília)
-Execução única: 2026-11-21T00:06:21-03:00
+É hora de atualizar
+Solicitação: 2026-11-21T04:00:06.799Z
