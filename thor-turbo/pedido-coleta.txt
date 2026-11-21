@@ -1,2 +1,3 @@
 É hora de atualizar
-Solicitação: 2026-11-21T22:01:56.210Z
+Solicitação de coleta: 2026-11-21 19:07:53 America/Sao_Paulo
+Identificador: thor-turbo-20261121T190753-0300
