@@ -54,9 +54,9 @@ def modalidade(nome):
 
 def dezenas_lista(value):
     if isinstance(value, str):
-        if not re.fullmatch(r"[0-9\\s,;|.\\-]+", value):
+        if not re.fullmatch(r"[0-9\s,;|.\-]+", value):
             return None
-        value = re.findall(r"\\d{1,3}", value)
+        value = re.findall(r"\d{1,3}", value)
     if not isinstance(value, list):
         return None
     try:
@@ -169,7 +169,7 @@ def gravar(payloads):
         atual["fonte"] = SITE
         atual["dataExportacao"] = datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
         atual["records"] = records
-        ARQUIVO.write_text(json.dumps(atual, ensure_ascii=False, separators=(",", ":")) + "\\n", encoding="utf-8")
+        ARQUIVO.write_text(json.dumps(atual, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
     return adicionados
 
 
