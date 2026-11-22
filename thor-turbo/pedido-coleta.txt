@@ -1,3 +1,2 @@
-É hora de atualizar Thor Turbo.
-Solicitação de coleta: 2026-11-22 04:07:54 America/Sao_Paulo
-Identificador: 2026-11-22T07:07:54.653Z
+É hora de atualizar
+Solicitação: 2026-11-22T08:04:27.334Z
