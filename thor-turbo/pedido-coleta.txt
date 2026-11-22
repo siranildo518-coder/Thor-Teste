@@ -1,4 +1,3 @@
 É hora de atualizar
-Solicitação Brasília: 2026-11-22T08:00:10-03:00
-Execução: coleta horária 2026-11-22 08h Brasília
-Identificador: thor-turbo-20261122-080010-BRT
+Solicitação Brasília: 2026-11-22T09:00:00-03:00
+Execução: coleta horária 2026-11-22 09h Brasília
