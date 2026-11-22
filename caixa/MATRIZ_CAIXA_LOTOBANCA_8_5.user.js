@@ -238,7 +238,7 @@
          data: dt.data,
          horario: dt.horario,
          dezenas: nums,
-         scheduledAt: item.scheduledAt
+         scheduledAt: item.scheduledAt || item.dataApuracao || item.dataSorteio || item.data || item.drawDate || item.date
        };
 
        if (!history[id]) added++;
@@ -324,9 +324,10 @@
      }
 
      scheduleRender();
+     return valid;
    }
 
-   function handleResponse(response) {
+   function handleResponse(response, requestTemplate) {
      responses++;
 
      if (!response.ok) {
@@ -336,7 +337,10 @@
      }
 
      response.clone().json()
-       .then(inspect)
+       .then(payload => {
+         const found = inspect(payload);
+         if (found && requestTemplate) template = requestTemplate.clone();
+       })
        .catch(e => {
          problem = 'Erro JSON: ' + e.message;
          scheduleRender();
@@ -348,12 +352,10 @@
    function captureTemplate(input, init) {
      try {
        const request = new Request(input, init);
-
-       if (!target(request.url)) return;
-
-       template = request.clone();
+       return target(request.url) ? request.clone() : null;
      } catch (e) {
        problem = 'Captura da consulta: ' + e.message;
+       return null;
      }
    }
 
@@ -371,10 +373,8 @@
 
        const yes = target(url);
 
-       if (yes) {
-         calls++;
-         captureTemplate(input, init);
-       }
+       const requestTemplate = yes ? captureTemplate(input, init) : null;
+       if (yes) calls++;
 
        const promise = originalFetch.apply(
          this,
@@ -383,7 +383,7 @@
 
        if (yes) {
          Promise.resolve(promise).then(
-           handleResponse,
+           response => handleResponse(response, requestTemplate),
            e => {
              problem = 'Rede: ' + e.message;
              scheduleRender();
@@ -436,7 +436,7 @@
          try {
            const info = this.__matrizInfo;
 
-           template = new Request(info.url, {
+           this.__matrizRequest = new Request(info.url, {
              method: info.method,
              headers: info.headers,
              body: ['GET', 'HEAD'].includes(info.method)
@@ -465,7 +465,9 @@
                    ? this.response
                    : JSON.parse(this.responseText);
 
-               inspect(payload);
+               if (inspect(payload) && this.__matrizRequest) {
+                 template = this.__matrizRequest.clone();
+               }
              } catch (e) {
                problem = 'XHR: ' + e.message;
                scheduleRender();
