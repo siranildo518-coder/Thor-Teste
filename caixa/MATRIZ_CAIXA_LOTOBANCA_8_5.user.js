@@ -149,6 +149,9 @@
 
      if (typeof value === 'string') {
        const s = value.trim();
+       const br = s.match(/^(\\d{2})\\/(\\d{2})\\/(\\d{4})(?:[ T](\\d{2}:\\d{2}))?/);
+       if (br) return { data: `${br[3]}-${br[2]}-${br[1]}`, horario: br[4] || '' };
+       if (/^\\d{4}-\\d{2}-\\d{2}$/.test(s)) return { data: s, horario: '' };
 
        if (
          /^\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}/.test(s) &&
@@ -208,27 +211,20 @@
 
      function register(item) {
        const name = nameOf(
-         item.lotteryName ||
-         item.lotteryKey ||
-         ''
+         item.lotteryName || item.lotteryKey || item.modalidade || item.loteria || item.nomeLoteria || item.nome || item.name || item.game || ''
        );
 
        if (!name) return;
 
-       const draw = clean(item.sorteioNumber);
+       const draw = clean(item.sorteioNumber ?? item.numeroConcurso ?? item.numero ?? item.concurso ?? item.contestNumber ?? item.drawNumber);
 
        if (!/^\d{1,9}$/.test(draw)) return;
 
-       const nums = numbers(
-         item.resultNumbers,
-         name
-       );
+       const nums = numbers(item.resultNumbers ?? item.listaDezenas ?? item.dezenasSorteadasOrdemSorteio ?? item.dezenas ?? item.numeros ?? item.numbers ?? item.resultado, name);
 
        if (!nums) return;
 
-       const dt = brazilDateTime(
-         item.scheduledAt
-       );
+       const dt = brazilDateTime(item.scheduledAt ?? item.dataApuracao ?? item.dataSorteio ?? item.data ?? item.drawDate ?? item.date);
 
        if (!dt.data) return;
 
