@@ -149,9 +149,9 @@
 
      if (typeof value === 'string') {
        const s = value.trim();
-       const br = s.match(/^(\\d{2})\\/(\\d{2})\\/(\\d{4})(?:[ T](\\d{2}:\\d{2}))?/);
+       const br = s.match(/^(\d{2})\/(\d{2})\/(\d{4})(?:[ T](\d{2}:\d{2}))?/);
        if (br) return { data: `${br[3]}-${br[2]}-${br[1]}`, horario: br[4] || '' };
-       if (/^\\d{4}-\\d{2}-\\d{2}$/.test(s)) return { data: s, horario: '' };
+       if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return { data: s, horario: '' };
 
        if (
          /^\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}/.test(s) &&
@@ -250,7 +250,7 @@
 
        if (
          name === 'Dupla Sena' &&
-         item.resultNumbers2
+         (item.resultNumbers2 || item.listaDezenasSegundoSorteio)
        ) {
          const second = numbers(
            item.resultNumbers2,
