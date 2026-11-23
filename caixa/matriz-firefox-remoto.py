@@ -14,10 +14,10 @@ OUT = Path("caixa/resultados.json")
 SIZES = {"lotofacil": 15, "megasena": 6, "quina": 5, "lotomania": 20, "diadesorte": 7, "duplasena": 6}
 LIMITS = {"lotofacil": 25, "megasena": 60, "quina": 80, "lotomania": 100, "diadesorte": 31, "duplasena": 50}
 LABELS = {"lotofacil": "Lotofácil", "megasena": "Mega-Sena", "quina": "Quina", "lotomania": "Lotomania", "diadesorte": "Dia de Sorte", "duplasena": "Dupla Sena"}
-NAME_FIELDS = ("lotteryName", "lotteryKey", "modalidade", "loteria", "nomeLoteria", "nome", "name", "game")
-NUMBER_FIELDS = ("resultNumbers", "listaDezenas", "dezenasSorteadasOrdemSorteio", "dezenasSorteadas", "dezenas", "numeros", "numbers", "resultado")
-DRAW_FIELDS = ("sorteioNumber", "numeroConcurso", "numero", "concurso", "contestNumber", "drawNumber")
-DATE_FIELDS = ("scheduledAt", "dataApuracao", "dataSorteio", "data", "drawDate", "date")
+NAME_FIELDS = ("lotteryName", "lotteryKey", "modalidade", "loteria", "nomeLoteria", "nome", "name", "game", "lottery", "type")
+NUMBER_FIELDS = ("resultNumbers", "listaDezenas", "dezenasSorteadasOrdemSorteio", "dezenasSorteadas", "dezenas", "numeros", "numbers", "resultado", "winningNumbers", "numbersDrawn", "balls", "result")
+DRAW_FIELDS = ("sorteioNumber", "numeroConcurso", "numero", "concurso", "contestNumber", "drawNumber", "draw", "numeroSorteio", "numConcurso", "number")
+DATE_FIELDS = ("scheduledAt", "dataApuracao", "dataSorteio", "data", "drawDate", "date", "dataResultado", "dataConcurso", "dateTime", "createdAt")
 
 def norm(value):
     return "".join(c for c in unicodedata.normalize("NFD", str(value or "")) if unicodedata.category(c) != "Mn").lower()
@@ -112,6 +112,30 @@ def extract(payload):
 def identity(row):
     return row.get("modalidade", "") + "|" + str(row.get("concurso", "")) + "|" + str(row.get("sorteio", 1))
 
+def schema_field_names(payload):
+    """Retorna apenas nomes de campos de formato, nunca valores da resposta."""
+    allow = re.compile(r"(lotter|loteria|modal|game|result|contest|concurso|sorteio|draw|number|numero|dezena|data|date|time|hora|scheduled|items|records|list|period|apur)", re.I)
+    block = re.compile(r"(user|cpf|email|phone|telefone|token|auth|session|wallet|saldo|senha|balance|account)", re.I)
+    names = set()
+    seen = set()
+    def walk(node, depth=0):
+        if depth > 8 or not isinstance(node, (dict, list)) or id(node) in seen:
+            return
+        seen.add(id(node))
+        if isinstance(node, dict):
+            for key, value in node.items():
+                key = str(key)
+                if allow.search(key) and not block.search(key):
+                    names.add(key)
+                if isinstance(value, (dict, list)):
+                    walk(value, depth + 1)
+        else:
+            for value in node[:1000]:
+                if isinstance(value, (dict, list)):
+                    walk(value, depth + 1)
+    walk(payload)
+    return names
+
 def main():
     login = os.getenv("LOTOBANCA_LOGIN", "").strip()
     senha = os.getenv("LOTOBANCA_SENHA", "")
@@ -119,7 +143,7 @@ def main():
         raise SystemExit("Credenciais Lotobanca ausentes nos secrets do GitHub Actions; nenhuma consulta foi feita.")
     captured = {}
     json_responses = 0
-    expected_fields = set()
+    expected_fields = set()\n    all_schema_fields = set()
     with sync_playwright() as p:
         browser = p.firefox.launch(headless=True)
         page = browser.new_page(locale="pt-BR", timezone_id="America/Sao_Paulo", viewport={"width":1280,"height":720})
@@ -157,7 +181,7 @@ def main():
         page.wait_for_timeout(10000)
         browser.close()
     print("Firefox virtual: respostas JSON de resultados:", json_responses)
-    print("Campos de resultado reconhecidos:", sorted(expected_fields))
+    print("Campos de resultado reconhecidos:", sorted(expected_fields))\n    print("Campos de histórico observados:", sorted(all_schema_fields)[:100])
     print("Registros Caixa válidos capturados:", len(captured))
     if not captured:
         raise SystemExit("Sem registros Caixa válidos. Arquivo anterior preservado.")
