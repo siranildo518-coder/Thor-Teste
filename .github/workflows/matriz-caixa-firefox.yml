@@ -7,7 +7,9 @@ on:
       - 'caixa/matriz-firefox-remoto.py'
       - '.github/workflows/matriz-caixa-firefox.yml'
   schedule:
-    - cron: "*/5 * * * *"
+    # 09:00–23:55 no horário de Brasília (GitHub cron usa UTC).
+    - cron: "*/5 12-23 * * *"
+    - cron: "*/5 0-2 * * *"
 permissions:
   contents: write
 concurrency:
