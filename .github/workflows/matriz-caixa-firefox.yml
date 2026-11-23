@@ -1,0 +1,33 @@
+name: Caixa Lotobanca — Firefox virtual
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/5 * * * *"
+permissions:
+  contents: write
+concurrency:
+  group: matriz-caixa-lotobanca
+  cancel-in-progress: false
+jobs:
+  coletar:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Instalar Playwright e Firefox
+        run: |
+          python3 -m pip install --disable-pip-version-check playwright
+          python3 -m playwright install firefox
+      - name: Coletar resultado da Caixa pela Lotobanca
+        run: python3 caixa/matriz-firefox-remoto.py
+      - name: Publicar arquivo Caixa separado
+        run: |
+          if git diff --quiet -- caixa/resultados.json; then
+            echo "Sem resultado Caixa novo."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add caixa/resultados.json
+          git commit -m "Caixa Lotobanca: atualizar Matriz 8.5"
+          git push origin HEAD:main
