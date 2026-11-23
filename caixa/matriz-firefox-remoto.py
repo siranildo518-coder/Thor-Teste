@@ -150,7 +150,8 @@ def record_shape_summary(payload):
             return
         has_game = any(k in node for k in ("lotteryName", "lotteryKey", "modalidade", "loteria", "game"))
         if has_game:
-            item = {}
+            item = {"keys":sorted(str(k) for k in node.keys())[:80]}
+            item["nested"] = {str(k): sorted(str(x) for x in v.keys())[:30] if isinstance(v, dict) else {"type":"list", "length":len(v), "firstKeys":sorted(str(x) for x in v[0].keys())[:30] if v and isinstance(v[0], dict) else []} for k,v in node.items() if isinstance(v, (dict,list)) and str(k) not in ("user", "account")}
             for k in ("lotteryName", "lotteryKey", "modalidade", "loteria", "game", "name", "sorteioNumber", "concursoNumber", "displayNumber", "scheduledAt", "resultNumbers", "resultNumbers2", "result"):
                 if k not in node:
                     continue
