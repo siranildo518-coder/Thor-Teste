@@ -136,6 +136,40 @@ def schema_field_names(payload):
     walk(payload)
     return names
 
+def record_shape_summary(payload):
+    """Resumo de estrutura dos itens de loteria, sem expor dados de conta."""
+    rows = []
+    seen = set()
+    def walk(node, depth=0):
+        if depth > 12 or len(rows) >= 12 or not isinstance(node, (dict, list)) or id(node) in seen:
+            return
+        seen.add(id(node))
+        if isinstance(node, list):
+            for child in node[:3000]:
+                walk(child, depth + 1)
+            return
+        has_game = any(k in node for k in ("lotteryName", "lotteryKey", "modalidade", "loteria", "game"))
+        if has_game:
+            item = {}
+            for k in ("lotteryName", "lotteryKey", "modalidade", "loteria", "game", "name", "sorteioNumber", "concursoNumber", "displayNumber", "scheduledAt", "resultNumbers", "resultNumbers2", "result"):
+                if k not in node:
+                    continue
+                v = node[k]
+                if k in ("lotteryName", "lotteryKey", "modalidade", "loteria", "game"):
+                    item[k] = str(v)[:40]
+                elif isinstance(v, list):
+                    item[k] = {"type":"list", "length":len(v), "itemType":type(v[0]).__name__ if v else "empty"}
+                elif isinstance(v, dict):
+                    item[k] = {"type":"object", "keys":sorted(str(x) for x in v.keys())[:20]}
+                else:
+                    item[k] = {"type":type(v).__name__, "length":len(v) if isinstance(v, str) else None}
+            rows.append(item)
+        for v in node.values():
+            if isinstance(v, (dict, list)):
+                walk(v, depth + 1)
+    walk(payload)
+    return rows
+
 def main():
     login = os.getenv("LOTOBANCA_LOGIN", "").strip()
     senha = os.getenv("LOTOBANCA_SENHA", "")
@@ -144,7 +178,7 @@ def main():
     captured = {}
     json_responses = 0
     expected_fields = set()
-    all_schema_fields = set()
+    all_schema_fields = set()\n    record_shapes = []
     with sync_playwright() as p:
         browser = p.firefox.launch(headless=True)
         page = browser.new_page(locale="pt-BR", timezone_id="America/Sao_Paulo", viewport={"width":1280,"height":720})
@@ -160,7 +194,7 @@ def main():
                 payload = response.json()
                 if isinstance(payload, dict):
                     expected_fields.update(k for k in payload if k in set(NAME_FIELDS + NUMBER_FIELDS + DRAW_FIELDS + DATE_FIELDS + ("result", "results", "data", "items", "sorteios")))
-                all_schema_fields.update(schema_field_names(payload))
+                all_schema_fields.update(schema_field_names(payload))\n                record_shapes.extend(record_shape_summary(payload))
                 rows = extract(payload)
                 captured.update(rows)
             except Exception:
@@ -184,7 +218,7 @@ def main():
         browser.close()
     print("Firefox virtual: respostas JSON de resultados:", json_responses)
     print("Campos de resultado reconhecidos:", sorted(expected_fields))
-    print("Campos de histórico observados:", sorted(all_schema_fields)[:100])
+    print("Campos de histórico observados:", sorted(all_schema_fields)[:100])\n    print("Estrutura resumida dos itens:", json.dumps(record_shapes[:12], ensure_ascii=False))
     print("Registros Caixa válidos capturados:", len(captured))
     if not captured:
         raise SystemExit("Sem registros Caixa válidos. Arquivo anterior preservado.")
