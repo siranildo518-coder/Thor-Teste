@@ -16,7 +16,7 @@ LIMITS = {"lotofacil": 25, "megasena": 60, "quina": 80, "lotomania": 100, "diade
 LABELS = {"lotofacil": "Lotofácil", "megasena": "Mega-Sena", "quina": "Quina", "lotomania": "Lotomania", "diadesorte": "Dia de Sorte", "duplasena": "Dupla Sena"}
 NAME_FIELDS = ("lotteryName", "lotteryKey", "modalidade", "loteria", "nomeLoteria", "nome", "name", "game", "lottery", "type")
 NUMBER_FIELDS = ("resultNumbers", "listaDezenas", "dezenasSorteadasOrdemSorteio", "dezenasSorteadas", "dezenas", "numeros", "numbers", "resultado", "winningNumbers", "numbersDrawn", "balls", "result")
-DRAW_FIELDS = ("sorteioNumber", "numeroConcurso", "numero", "concurso", "contestNumber", "drawNumber", "draw", "numeroSorteio", "numConcurso", "number")
+DRAW_FIELDS = ("concursoNumber", "sorteioNumber", "numeroConcurso", "numero", "concurso", "contestNumber", "drawNumber", "draw", "numeroSorteio", "numConcurso", "number")
 DATE_FIELDS = ("scheduledAt", "dataApuracao", "dataSorteio", "data", "drawDate", "date", "dataResultado", "dataConcurso", "dateTime", "createdAt")
 
 def norm(value):
