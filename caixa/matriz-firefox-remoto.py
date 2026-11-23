@@ -143,7 +143,8 @@ def main():
         raise SystemExit("Credenciais Lotobanca ausentes nos secrets do GitHub Actions; nenhuma consulta foi feita.")
     captured = {}
     json_responses = 0
-    expected_fields = set()\n    all_schema_fields = set()
+    expected_fields = set()
+    all_schema_fields = set()
     with sync_playwright() as p:
         browser = p.firefox.launch(headless=True)
         page = browser.new_page(locale="pt-BR", timezone_id="America/Sao_Paulo", viewport={"width":1280,"height":720})
@@ -159,6 +160,7 @@ def main():
                 payload = response.json()
                 if isinstance(payload, dict):
                     expected_fields.update(k for k in payload if k in set(NAME_FIELDS + NUMBER_FIELDS + DRAW_FIELDS + DATE_FIELDS + ("result", "results", "data", "items", "sorteios")))
+                all_schema_fields.update(schema_field_names(payload))
                 rows = extract(payload)
                 captured.update(rows)
             except Exception:
@@ -181,7 +183,8 @@ def main():
         page.wait_for_timeout(10000)
         browser.close()
     print("Firefox virtual: respostas JSON de resultados:", json_responses)
-    print("Campos de resultado reconhecidos:", sorted(expected_fields))\n    print("Campos de histórico observados:", sorted(all_schema_fields)[:100])
+    print("Campos de resultado reconhecidos:", sorted(expected_fields))
+    print("Campos de histórico observados:", sorted(all_schema_fields)[:100])
     print("Registros Caixa válidos capturados:", len(captured))
     if not captured:
         raise SystemExit("Sem registros Caixa válidos. Arquivo anterior preservado.")
