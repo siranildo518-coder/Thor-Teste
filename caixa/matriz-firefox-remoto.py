@@ -178,7 +178,8 @@ def main():
     captured = {}
     json_responses = 0
     expected_fields = set()
-    all_schema_fields = set()\n    record_shapes = []
+    all_schema_fields = set()
+    record_shapes = []
     with sync_playwright() as p:
         browser = p.firefox.launch(headless=True)
         page = browser.new_page(locale="pt-BR", timezone_id="America/Sao_Paulo", viewport={"width":1280,"height":720})
@@ -194,7 +195,8 @@ def main():
                 payload = response.json()
                 if isinstance(payload, dict):
                     expected_fields.update(k for k in payload if k in set(NAME_FIELDS + NUMBER_FIELDS + DRAW_FIELDS + DATE_FIELDS + ("result", "results", "data", "items", "sorteios")))
-                all_schema_fields.update(schema_field_names(payload))\n                record_shapes.extend(record_shape_summary(payload))
+                all_schema_fields.update(schema_field_names(payload))
+                record_shapes.extend(record_shape_summary(payload))
                 rows = extract(payload)
                 captured.update(rows)
             except Exception:
@@ -218,7 +220,8 @@ def main():
         browser.close()
     print("Firefox virtual: respostas JSON de resultados:", json_responses)
     print("Campos de resultado reconhecidos:", sorted(expected_fields))
-    print("Campos de histórico observados:", sorted(all_schema_fields)[:100])\n    print("Estrutura resumida dos itens:", json.dumps(record_shapes[:12], ensure_ascii=False))
+    print("Campos de histórico observados:", sorted(all_schema_fields)[:100])
+    print("Estrutura resumida dos itens:", json.dumps(record_shapes[:12], ensure_ascii=False))
     print("Registros Caixa válidos capturados:", len(captured))
     if not captured:
         raise SystemExit("Sem registros Caixa válidos. Arquivo anterior preservado.")
