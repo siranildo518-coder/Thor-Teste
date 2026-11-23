@@ -1,3 +1,3 @@
 É hora de atualizar Thor Turbo.
-Solicitação de coleta: 2026-11-23 04:09:48 America/Sao_Paulo
-Identificador: coleta-20261123-040948-BRT
+Solicitação de coleta: 2026-11-23 05:00 America/Sao_Paulo
+Identificador: coleta-20261123-050000-BRT
