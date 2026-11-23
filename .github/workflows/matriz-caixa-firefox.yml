@@ -1,6 +1,11 @@
 name: Caixa Lotobanca — Firefox virtual
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'caixa/matriz-firefox-remoto.py'
+      - '.github/workflows/matriz-caixa-firefox.yml'
   schedule:
     - cron: "*/5 * * * *"
 permissions:
