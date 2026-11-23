@@ -24,11 +24,15 @@ jobs:
           python3 -m pip install --disable-pip-version-check playwright
           python3 -m playwright install firefox
       - name: Coletar resultado da Caixa pela Lotobanca
+        env:
+          LOTOBANCA_LOGIN: ${{ secrets.LOTOBANCA_LOGIN }}
+          LOTOBANCA_SENHA: ${{ secrets.LOTOBANCA_SENHA }}
         run: python3 caixa/matriz-firefox-remoto.py
       - name: Publicar arquivo Caixa separado
+        if: success()
         run: |
           if git diff --quiet -- caixa/resultados.json; then
-            echo "Sem resultado Caixa novo."
+            echo "Sem resultado novo; arquivo preservado."
             exit 0
           fi
           git config user.name "github-actions[bot]"
