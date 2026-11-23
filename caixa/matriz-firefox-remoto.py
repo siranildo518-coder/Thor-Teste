@@ -178,6 +178,7 @@ def main():
         raise SystemExit("Credenciais Lotobanca ausentes nos secrets do GitHub Actions; nenhuma consulta foi feita.")
     captured = {}
     json_responses = 0
+    response_paths = set()
     expected_fields = set()
     all_schema_fields = set()
     record_shapes = []
@@ -187,10 +188,12 @@ def main():
         def response_seen(response):
             nonlocal json_responses
             host = urlparse(response.url).hostname or ""
-            if host not in ("turbo.lotobanca.com", "api.lotobanca.com") or response.request.resource_type not in ("fetch", "xhr"):
+            parsed_url = urlparse(response.url)
+            if response.request.resource_type not in ("fetch", "xhr"):
                 return
             if "json" not in (response.headers.get("content-type") or "").lower():
                 return
+            response_paths.add(host + parsed_url.path)
             json_responses += 1
             try:
                 payload = response.json()
@@ -218,8 +221,16 @@ def main():
         page.wait_for_timeout(10000)
         page.reload(wait_until="domcontentloaded", timeout=45000)
         page.wait_for_timeout(10000)
+        body = page.locator("body").inner_text(timeout=10000)
+        lines = [line.strip() for line in body.splitlines() if line.strip()]
+        relevant = [i for i,line in enumerate(lines) if re.search(r"loto.?facil|mega.?sena|quina|lotomania|dia de sorte|dupla sena|concurso", line, re.I)]
+        snippets = []
+        for i in relevant[:25]:
+            snippets.append(" | ".join(lines[max(0,i-1):min(len(lines),i+5)]))
+        print("Trechos públicos da página de resultados:", json.dumps(snippets[:25], ensure_ascii=False))
         browser.close()
     print("Firefox virtual: respostas JSON de resultados:", json_responses)
+    print("Rotas JSON observadas:", sorted(response_paths)[:100])
     print("Campos de resultado reconhecidos:", sorted(expected_fields))
     print("Campos de histórico observados:", sorted(all_schema_fields)[:100])
     print("Estrutura resumida dos itens:", json.dumps(record_shapes[:12], ensure_ascii=False))
