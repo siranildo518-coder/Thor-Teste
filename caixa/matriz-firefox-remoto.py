@@ -197,6 +197,19 @@ def main():
             json_responses += 1
             try:
                 payload = response.json()
+                if "/V3-sorteios-caixa-listar-sorteios" in parsed_url.path:
+                    def safe_preview(value, depth=0):
+                        blocked = re.compile(r"user|cpf|email|phone|token|auth|session|wallet|saldo|senha|balance|account", re.I)
+                        if depth > 5:
+                            return "[depth]"
+                        if isinstance(value, dict):
+                            return {str(k):safe_preview(v, depth+1) for k,v in list(value.items())[:30] if not blocked.search(str(k))}
+                        if isinstance(value, list):
+                            return [safe_preview(v, depth+1) for v in value[:3]]
+                        if isinstance(value, str):
+                            return value[:100]
+                        return value
+                    print("Prévia pública da API Caixa:", json.dumps(safe_preview(payload), ensure_ascii=False)[:9000])
                 if isinstance(payload, dict):
                     expected_fields.update(k for k in payload if k in set(NAME_FIELDS + NUMBER_FIELDS + DRAW_FIELDS + DATE_FIELDS + ("result", "results", "data", "items", "sorteios")))
                 all_schema_fields.update(schema_field_names(payload))
