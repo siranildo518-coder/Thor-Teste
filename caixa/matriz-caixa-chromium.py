@@ -4,6 +4,7 @@ import os
 import re
 import time
 import unicodedata
+from urllib.parse import urlparse
 from datetime import datetime, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -22,9 +23,9 @@ TIPOS = {
     "diadesorte": ("Dia de Sorte", 7, 1, 31),
     "duplasena": ("Dupla Sena", 6, 1, 50),
 }
-CAMPOS_NOME = ("lotteryName", "lotteryKey", "modalidade", "loteria", "nomeLoteria", "nome", "name", "title", "game")
-CAMPOS_CONCURSO = ("sorteioNumber", "concurso", "numeroConcurso", "numero", "contestNumber", "drawNumber", "contest")
-CAMPOS_DEZENAS = ("resultNumbers", "dezenas", "numeros", "números", "numbers", "resultado", "result")
+CAMPOS_NOME = ("lotteryName", "lotteryKey", "modalidade", "loteria", "nomeLoteria", "nome", "name", "title", "game", "lottery", "type")
+CAMPOS_CONCURSO = ("concursoNumber", "displayNumber", "sorteioNumber", "concurso", "numeroConcurso", "numero", "contestNumber", "drawNumber", "contest")
+CAMPOS_DEZENAS = ("resultNumbers", "listaDezenas", "winningNumbers", "dezenas", "numeros", "números", "numbers", "resultado", "result")
 CAMPOS_DATA = ("scheduledAt", "dataSorteio", "dataApuracao", "data", "drawDate", "date")
 CAMPOS_HORA = ("horario", "hora", "time", "drawTime")
 IGNORAR = ("senha", "token", "auth", "session", "user", "cpf", "email", "telefone", "wallet", "saldo", "aposta", "bilhete")
@@ -47,7 +48,7 @@ def primeiro(node, keys):
 def modalidade(nome):
     texto = norm(nome)
     for key, (rotulo, *_resto) in TIPOS.items():
-        if key in texto:
+        if key in texto and "turbo" not in texto:
             return key, rotulo
     return None, None
 
@@ -99,7 +100,7 @@ def extrair(payload):
                 walk(item, depth + 1)
             return
 
-        tipo, rotulo = modalidade(primeiro(node, CAMPOS_NOME))
+        tipo, rotulo = next((m for m in (modalidade(node.get(k)) for k in CAMPOS_NOME) if m[0]), (None, None))
         if tipo:
             numero = str(primeiro(node, CAMPOS_CONCURSO) or "").strip()
             raw_nums = primeiro(node, CAMPOS_DEZENAS)
@@ -107,7 +108,9 @@ def extrair(payload):
             total, minimo, maximo = TIPOS[tipo][1:]
             if numero.isdigit() and nums and len(nums) == total and len(set(nums)) == total and all(minimo <= n <= maximo for n in nums):
                 data, hora = data_hora(primeiro(node, CAMPOS_DATA), primeiro(node, CAMPOS_HORA))
-                sorteio = str(node.get("sorteio") or node.get("draw") or "1")
+                if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", data):
+                    return
+                sorteio = str(node.get("sorteio") or "1")
                 registro = {
                     "modalidade": rotulo,
                     "concurso": numero,
@@ -117,7 +120,13 @@ def extrair(payload):
                 }
                 if tipo == "duplasena":
                     registro["sorteio"] = sorteio
+                if isinstance(node.get("scheduledAt"), str):
+                    registro["scheduledAt"] = node["scheduledAt"]
                 encontrados[(tipo, numero, sorteio)] = registro
+                if tipo == "duplasena":
+                    second = dezenas_lista(node.get("resultNumbers2") or node.get("listaDezenasSegundoSorteio"))
+                    if second and len(second) == total and len(set(second)) == total and all(minimo <= n <= maximo for n in second):
+                        encontrados[(tipo, numero, "2")] = {**registro, "sorteio": 2, "dezenas": second}
 
         for key, value in node.items():
             if not any(bad in str(key).lower() for bad in IGNORAR):
@@ -163,7 +172,7 @@ def gravar(payloads):
         str(row.get("data", "")), int(row.get("concurso", 0) or 0), str(row.get("modalidade", "")), int(row.get("sorteio", 1) or 1)
     ), reverse=True)
     # Manter historico amplo em uma fonte enxuta para o aplicativo futuro.
-    records = records[:1500]
+    # Preservar todos os registros existentes.
     if alterados or not ARQUIVO.exists():
         atual["tipo"] = "MATRIZ_CAIXA_LOTOBANCA"
         atual["fonte"] = SITE
@@ -176,6 +185,8 @@ def gravar(payloads):
 def main():
     respostas = []
     erros_rede = []
+    campos = set()
+    capturados = set()
 
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
@@ -184,8 +195,11 @@ def main():
 
         def capturar(response):
             try:
-                host = response.url.split("/", 3)[2].lower()
-                if host not in ("turbo.lotobanca.com", "api.lotobanca.com"):
+                parsed = urlparse(response.url)
+                host = parsed.hostname or ""
+                if not (host == "lotobanca.com" or host.endswith(".lotobanca.com") or "/V3-sorteios-caixa-listar-sorteios" in parsed.path):
+                    return
+                if "caixa" not in parsed.path.lower():
                     return
                 if response.request.resource_type not in ("xhr", "fetch"):
                     return
@@ -194,6 +208,17 @@ def main():
                 payload = response.json()
                 if isinstance(payload, (dict, list)):
                     respostas.append(payload)
+                    for row in extrair(payload):
+                        capturados.add(chave(row))
+                    def scan(v, depth=0):
+                        if depth > 10: return
+                        if isinstance(v, dict):
+                            for k, child in v.items():
+                                if re.search(r"lotter|concurso|sorteio|result|number|dezena|scheduled|draw|date", k, re.I) and not re.search(r"user|token|auth|senha|account", k, re.I): campos.add(k)
+                                if not any(bad in k.lower() for bad in IGNORAR): scan(child, depth+1)
+                        elif isinstance(v, list):
+                            for child in v[:100]: scan(child, depth+1)
+                    scan(payload)
             except Exception:
                 return
 
@@ -232,11 +257,15 @@ def main():
         print("Fonte consultada: Lotobanca / resultados Caixa")
         print("Respostas JSON da página:", len(respostas))
         print("Novos concursos Caixa gravados:", novos)
+        print("Registros Caixa válidos reconhecidos:", len(capturados))
+        print("Campos de formato Caixa:", sorted(campos))
         if not respostas:
             print("Não houve resposta JSON de resultados na página.")
         context.close()
         browser.close()
 
+    if not capturados:
+        raise SystemExit("Nenhum registro Caixa reconhecido; histórico preservado.")
     if not ARQUIVO.exists() or not json.loads(ARQUIVO.read_text(encoding="utf-8")).get("records"):
         raise SystemExit("A página da Lotobanca não forneceu concursos Caixa válidos; arquivo separado preservado.")
     print("Arquivo separado atualizado:", ARQUIVO.as_posix())
