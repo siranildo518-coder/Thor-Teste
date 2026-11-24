@@ -1,8 +1,9 @@
 name: Matriz Caixa Lotobanca Chromium
 on:
   schedule:
-    - cron: '0 * * * *'
-    - cron: '5-55/5 * * * *'
+    - cron: '0-50/5 * * * *'
+    - cron: '55 0-22 * * *'
+    - cron: '55 23 * * *'
   workflow_dispatch:
   push:
     branches: [main]
@@ -17,7 +18,7 @@ concurrency:
 jobs:
   coletar-caixa:
     runs-on: ubuntu-latest
-    timeout-minutes: 16
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
         with:
@@ -28,6 +29,7 @@ jobs:
           python3 -m playwright install --with-deps chromium
       - name: Aguardar e coletar concursos publicados pela Lotobanca
         env:
+          CAIXA_JANELA_SEGUNDOS: ${{ github.event.schedule == '55 23 * * *' && '900' || '180' }}
           LOTOBANCA_LOGIN: ${{ secrets.LOTOBANCA_LOGIN }}
           LOTOBANCA_SENHA: ${{ secrets.LOTOBANCA_SENHA }}
         run: python3 caixa/matriz-caixa-chromium.py
