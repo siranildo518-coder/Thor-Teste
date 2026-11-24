@@ -13,8 +13,8 @@ from playwright.sync_api import sync_playwright
 
 SITE = "https://turbo.lotobanca.com/loterias-alternativas/resultados-caixa"
 ARQUIVO = Path("caixa/resultados.json")
-JANELA_SEGUNDOS = 6 * 60
-INTERVALO_SEGUNDOS = 20
+JANELA_SEGUNDOS = 3 * 60
+INTERVALO_SEGUNDOS = 10
 TIPOS = {
     "lotofacil": ("Lotofácil", 15, 1, 25),
     "megasena": ("Mega-Sena", 6, 1, 60),
@@ -190,7 +190,7 @@ def main():
 
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
-        context = browser.new_context(viewport={"width": 1280, "height": 720}, locale="pt-BR")
+        context = browser.new_context(viewport={"width": 1280, "height": 720}, locale="pt-BR", timezone_id="America/Sao_Paulo")
         page = context.new_page()
 
         def capturar(response):
