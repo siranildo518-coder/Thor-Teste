@@ -13,8 +13,8 @@ from playwright.sync_api import sync_playwright
 
 SITE = "https://turbo.lotobanca.com/loterias-alternativas/resultados-caixa"
 ARQUIVO = Path("caixa/resultados.json")
-JANELA_SEGUNDOS = 3 * 60
-INTERVALO_SEGUNDOS = 10
+JANELA_SEGUNDOS = int(os.getenv("CAIXA_JANELA_SEGUNDOS", "180"))
+INTERVALO_SEGUNDOS = 5
 TIPOS = {
     "lotofacil": ("Lotofácil", 15, 1, 25),
     "megasena": ("Mega-Sena", 6, 1, 60),
@@ -245,10 +245,11 @@ def main():
         inicio = time.monotonic()
         novos = 0
         while time.monotonic() - inicio < JANELA_SEGUNDOS:
-            page.wait_for_timeout(INTERVALO_SEGUNDOS * 1000)
             novos = gravar(respostas)
             if novos:
                 break
+            respostas.clear()
+            page.wait_for_timeout(INTERVALO_SEGUNDOS * 1000)
             try:
                 page.reload(wait_until="domcontentloaded", timeout=30000)
             except Exception:
