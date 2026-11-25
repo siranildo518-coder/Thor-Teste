@@ -26,6 +26,7 @@ jobs:
           ref: main
       - name: Acionar alerta automatico sem abrir o aplicativo
         run: |
+          echo "THOR_HORA_ALVO=$(TZ=America/Sao_Paulo date +%Y-%m-%dT%H:00:00%:z)" >> "$GITHUB_ENV"
           echo "ALERTA AUTOMATICO THOR TURBO"
           echo "Acionado pelo GitHub Actions, independente do app e do botao Enviar."
           echo "Horario UTC: $(date -u +%FT%TZ)"
@@ -110,11 +111,8 @@ jobs:
           set -euo pipefail
           for tentativa in 1 2; do
             if python3 - <<'PY'
-          import json, datetime
-          from zoneinfo import ZoneInfo
-          now=datetime.datetime.now(ZoneInfo('America/Sao_Paulo'))
-          target=now.replace(minute=0,second=0,microsecond=0)
-          if now.minute<5: target-=datetime.timedelta(hours=1)
+          import json, datetime, os
+          target=datetime.datetime.fromisoformat(os.environ['THOR_HORA_ALVO'])
           with open('thor-turbo/resultados.json',encoding='utf-8') as f: rows=json.load(f).get('records',[])
           expected={'Dia de Sorte Turbo':7,'Lotomania Turbo':20,'Lotofácil Turbo':15,'Mega-Sena Turbo':6,'Quina Turbo':5,'Dupla Sena Turbo':6}
           required={(name,1) for name in expected}|{('Dupla Sena Turbo',2)}
@@ -166,15 +164,10 @@ jobs:
         if: always() && (steps.direta.outcome == 'success' || steps.chromium.outcome == 'success')
         run: |
           python3 - <<'PY'
-          import json, datetime
-          from zoneinfo import ZoneInfo
+          import json, datetime, os
           with open('thor-turbo/resultados.json', encoding='utf-8') as f:
               records=json.load(f).get('records', [])
-          now=datetime.datetime.now(ZoneInfo('America/Sao_Paulo'))
-          # O ultimo horario de sorteio esperado e a hora cheia, com tolerancia de 5 minutos.
-          target=now.replace(minute=0, second=0, microsecond=0)
-          if now.minute < 5:
-              target-=datetime.timedelta(hours=1)
+          target=datetime.datetime.fromisoformat(os.environ['THOR_HORA_ALVO'])
           expected={'Dia de Sorte Turbo':7,'Lotomania Turbo':20,'Lotofácil Turbo':15,'Mega-Sena Turbo':6,'Quina Turbo':5,'Dupla Sena Turbo':6}
           required={(name,1) for name in expected}|{('Dupla Sena Turbo',2)}
           found=set()
