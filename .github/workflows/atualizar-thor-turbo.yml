@@ -26,7 +26,6 @@ jobs:
           ref: main
       - name: Acionar alerta automatico sem abrir o aplicativo
         run: |
-          echo "THOR_HORA_ALVO=$(TZ=America/Sao_Paulo date +%Y-%m-%dT%H:00:00%:z)" >> "$GITHUB_ENV"
           echo "ALERTA AUTOMATICO THOR TURBO"
           echo "Acionado pelo GitHub Actions, independente do app e do botao Enviar."
           echo "Horario UTC: $(date -u +%FT%TZ)"
@@ -58,38 +57,8 @@ jobs:
           echo "Pedidos registrados: $count; atendidos: $last"
           echo "count=$count" >> "$GITHUB_OUTPUT"
           if (( count > last )); then echo "pendente=true" >> "$GITHUB_OUTPUT"; fi
-      - name: Conferir se a API já trouxe os sete resultados
-        id: api_completa
-        if: steps.direta.outcome == 'success'
-        continue-on-error: true
-        run: |
-          python3 - <<'PY'
-          import json, datetime, os
-          with open('thor-turbo/resultados.json', encoding='utf-8') as f:
-              records=json.load(f).get('records', [])
-          target=datetime.datetime.fromisoformat(os.environ['THOR_HORA_ALVO'])
-          expected={'Dia de Sorte Turbo':7,'Lotomania Turbo':20,'Lotofácil Turbo':15,'Mega-Sena Turbo':6,'Quina Turbo':5,'Dupla Sena Turbo':6}
-          required={(name,1) for name in expected}|{('Dupla Sena Turbo',2)}
-          found=set()
-          for row in records:
-              name=row.get('modalidade')
-              numbers=row.get('dezenas')
-              if name not in expected or not isinstance(numbers,list) or len(numbers)!=expected[name]:
-                  continue
-              try:
-                  scheduled=datetime.datetime.fromisoformat(str(row['scheduledAt']).replace('Z','+00:00')).astimezone(target.tzinfo)
-              except (KeyError,TypeError,ValueError):
-                  scheduled=None
-              if scheduled==target or (row.get('data')==target.date().isoformat() and row.get('horario')==target.strftime('%H:%M')):
-                  found.add((name,2 if name=='Dupla Sena Turbo' and str(row.get('sorteio'))=='2' else 1))
-          missing=required-found
-          if missing:
-              print('Pendentes para',target.isoformat(),':',sorted(missing))
-          raise SystemExit(bool(missing))
-          PY
       - name: Consultar Matriz no Chromium do GitHub
         id: chromium
-        if: steps.api_completa.outcome != 'success' || steps.sinal.outputs.pendente == 'true'
         continue-on-error: true
         timeout-minutes: 8
         env:
@@ -141,8 +110,11 @@ jobs:
           set -euo pipefail
           for tentativa in 1 2; do
             if python3 - <<'PY'
-          import json, datetime, os
-          target=datetime.datetime.fromisoformat(os.environ['THOR_HORA_ALVO'])
+          import json, datetime
+          from zoneinfo import ZoneInfo
+          now=datetime.datetime.now(ZoneInfo('America/Sao_Paulo'))
+          target=now.replace(minute=0,second=0,microsecond=0)
+          if now.minute<5: target-=datetime.timedelta(hours=1)
           with open('thor-turbo/resultados.json',encoding='utf-8') as f: rows=json.load(f).get('records',[])
           expected={'Dia de Sorte Turbo':7,'Lotomania Turbo':20,'Lotofácil Turbo':15,'Mega-Sena Turbo':6,'Quina Turbo':5,'Dupla Sena Turbo':6}
           required={(name,1) for name in expected}|{('Dupla Sena Turbo',2)}
@@ -194,10 +166,15 @@ jobs:
         if: always() && (steps.direta.outcome == 'success' || steps.chromium.outcome == 'success')
         run: |
           python3 - <<'PY'
-          import json, datetime, os
+          import json, datetime
+          from zoneinfo import ZoneInfo
           with open('thor-turbo/resultados.json', encoding='utf-8') as f:
               records=json.load(f).get('records', [])
-          target=datetime.datetime.fromisoformat(os.environ['THOR_HORA_ALVO'])
+          now=datetime.datetime.now(ZoneInfo('America/Sao_Paulo'))
+          # O ultimo horario de sorteio esperado e a hora cheia, com tolerancia de 5 minutos.
+          target=now.replace(minute=0, second=0, microsecond=0)
+          if now.minute < 5:
+              target-=datetime.timedelta(hours=1)
           expected={'Dia de Sorte Turbo':7,'Lotomania Turbo':20,'Lotofácil Turbo':15,'Mega-Sena Turbo':6,'Quina Turbo':5,'Dupla Sena Turbo':6}
           required={(name,1) for name in expected}|{('Dupla Sena Turbo',2)}
           found=set()
