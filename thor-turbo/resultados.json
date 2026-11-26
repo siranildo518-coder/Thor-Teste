@@ -1,7 +1,23 @@
 {
   "tipo": "THOR_MATRIZ_85",
-  "dataExportacao": "2026-11-26T00:05:07.262743Z",
+  "dataExportacao": "2026-11-26T01:01:31.078071Z",
   "records": [
+    {
+      "modalidade": "Dia de Sorte Turbo",
+      "concurso": "4989",
+      "data": "2026-11-25",
+      "horario": "22:00",
+      "scheduledAt": "2026-11-26T01:00:00.000Z",
+      "dezenas": [
+        2,
+        9,
+        14,
+        18,
+        19,
+        21,
+        23
+      ]
+    },
     {
       "modalidade": "Dia de Sorte Turbo",
       "concurso": "4988",
@@ -8961,6 +8977,37 @@
         23
       ],
       "scheduledAt": "2026-11-02T09:00:00.000Z"
+    },
+    {
+      "modalidade": "Dupla Sena Turbo",
+      "concurso": "5063",
+      "data": "2026-11-25",
+      "horario": "22:00",
+      "scheduledAt": "2026-11-26T01:00:00.000Z",
+      "dezenas": [
+        6,
+        16,
+        33,
+        35,
+        40,
+        42
+      ]
+    },
+    {
+      "modalidade": "Dupla Sena Turbo",
+      "concurso": "5063",
+      "data": "2026-11-25",
+      "horario": "22:00",
+      "scheduledAt": "2026-11-26T01:00:00.000Z",
+      "dezenas": [
+        7,
+        20,
+        37,
+        40,
+        41,
+        47
+      ],
+      "sorteio": 2
     },
     {
       "modalidade": "Dupla Sena Turbo",
@@ -26370,6 +26417,30 @@
     },
     {
       "modalidade": "Lotofácil Turbo",
+      "concurso": "5066",
+      "data": "2026-11-25",
+      "horario": "22:00",
+      "scheduledAt": "2026-11-26T01:00:00.000Z",
+      "dezenas": [
+        1,
+        2,
+        7,
+        11,
+        12,
+        13,
+        14,
+        16,
+        17,
+        18,
+        19,
+        22,
+        23,
+        24,
+        25
+      ]
+    },
+    {
+      "modalidade": "Lotofácil Turbo",
       "concurso": "5065",
       "data": "2026-11-25",
       "horario": "21:00",
@@ -39879,6 +39950,35 @@
         24
       ],
       "scheduledAt": "2026-11-02T10:00:00.000Z"
+    },
+    {
+      "modalidade": "Lotomania Turbo",
+      "concurso": "5066",
+      "data": "2026-11-25",
+      "horario": "22:00",
+      "scheduledAt": "2026-11-26T01:00:00.000Z",
+      "dezenas": [
+        4,
+        5,
+        15,
+        19,
+        26,
+        33,
+        34,
+        41,
+        47,
+        51,
+        56,
+        61,
+        64,
+        81,
+        84,
+        86,
+        92,
+        93,
+        95,
+        99
+      ]
     },
     {
       "modalidade": "Lotomania Turbo",
@@ -56180,6 +56280,21 @@
     },
     {
       "modalidade": "Mega-Sena Turbo",
+      "concurso": "5066",
+      "data": "2026-11-25",
+      "horario": "22:00",
+      "scheduledAt": "2026-11-26T01:00:00.000Z",
+      "dezenas": [
+        28,
+        31,
+        35,
+        46,
+        48,
+        52
+      ]
+    },
+    {
+      "modalidade": "Mega-Sena Turbo",
       "concurso": "5065",
       "data": "2026-11-25",
       "horario": "21:00",
@@ -64607,6 +64722,20 @@
         58
       ],
       "scheduledAt": "2026-11-02T10:00:00.000Z"
+    },
+    {
+      "modalidade": "Quina Turbo",
+      "concurso": "5066",
+      "data": "2026-11-25",
+      "horario": "22:00",
+      "scheduledAt": "2026-11-26T01:00:00.000Z",
+      "dezenas": [
+        45,
+        66,
+        70,
+        72,
+        78
+      ]
     },
     {
       "modalidade": "Quina Turbo",
