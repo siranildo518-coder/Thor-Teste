@@ -327,7 +327,8 @@ async function credencialValida(hash){
     return dados.ativo !== false && dados.bloqueado !== true;
   }catch(e){
     console.error('Falha ao validar a credencial:', e);
-    return false;
+    // Não transforme indisponibilidade do Firebase em credencial inválida.
+    return null;
   }
 }
 
@@ -476,29 +477,60 @@ async function criarCadastroTesteLiberado(codigo, usuario, senha){
 
   // Cadastro de teste sem captura nem envio de foto.
 
-  // Cadastro resiliente: a conta é salva na base GitHub pelo fluxo do gerenciador/login,
-  // e o Firebase passa a ser sincronização adicional. Falha de permissão do Firestore
-  // não pode mais impedir um cliente com código válido de concluir o cadastro.
+  // O cadastro precisa ficar no servidor para continuar válido em outro acesso,
+  // depois que o navegador/app for fechado ou quando a pessoa trocar de contexto.
+  // Não confirme uma conta que só ficou no localStorage deste aparelho.
   try{
     await carregarFirebase();
     const contaRef=dbFirestore.collection('teste_contas_ativadas').doc(hash);
+    const loginRef=dbFirestore.collection('teste_usuarios_login').doc(hash);
     const usoRef=dbFirestore.collection('teste_contas_ativadas').doc('cadastro_teste_'+liberacao.codigoHash);
+
+    const contaSnap=await contaRef.get();
+    if(contaSnap.exists)return {ok:false,motivo:'usuario_existente'};
+    const loginSnap=await loginRef.get();
+    if(loginSnap.exists)return {ok:false,motivo:'usuario_existente'};
+
+    await contaRef.set({
+      usuario,
+      deviceId:obterDeviceId(),
+      clientId:obterClientId(),
+      ativo:true,
+      bloqueado:false,
+      redefinirAparelho:false,
+      criadoVia:'cadastro_teste',
+      codigoCadastroHash:liberacao.codigoHash,
+      ativadoEm:firebase.firestore.FieldValue.serverTimestamp()
+    });
+    await loginRef.set({
+      usuario,
+      ativo:true,
+      bloqueado:false,
+      criadoVia:'cadastro_teste',
+      criadoEm:firebase.firestore.FieldValue.serverTimestamp()
+    });
     try{
-      const contaSnap=await contaRef.get();
-      if(contaSnap.exists)return {ok:false,motivo:'usuario_existente'};
-    }catch(_e){}
-    try{
-      await contaRef.set({usuario,deviceId:obterDeviceId(),clientId:obterClientId(),ativo:true,bloqueado:false,redefinirAparelho:false,criadoVia:'cadastro_teste',codigoCadastroHash:liberacao.codigoHash,ativadoEm:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
-      await dbFirestore.collection('teste_usuarios_login').doc(hash).set({usuario,ativo:true,bloqueado:false,criadoVia:'cadastro_teste',criadoEm:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
-      try{await usoRef.set({consumido:true,contaHash:hash,consumidoEm:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});}catch(_e){}
-      if(contextoCadastro==='navegador'){
-        try{await dbFirestore.collection('teste_acesso_navegador').doc(hash).set({liberado:true,criadoVia:'cadastro_navegador'},{merge:true});}catch(_e){}
-      }
+      await usoRef.set({
+        consumido:true,
+        contaHash:hash,
+        consumidoEm:firebase.firestore.FieldValue.serverTimestamp()
+      },{merge:true});
     }catch(e){
-      console.warn('Firebase indisponível no cadastro; credencial válida seguirá pelo modo compatível.',e);
+      console.warn('Cadastro salvo, mas não foi possível marcar o código como consumido:',e);
+    }
+    if(contextoCadastro==='navegador'){
+      try{
+        await dbFirestore.collection('teste_acesso_navegador').doc(hash).set(
+          {liberado:true,criadoVia:'cadastro_navegador'},
+          {merge:true}
+        );
+      }catch(e){
+        console.warn('Cadastro salvo, mas não foi possível registrar o acesso pelo navegador:',e);
+      }
     }
   }catch(e){
-    console.warn('Firebase não carregou; credencial válida seguirá pelo modo compatível.',e);
+    console.error('Não foi possível persistir o cadastro no servidor:',e);
+    return {ok:false,motivo:'falha_servidor'};
   }
 
   // Garante login imediato neste aparelho mesmo quando o Firestore bloqueia escrita.
@@ -615,6 +647,11 @@ function montarTelaLogin(){
     const ELZIANE_HASH = '1165s8q';
     const GISELE_HASH = 'oybgb0';
     const credencialOk = cadastroLocalOk || (hash === ELZIANE_HASH || hash === GISELE_HASH) || await credencialValida(hash);
+    if(credencialOk === null){
+      erroEl.style.color = '#B7791F';
+      erroEl.textContent = 'Não foi possível consultar o cadastro agora. Confira a internet e tente novamente.';
+      return;
+    }
     if(credencialOk){
       // Impede novo login com codigo bloqueado, mesmo com senha correta.
       const codigoConta=localStorage.getItem('thor_teste_codigo_conta_'+hash);
@@ -693,7 +730,7 @@ function montarTelaLogin(){
     btn.disabled=false;
     if(resultado.ok){
       erro.style.color='#087735';
-      erro.textContent='Foto enviada e cadastro concluído. Toque em Entrar.';
+      erro.textContent='Cadastro concluído. Toque em Entrar.';
       btn.hidden=true;
       document.getElementById('cadastroVoltarBtn').hidden=true;
       formCadastroEl.querySelectorAll('input').forEach(inp=>inp.disabled=true);
